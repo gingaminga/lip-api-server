@@ -1,5 +1,4 @@
 import { startRedis, startRelationDatabase } from "@/databases/index";
-import { statusService } from "@/loaders/service.loader";
 import logger from "@/utils/logger";
 
 /**
@@ -9,8 +8,6 @@ export const essentialInitLoader = async () => {
   try {
     await startRedis();
     await startRelationDatabase();
-
-    await statusService.setServerStatus(true);
   } catch (error) {
     logger.error(error);
   }

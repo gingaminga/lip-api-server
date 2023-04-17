@@ -1,8 +1,7 @@
-import Status from "@/databases/rdb/entities/status.entity";
 import constants from "@/utils/constants";
 import { DataSourceOptions } from "typeorm";
 
-const entities = [Status];
+const entities = [];
 
 const options: DataSourceOptions = {
   database: constants.DATABASE.SCHEMA,
