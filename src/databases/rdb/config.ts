@@ -1,7 +1,12 @@
+import Alarm from "@/databases/rdb/entities/alarm.entity";
+import Routine from "@/databases/rdb/entities/routine.entity";
+import Todo from "@/databases/rdb/entities/todo.entity";
+import User from "@/databases/rdb/entities/user.entity";
 import constants from "@/utils/constants";
 import { DataSourceOptions } from "typeorm";
+import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 
-const entities = [];
+const entities = [Alarm, Routine, Todo, User];
 
 const options: DataSourceOptions = {
   database: constants.DATABASE.SCHEMA,
@@ -14,6 +19,7 @@ const options: DataSourceOptions = {
   synchronize: true,
   type: constants.DATABASE.TYPE,
   username: constants.DATABASE.USER_NAME,
+  namingStrategy: new SnakeNamingStrategy(),
 };
 
 export default options;
