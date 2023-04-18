@@ -7,12 +7,14 @@ declare namespace NodeJS {
     DATABASE_TYPE: "mysql";
     DATABASE_USER_NAME: string;
     HTTPS: "true" | "false";
+    KAKAO_KEY: string;
     LOG_MAX_FILES: number;
     LOG_MAX_SIZE: string;
     LOG_PATH: string;
     NODE_ENV: "development" | "production" | "test";
     PORT: number;
     PROJECT_NAME: string;
+    REDIRECT_URI: string;
     REDIS_HOST: string;
     REDIS_PASS: string;
     REDIS_PORT: number;
