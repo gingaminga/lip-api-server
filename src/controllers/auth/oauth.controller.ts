@@ -12,5 +12,9 @@ export const getOAuthURLController: RequestDTOHandler<GetOAuthURLRequestParamDTO
 
   const url = OAuthService.getURL(type);
 
-  res.result(url);
+  const result = {
+    url,
+  };
+
+  res.result(result);
 };
