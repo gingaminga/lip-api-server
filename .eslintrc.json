@@ -36,7 +36,8 @@
       }
     ],
     "import/prefer-default-export": ["off"],
-    "no-useless-constructor": "off"
+    "no-useless-constructor": "off",
+    "max-classes-per-file": "off"
   },
   "settings": {
     "import/resolver": {
