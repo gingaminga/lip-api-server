@@ -1,4 +1,4 @@
-import { GetOAuthURLRequestParamDTO } from "@/dto/oauth.dto";
+import { GetOAuthURLRequestParamDTO, OAuthLoginRequestParamDTO } from "@/dto/oauth.dto";
 import { oAuthService } from "@/loaders/service.loader";
 import { RequestDTOHandler } from "@/types/express.custom";
 
@@ -17,4 +17,18 @@ export const getOAuthURLController: RequestDTOHandler<GetOAuthURLRequestParamDTO
   };
 
   res.result(result);
+};
+
+/**
+ * @description OAuth 로그인 컨트롤러
+ * @param req Request
+ * @param res Response
+ */
+export const oAuthURLController: RequestDTOHandler<OAuthLoginRequestParamDTO> = async (req, res) => {
+  const { code, type } = res.locals.dto;
+
+  await oAuthService.setToken(type, code);
+  const { id, nickname } = await oAuthService.getUserInfo(type);
+
+  res.result(true);
 };

@@ -2,6 +2,23 @@ import constants from "@/utils/constants";
 import { KAKAO_URL } from "@/utils/lib/url";
 import { AxiosBase } from "axios-classification";
 
+interface IRequestGetToken {
+  client_id: string;
+  code: string;
+  grant_type: string;
+  redirect_uri: string;
+}
+
+interface ITokenData {
+  access_token: string;
+  expires_in: number; // 액세스토큰 만료시간(초)
+  id_token?: string;
+  refresh_token: string;
+  refresh_token_expires_in: number; // 리프레시토큰 만료시간(초)
+  scope?: string;
+  token_type: string; // bearer 고정
+}
+
 class KakaoAuth extends AxiosBase {
   private readonly key = constants.OAUTH.KAKAO.KEY;
 
@@ -15,6 +32,31 @@ class KakaoAuth extends AxiosBase {
     const url = `${HOST}${PATH.AUTHORIZE}?client_id=${this.key}&redirect_uri=${this.redirectUri}&response_type=code`;
 
     return url;
+  }
+
+  /**
+   * @description 토큰 발급하기
+   * @param code 인가코드
+   */
+  async getToken(code: string) {
+    const endpoint = KAKAO_URL.AUTH.PATH.TOKEN;
+    const params = {
+      client_id: this.key,
+      code,
+      grant_type: "authorization_code", // 고정 값
+      redirect_uri: this.redirectUri,
+    };
+
+    const { data } = await this.post<IRequestGetToken, ITokenData>(endpoint, params, {
+      "Content-Type": "application/x-www-form-urlencoded",
+    });
+
+    const tokenData = {
+      access_token: data.access_token,
+      refresh_token: data.refresh_token,
+    };
+
+    return tokenData;
   }
 }
 

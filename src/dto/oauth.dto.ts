@@ -7,3 +7,14 @@ export class GetOAuthURLRequestParamDTO {
     this.type = type;
   }
 }
+
+export class OAuthLoginRequestParamDTO {
+  code: string;
+
+  type: TOAuthType;
+
+  constructor(type: TOAuthType, code: string) {
+    this.type = type;
+    this.code = code;
+  }
+}
