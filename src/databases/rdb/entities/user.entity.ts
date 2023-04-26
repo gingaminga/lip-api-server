@@ -1,14 +1,6 @@
 import Routine from "@/databases/rdb/entities/routine.entity";
 import Todo from "@/databases/rdb/entities/todo.entity";
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export default class User {
@@ -40,12 +32,6 @@ export default class User {
     type: "timestamp",
   })
   updatedAt!: Date;
-
-  @DeleteDateColumn({
-    default: null,
-    type: "timestamp",
-  })
-  deletedAt!: Date;
 
   @OneToMany(() => Todo, (todo) => todo.user)
   todos!: Todo[];

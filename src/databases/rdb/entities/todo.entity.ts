@@ -4,7 +4,6 @@ import User from "@/databases/rdb/entities/user.entity";
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -47,12 +46,6 @@ export default class Todo {
     type: "timestamp",
   })
   updatedAt!: Date;
-
-  @DeleteDateColumn({
-    default: null,
-    type: "timestamp",
-  })
-  deletedAt!: Date;
 
   @ManyToOne(() => User, (user) => user.todos)
   user!: User;

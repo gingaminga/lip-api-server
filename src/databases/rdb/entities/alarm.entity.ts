@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export default class Alarm {
@@ -21,10 +21,4 @@ export default class Alarm {
     type: "timestamp",
   })
   updatedAt!: Date;
-
-  @DeleteDateColumn({
-    default: null,
-    type: "timestamp",
-  })
-  deletedAt!: Date;
 }
