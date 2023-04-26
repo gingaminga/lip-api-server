@@ -20,7 +20,14 @@ export default class User {
     length: 16,
     type: "varchar",
   })
-  social!: string;
+  oauthType!: string;
+
+  @Column({
+    comment: "oauth id",
+    type: "int",
+    unsigned: true,
+  })
+  oauthKey!: number;
 
   @CreateDateColumn({
     type: "timestamp",
