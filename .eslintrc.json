@@ -37,7 +37,20 @@
     ],
     "import/prefer-default-export": ["off"],
     "no-useless-constructor": "off",
-    "max-classes-per-file": "off"
+    "max-classes-per-file": "off",
+    "no-plusplus": [
+      "error",
+      {
+        "allowForLoopAfterthoughts": true // loop는 예외
+      }
+    ], // 증감연산자 사용 여부
+    "no-await-in-loop": "warn", // loop 에서 promise 사용 여부
+    "no-constant-condition": [
+      "error",
+      {
+        "checkLoops": false // loop는 예외
+      }
+    ] // 상수값을 조건으로 사용 여부
   },
   "settings": {
     "import/resolver": {
