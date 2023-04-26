@@ -1,5 +1,5 @@
 import { GetOAuthURLRequestParamDTO, OAuthLoginRequestParamDTO } from "@/dto/oauth.dto";
-import { oAuthService } from "@/loaders/service.loader";
+import { oAuthService, userService } from "@/loaders/service.loader";
 import { RequestDTOHandler } from "@/types/express.custom";
 
 /**
@@ -30,5 +30,7 @@ export const oAuthURLController: RequestDTOHandler<OAuthLoginRequestParamDTO> = 
   await oAuthService.setToken(type, code);
   const { id, nickname } = await oAuthService.getUserInfo(type);
 
-  res.result(true);
+  const result = await userService.login(id, type, nickname);
+
+  res.result(result);
 };
