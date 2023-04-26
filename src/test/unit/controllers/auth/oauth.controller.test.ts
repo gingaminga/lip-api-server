@@ -1,8 +1,7 @@
 import { getOAuthURLController } from "@/controllers/auth/oauth.controller";
 import { GetOAuthURLRequestParamDTO } from "@/dto/oauth.dto";
-import OAuthService from "@/services/oauth.service";
+import { oAuthService } from "@/loaders/service.loader";
 import { ResponseDTO } from "@/types/express.custom";
-import { KakaoAuthClient } from "@/utils/lib/kakao";
 import { Request } from "express";
 
 describe("Get OAuth URL controller test :)", () => {
@@ -13,6 +12,10 @@ describe("Get OAuth URL controller test :)", () => {
   } as unknown as ResponseDTO<GetOAuthURLRequestParamDTO>;
   const next = jest.fn();
 
+  beforeEach(() => {
+    jest.spyOn(oAuthService, "getURL").mockReturnValue("url");
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -21,9 +24,6 @@ describe("Get OAuth URL controller test :)", () => {
     // given
     res.locals.dto = new GetOAuthURLRequestParamDTO("kakao");
 
-    const url = KakaoAuthClient.getOAuthURL();
-    OAuthService.getURL = jest.fn().mockReturnValue(url);
-
     // when
     getOAuthURLController(req, res, next);
 
@@ -31,7 +31,7 @@ describe("Get OAuth URL controller test :)", () => {
     expect(res.result).toBeCalledTimes(1);
 
     const result = {
-      url,
+      url: "url",
     };
     expect(res.result).toHaveBeenCalledWith(result);
   });

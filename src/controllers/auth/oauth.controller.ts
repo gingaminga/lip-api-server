@@ -1,5 +1,5 @@
 import { GetOAuthURLRequestParamDTO } from "@/dto/oauth.dto";
-import OAuthService from "@/services/oauth.service";
+import { oAuthService } from "@/loaders/service.loader";
 import { RequestDTOHandler } from "@/types/express.custom";
 
 /**
@@ -10,7 +10,7 @@ import { RequestDTOHandler } from "@/types/express.custom";
 export const getOAuthURLController: RequestDTOHandler<GetOAuthURLRequestParamDTO> = (req, res) => {
   const { type } = res.locals.dto;
 
-  const url = OAuthService.getURL(type);
+  const url = oAuthService.getURL(type);
 
   const result = {
     url,

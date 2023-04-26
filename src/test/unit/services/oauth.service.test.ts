@@ -1,5 +1,5 @@
-import OAuthService from "@/services/oauth.service";
-import { KakaoAuthClient } from "@/utils/lib/kakao";
+import { oAuthService } from "@/loaders/service.loader";
+import { KakaoAuthClient } from "@/utils/lib/kakao-auth";
 
 describe("OAuth service test :)", () => {
   afterEach(() => {
@@ -7,10 +7,10 @@ describe("OAuth service test :)", () => {
   });
 
   describe("Method getURL", () => {
-    test("Should get url", () => {
+    test("Should get kakao url", () => {
       // given
       // when
-      const url = OAuthService.getURL("kakao");
+      const url = oAuthService.getURL("kakao");
 
       // then
       expect(url).toBe(KakaoAuthClient.getOAuthURL());
