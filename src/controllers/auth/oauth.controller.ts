@@ -24,7 +24,7 @@ export const getOAuthURLController: RequestDTOHandler<GetOAuthURLRequestParamDTO
  * @param req Request
  * @param res Response
  */
-export const oAuthURLController: RequestDTOHandler<OAuthLoginRequestParamDTO> = async (req, res) => {
+export const oAuthLoginController: RequestDTOHandler<OAuthLoginRequestParamDTO> = async (req, res) => {
   const { code, type } = res.locals.dto;
 
   await oAuthService.setToken(type, code);
