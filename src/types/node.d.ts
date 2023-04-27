@@ -7,6 +7,7 @@ declare namespace NodeJS {
     DATABASE_TYPE: "mysql";
     DATABASE_USER_NAME: string;
     HTTPS: "true" | "false";
+    JWT_KEY: string;
     KAKAO_KEY: string;
     LOG_MAX_FILES: number;
     LOG_MAX_SIZE: string;

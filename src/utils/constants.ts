@@ -8,6 +8,9 @@ export default {
     USER_NAME: process.env.DATABASE_USER_NAME || "root",
   },
   HTTPS: process.env.HTTPS === "true",
+  JWT: {
+    KEY: process.env.JWT_KEY || "",
+  },
   LOG: {
     MAX_FILES: Number(process.env.LOG_MAX_FILES || 3),
     MAX_SIZE: Number(process.env.LOG_MAX_SIZE || "10m"),
