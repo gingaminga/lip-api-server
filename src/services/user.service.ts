@@ -1,12 +1,15 @@
 import User from "@/databases/rdb/entities/user.entity";
 import UserRepository from "@/databases/rdb/repositories/user.repository";
+import AuthService from "@/services/auth.service";
 import { TOAuthType } from "@/types/oauth";
 import { getRandomText } from "@/utils";
 import { Inject, Service } from "typedi";
 
+const checkExistUser = (userInfo: User | null): userInfo is User => !!userInfo;
+
 @Service()
 export default class UserService {
-  constructor(@Inject() private userRepository: UserRepository) {
+  constructor(@Inject() private authService: AuthService, @Inject() private userRepository: UserRepository) {
     /* empty */
   }
 
@@ -18,20 +21,6 @@ export default class UserService {
   async checkDuplicateNickname(nickname: string) {
     const userInfo = await this.userRepository.findUserByNickname(nickname);
 
-    if (!userInfo) {
-      return false;
-    }
-
-    return true;
-  }
-
-  /**
-   * @description 유저가 존재하는지 여부 확인하기
-   * @param oAuthKey OAuth id
-   * @param oAuthType OAuth 종류
-   * @returns 존재 여부
-   */
-  static checkExistUser(userInfo: User | null) {
     if (!userInfo) {
       return false;
     }
@@ -82,7 +71,9 @@ export default class UserService {
   async join(oAuthKey: number, oAuthType: TOAuthType, nickname: string) {
     const finalNickname = await this.getFinalNickname(nickname);
 
-    return this.userRepository.saveUser(oAuthKey, oAuthType, finalNickname);
+    const userInfo = await this.userRepository.saveUser(oAuthKey, oAuthType, finalNickname);
+
+    return userInfo;
   }
 
   /**
@@ -90,18 +81,19 @@ export default class UserService {
    * @param oAuthKey OAuth id
    * @param oAuthType OAuth 종류
    * @param nickname 닉네임
-   * @returns
+   * @returns 로그인과 관련된 정보
    */
   async login(oAuthKey: number, oAuthType: TOAuthType, nickname: string) {
     let userInfo = await this.getUserInfo(oAuthKey, oAuthType);
-    const isExist = UserService.checkExistUser(userInfo);
 
-    if (!isExist) {
+    if (!checkExistUser(userInfo)) {
       userInfo = await this.join(oAuthKey, oAuthType, nickname);
     }
 
-    return {
-      user_info: userInfo,
-    };
+    const tokens = this.authService.generateToken(userInfo.id, nickname, oAuthType);
+
+    const result = { userInfo, ...tokens };
+
+    return result;
   }
 }
