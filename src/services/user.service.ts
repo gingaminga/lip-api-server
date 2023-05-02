@@ -1,5 +1,6 @@
 import User from "@/databases/rdb/entities/user.entity";
 import UserRepository from "@/databases/rdb/repositories/user.repository";
+import { redisClient } from "@/loaders/database.loader";
 import AuthService from "@/services/auth.service";
 import { TOAuthType } from "@/types/oauth";
 import { getRandomText } from "@/utils";
@@ -9,6 +10,8 @@ const checkExistUser = (userInfo: User | null): userInfo is User => !!userInfo;
 
 @Service()
 export default class UserService {
+  private redisClient = redisClient;
+
   constructor(@Inject() private authService: AuthService, @Inject() private userRepository: UserRepository) {
     /* empty */
   }
@@ -92,8 +95,10 @@ export default class UserService {
 
     const tokens = this.authService.generateToken(userInfo.id, nickname, oAuthType);
 
-    const result = { userInfo, ...tokens };
+    await this.redisClient.set(String(userInfo.id), tokens.refresh_token);
 
-    return result;
+    const loginInfo = { user_info: userInfo, ...tokens };
+
+    return loginInfo;
   }
 }
