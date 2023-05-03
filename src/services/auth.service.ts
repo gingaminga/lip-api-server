@@ -52,16 +52,14 @@ export default class AuthService {
    * @param oAuthType oauth 종류
    * @returns 토큰들
    */
-  generateToken(id: number, nickname: string, oAuthType: TOAuthType) {
+  generateToken(nickname: string, oAuthType: TOAuthType) {
     const accessToken = this.createAccessToken(nickname, oAuthType);
     const refreshToken = this.createRefreshToken();
 
     const result = {
-      access_token: accessToken,
-      refresh_token: refreshToken,
+      accessToken,
+      refreshToken,
     };
-
-    this.redisClient.set(String(id), refreshToken);
 
     return result;
   }
