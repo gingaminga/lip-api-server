@@ -92,6 +92,8 @@ export default class UserService {
 
     const tokens = this.authService.generateToken(nickname, oAuthType);
 
+    await this.authService.saveRefreshToken(String(userInfo.id), tokens.refreshToken);
+
     const loginInfo = { userInfo, ...tokens };
 
     return loginInfo;

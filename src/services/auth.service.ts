@@ -63,4 +63,16 @@ export default class AuthService {
 
     return result;
   }
+
+  /**
+   * @description 리프레시 토큰 저장하기
+   * @param key 유니크한 값
+   * @param token 리프레시 토큰
+   * @returns boolean
+   */
+  async saveRefreshToken(key: string, token: string) {
+    await this.redisClient.set(key, token);
+
+    return true;
+  }
 }
