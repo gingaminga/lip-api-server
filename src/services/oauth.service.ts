@@ -41,10 +41,11 @@ export default class OAuthService {
    * @description 유저 정보 가져오기
    * @param type oauth 주체
    */
-  async getUserInfo(type: TOAuthType) {
+  async getUserInfo(type: TOAuthType, code: string) {
     let nickname = "";
     let id = 0;
     if (type === constants.OAUTH.KAKAO.NAME) {
+      await this.setToken(type, code);
       const kakaoUserData = await this.kakaoApiClient.getUserInfo();
 
       nickname = kakaoUserData.nickname;
