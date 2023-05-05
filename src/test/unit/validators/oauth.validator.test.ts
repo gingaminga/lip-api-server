@@ -1,8 +1,8 @@
 import { GetOAuthURLRequestParamDTO } from "@/dto/oauth.dto";
 import { ResponseDTO } from "@/types/express.custom";
 import constants from "@/utils/constants";
-import { getOAuthURLSchema } from "@/validators/oauth.schema";
-import { getOAuthURLValidator } from "@/validators/oauth.validator";
+import { getOAuthURLSchema } from "@/validators/schema/oauth.schema";
+import { getOAuthURLValidator } from "@/validators/validator/oauth.validator";
 import { Request } from "express";
 
 const req = {
