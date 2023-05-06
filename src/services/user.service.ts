@@ -19,7 +19,7 @@ export default class UserService {
    * @returns 중복 여부
    */
   async checkDuplicateNickname(nickname: string) {
-    const userInfo = await this.userRepository.findUserByNickname(nickname);
+    const userInfo = await this.getUserInfoByNickname(nickname);
 
     if (!userInfo) {
       return false;
@@ -55,8 +55,19 @@ export default class UserService {
    * @param oAuthType OAuth 종류
    * @returns User | null
    */
-  async getUserInfo(oAuthKey: number, oAuthType: TOAuthType) {
+  async getUserInfoByOAuthInfo(oAuthKey: number, oAuthType: TOAuthType) {
     const userInfo = await this.userRepository.findUserByOAuth(oAuthKey, oAuthType);
+
+    return userInfo;
+  }
+
+  /**
+   * @description 닉네임으로 유저 정보 가져오기
+   * @param nickname 닉네임
+   * @returns User | null
+   */
+  async getUserInfoByNickname(nickname: string) {
+    const userInfo = await this.userRepository.findUserByNickname(nickname);
 
     return userInfo;
   }
@@ -84,7 +95,7 @@ export default class UserService {
    * @returns 로그인과 관련된 정보
    */
   async login(oAuthKey: number, oAuthType: TOAuthType, nickname: string) {
-    let userInfo = await this.getUserInfo(oAuthKey, oAuthType);
+    let userInfo = await this.getUserInfoByOAuthInfo(oAuthKey, oAuthType);
 
     if (!checkExistUser(userInfo)) {
       userInfo = await this.join(oAuthKey, oAuthType, nickname);
