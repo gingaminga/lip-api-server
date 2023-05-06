@@ -33,10 +33,15 @@ export default class AuthService {
 
   /**
    * @description 리프레시토큰 만들기
+   * @param nickname 닉네임
+   * @param oAuthType oauth 종류
    * @returns new token
    */
-  createRefreshToken() {
-    const payload = {};
+  createRefreshToken(nickname: string, oAuthType: TOAuthType) {
+    const payload = {
+      nickname,
+      type: oAuthType,
+    };
     const options = {
       expiresIn: this.EXPRIED_REFRESH_TOKEN,
     };
@@ -54,7 +59,7 @@ export default class AuthService {
    */
   generateToken(nickname: string, oAuthType: TOAuthType) {
     const accessToken = this.createAccessToken(nickname, oAuthType);
-    const refreshToken = this.createRefreshToken();
+    const refreshToken = this.createRefreshToken(nickname, oAuthType);
 
     const result = {
       accessToken,
