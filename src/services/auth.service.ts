@@ -1,7 +1,8 @@
 import { redisClient } from "@/loaders/database.loader";
 import { TOAuthType } from "@/types/oauth";
 import constants from "@/utils/constants";
-import { createJWTToken } from "@/utils/jwt";
+import CError from "@/utils/error";
+import { createJWTToken, verifyJWTToken } from "@/utils/jwt";
 import { Service } from "typedi";
 
 @Service()
@@ -79,5 +80,23 @@ export default class AuthService {
     await this.redisClient.set(key, token);
 
     return true;
+  }
+
+  /**
+   * @description 토큰 유효한지 확인하기
+   * @param token jwt 토큰
+   */
+  async validateToken(token: string) {
+    const payload = verifyJWTToken<{ nickname: string; type: TOAuthType }>(token);
+
+    const originRefreshToken = await this.redisClient.get(payload.nickname);
+
+    const isSameToken = token === originRefreshToken;
+
+    if (!isSameToken) {
+      throw new CError("Token is not same.. :(");
+    }
+
+    return payload;
   }
 }
