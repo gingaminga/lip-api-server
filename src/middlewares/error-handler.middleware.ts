@@ -15,6 +15,6 @@ export default (error: unknown, _req: Request, res: Response, _: NextFunction) =
     return;
   }
 
-  const customError = new CError(ERROR_MESSAGE.INTERNAL_SERVER_ERROR, HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR);
+  const customError = new CError(error);
   res.error(customError);
 };
