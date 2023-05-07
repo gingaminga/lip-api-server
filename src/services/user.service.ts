@@ -3,6 +3,7 @@ import UserRepository from "@/databases/rdb/repositories/user.repository";
 import AuthService from "@/services/auth.service";
 import { TOAuthType } from "@/types/oauth";
 import { getRandomText } from "@/utils";
+import CError from "@/utils/error";
 import { Inject, Service } from "typedi";
 
 const checkExistUser = (userInfo: User | null): userInfo is User => !!userInfo;
@@ -50,18 +51,6 @@ export default class UserService {
   }
 
   /**
-   * @description 유저 정보 가져오기
-   * @param oAuthKey OAuth id
-   * @param oAuthType OAuth 종류
-   * @returns User | null
-   */
-  async getUserInfoByOAuthInfo(oAuthKey: number, oAuthType: TOAuthType) {
-    const userInfo = await this.userRepository.findUserByOAuth(oAuthKey, oAuthType);
-
-    return userInfo;
-  }
-
-  /**
    * @description 닉네임으로 유저 정보 가져오기
    * @param nickname 닉네임
    * @returns User | null
@@ -89,21 +78,26 @@ export default class UserService {
 
   /**
    * @description 로그인하기
-   * @param oAuthKey OAuth id
-   * @param oAuthType OAuth 종류
    * @param nickname 닉네임
+   * @param oAuthType OAuth 종류
+   * @param oAuthKey OAuth id
    * @returns 로그인과 관련된 정보
    */
-  async login(oAuthKey: number, oAuthType: TOAuthType, nickname: string) {
-    let userInfo = await this.getUserInfoByOAuthInfo(oAuthKey, oAuthType);
+  async login(nickname: string, oAuthType: TOAuthType, oAuthKey?: number) {
+    let userInfo = await this.getUserInfoByNickname(nickname);
 
     if (!checkExistUser(userInfo)) {
-      userInfo = await this.join(oAuthKey, oAuthType, nickname);
+      if (oAuthKey) {
+        // 회원가입
+        userInfo = await this.join(oAuthKey, oAuthType, nickname);
+      } else {
+        throw new CError("Not exist user.. :(");
+      }
     }
 
-    const tokens = this.authService.generateToken(nickname, oAuthType);
+    const tokens = this.authService.generateToken(userInfo.nickname, userInfo.oauthType);
 
-    await this.authService.saveRefreshToken(String(userInfo.id), tokens.refreshToken);
+    await this.authService.saveRefreshToken(userInfo.nickname, tokens.refreshToken);
 
     const loginInfo = { userInfo, ...tokens };
 

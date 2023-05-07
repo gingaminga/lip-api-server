@@ -12,7 +12,7 @@ export const loginController: RequestDTOHandler<LoginRequestParamDTO> = async (r
 
   const { id, nickname } = await oAuthService.getUserInfo(type, code);
 
-  const result = await userService.login(id, type, nickname);
+  const result = await userService.login(nickname, type, id);
 
   res.result(result);
 };
