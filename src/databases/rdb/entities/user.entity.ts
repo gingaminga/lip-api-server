@@ -1,5 +1,6 @@
 import Routine from "@/databases/rdb/entities/routine.entity";
 import Todo from "@/databases/rdb/entities/todo.entity";
+import { TOAuthType } from "@/types/oauth";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
@@ -20,7 +21,7 @@ export default class User {
     length: 16,
     type: "varchar",
   })
-  oauthType!: string;
+  oauthType!: TOAuthType;
 
   @Column({
     comment: "oauth id",
