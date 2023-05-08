@@ -83,10 +83,20 @@ export default class AuthService {
   }
 
   /**
-   * @description 토큰 유효한지 확인하기
+   * @description 액세스 토큰이 유효한지 확인하기
    * @param token jwt 토큰
    */
-  async validateToken(token: string) {
+  static validateAccessToken(token: string) {
+    const payload = verifyJWTToken<{ nickname: string; type: TOAuthType }>(token);
+
+    return payload;
+  }
+
+  /**
+   * @description 리프레시 토큰이 유효한지 확인하기
+   * @param token jwt 토큰
+   */
+  async validateRefreshToken(token: string) {
     const payload = verifyJWTToken<{ nickname: string; type: TOAuthType }>(token);
 
     const originRefreshToken = await this.redisClient.get(payload.nickname);

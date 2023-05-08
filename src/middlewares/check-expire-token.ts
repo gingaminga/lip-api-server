@@ -1,5 +1,6 @@
 import { ReissueTokenDTO } from "@/dto/auth.dto";
 import { authService } from "@/loaders/service.loader";
+import AuthService from "@/services/auth.service";
 import { RequestDTOHandler } from "@/types/express.custom";
 import CError, { ERROR_MESSAGE } from "@/utils/error";
 import HTTP_STATUS_CODE from "@/utils/http-status-code";
@@ -15,11 +16,11 @@ export const checkExpireAccessToken = async (req: Request, res: Response, next: 
       throw new CError(ERROR_MESSAGE.UNAUTHORIZED, HTTP_STATUS_CODE.UNAUTHORIZED);
     }
 
-    await authService.validateToken(token);
+    AuthService.validateAccessToken(token);
 
     next();
   } catch (error) {
-    throw new CError(ERROR_MESSAGE.UNAUTHORIZED, HTTP_STATUS_CODE.UNAUTHORIZED);
+    throw new CError(`${ERROR_MESSAGE.UNAUTHORIZED} ACCESS TOKEN`, HTTP_STATUS_CODE.UNAUTHORIZED);
   }
 };
 
@@ -31,12 +32,12 @@ export const checkExpireRefreshToken: RequestDTOHandler<ReissueTokenDTO> = async
   try {
     const { refreshToken } = res.locals.dto;
 
-    const payload = await authService.validateToken(refreshToken);
+    const payload = await authService.validateRefreshToken(refreshToken);
 
     res.locals.dto = new ReissueTokenDTO(refreshToken, payload.nickname, payload.type);
 
     next();
   } catch (error) {
-    throw new CError(ERROR_MESSAGE.UNAUTHORIZED, HTTP_STATUS_CODE.UNAUTHORIZED);
+    throw new CError(`${ERROR_MESSAGE.UNAUTHORIZED} REFRESH TOKEN`, HTTP_STATUS_CODE.UNAUTHORIZED);
   }
 };
