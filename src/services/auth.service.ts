@@ -8,22 +8,13 @@ import { Service } from "typedi";
 
 @Service()
 export default class AuthService {
-  private redisClient = redisClient;
-
-  private oAuthCommuicator = OAuthCommuicator;
-
   private readonly EXPRIED_ACCESS_TOKEN = constants.JWT.EXPRIED.ACCESS_TOKEN;
 
   private readonly EXPRIED_REFRESH_TOKEN = constants.JWT.EXPRIED.REFRESH_TOKEN;
 
-  /**
-   * @description oauth url 가져오기
-   * @param oAuthType oauth 종류
-   * @returns oauth url
-   */
-  getOAuthURL(oAuthType: TOAuthType) {
-    return this.oAuthCommuicator.getURL(oAuthType);
-  }
+  private oAuthCommuicator = OAuthCommuicator;
+
+  private redisClient = redisClient;
 
   /**
    * @description 액세스토큰 만들기
@@ -80,6 +71,15 @@ export default class AuthService {
     };
 
     return result;
+  }
+
+  /**
+   * @description oauth url 가져오기
+   * @param oAuthType oauth 종류
+   * @returns oauth url
+   */
+  getOAuthURL(oAuthType: TOAuthType) {
+    return this.oAuthCommuicator.getURL(oAuthType);
   }
 
   /**
