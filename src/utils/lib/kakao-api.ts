@@ -1,4 +1,7 @@
+import CError from "@/utils/error";
+import HTTP_STATUS_CODE from "@/utils/http-status-code";
 import { KAKAO_URL } from "@/utils/lib/url";
+import logger from "@/utils/logger";
 import { AxiosBase } from "axios-classification";
 
 interface IUserDataPartner {
@@ -85,3 +88,42 @@ class KakaoApi extends AxiosBase {
 export const KakaoApiClient = new KakaoApi({
   baseURL: KAKAO_URL.API.HOST,
 });
+
+KakaoApiClient.setRequestInterceptor(
+  (request) => {
+    const { baseURL, data, url } = request;
+
+    logger.info(`Request ${baseURL}${url}\n%o`, data);
+
+    return request;
+  },
+  (error) => {
+    throw error;
+  },
+);
+
+KakaoApiClient.setResponseInterceptor(
+  (response) => {
+    const { data, config } = response;
+    const { baseURL, method = "", url } = config;
+
+    logger.info(`[${method.toUpperCase()}] Response ${baseURL}${url}\n%o`, data);
+
+    return response;
+  },
+  async (error) => {
+    if (!KakaoApiClient.isAxiosError(error)) {
+      throw error;
+    }
+
+    const { response } = error;
+    const { config, data, status, statusText } = response || {};
+    const { baseURL, method, url } = config || {};
+
+    logger.error(`[${method?.toUpperCase()}] Response ${baseURL}${url} ${statusText}(${status})\n%o`, data);
+
+    const customError = new CError("Kakao Auth Error", HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR);
+
+    throw customError;
+  },
+);
