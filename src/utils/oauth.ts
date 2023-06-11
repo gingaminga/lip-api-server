@@ -2,10 +2,8 @@ import { TOAuthType } from "@/types/oauth";
 import constants from "@/utils/constants";
 import { KakaoApiClient } from "@/utils/lib/kakao-api";
 import { KakaoAuthClient } from "@/utils/lib/kakao-auth";
-import { Service } from "typedi";
 
-@Service()
-export default class OAuthService {
+class OAuth {
   private kakaoAuthClient = KakaoAuthClient;
 
   private kakaoApiClient = KakaoApiClient;
@@ -60,3 +58,5 @@ export default class OAuthService {
     return userInfo;
   }
 }
+
+export const OAuthCommuicator = new OAuth();

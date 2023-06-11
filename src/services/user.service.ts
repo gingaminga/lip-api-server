@@ -4,12 +4,15 @@ import AuthService from "@/services/auth.service";
 import { TOAuthType } from "@/types/oauth";
 import { getRandomText } from "@/utils";
 import CError from "@/utils/error";
+import { OAuthCommuicator } from "@/utils/oauth";
 import { Inject, Service } from "typedi";
 
 const checkExistUser = (userInfo: User | null): userInfo is User => !!userInfo;
 
 @Service()
 export default class UserService {
+  private oAuthCommuicator = OAuthCommuicator;
+
   constructor(@Inject() private authService: AuthService, @Inject() private userRepository: UserRepository) {
     /* empty */
   }
@@ -48,6 +51,15 @@ export default class UserService {
     }
 
     return finalNickname;
+  }
+
+  /**
+   * @description oauth 유저 정보 가져오기
+   * @param code oauth 인가코드
+   * @param oAuthType oauth 종류
+   */
+  getOAuthUserInfo(code: string, oAuthType: TOAuthType) {
+    return this.oAuthCommuicator.getUserInfo(oAuthType, code);
   }
 
   /**
@@ -102,5 +114,17 @@ export default class UserService {
     const loginInfo = { userInfo, ...tokens };
 
     return loginInfo;
+  }
+
+  /**
+   * @description 로그인하기
+   * @param code oauth 인가코드
+   * @param oAuthType OAuth 종류
+   * @returns 로그인과 관련된 정보
+   */
+  async loginWithOAuth(code: string, oAuthType: TOAuthType) {
+    const { id: oAuthKey, nickname } = await this.getOAuthUserInfo(code, oAuthType);
+
+    return this.login(nickname, oAuthType, oAuthKey);
   }
 }

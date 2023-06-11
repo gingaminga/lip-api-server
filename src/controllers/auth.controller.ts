@@ -1,6 +1,23 @@
-import { ReissueTokenDTO } from "@/dto/auth.dto";
-import { userService } from "@/loaders/service.loader";
+import { GetOAuthURLRequestParamDTO, ReissueTokenDTO } from "@/dto/auth.dto";
+import { authService, userService } from "@/loaders/service.loader";
 import { RequestDTOHandler } from "@/types/express.custom";
+
+/**
+ * @description OAuth URL을 가져오는 컨트롤러
+ * @param req Request
+ * @param res Response
+ */
+export const getOAuthURLController: RequestDTOHandler<GetOAuthURLRequestParamDTO> = (req, res) => {
+  const { type } = res.locals.dto;
+
+  const url = authService.getOAuthURL(type);
+
+  const result = {
+    url,
+  };
+
+  res.result(result);
+};
 
 /**
  * @description 토큰을 재발급하는 컨트롤러

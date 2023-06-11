@@ -1,5 +1,5 @@
 import { LoginRequestParamDTO } from "@/dto/user.dto";
-import { oAuthService, userService } from "@/loaders/service.loader";
+import { userService } from "@/loaders/service.loader";
 import { RequestDTOHandler } from "@/types/express.custom";
 
 /**
@@ -10,9 +10,7 @@ import { RequestDTOHandler } from "@/types/express.custom";
 export const loginController: RequestDTOHandler<LoginRequestParamDTO> = async (req, res) => {
   const { code, type } = res.locals.dto;
 
-  const { id, nickname } = await oAuthService.getUserInfo(type, code);
-
-  const result = await userService.login(nickname, type, id);
+  const result = await userService.loginWithOAuth(code, type);
 
   res.result(result);
 };

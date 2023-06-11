@@ -5,6 +5,6 @@ import asyncify from "express-asyncify";
 
 const router = asyncify(Router());
 
-router.post("/login", loginValidator, loginController);
+router.post("/in", loginValidator, loginController);
 
 export default router;

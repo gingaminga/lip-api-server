@@ -20,3 +20,11 @@ export class ReissueTokenDTO extends ReissueTokenRequestParamDTO {
     this.type = type;
   }
 }
+
+export class GetOAuthURLRequestParamDTO {
+  type: TOAuthType;
+
+  constructor(type: TOAuthType) {
+    this.type = type;
+  }
+}
