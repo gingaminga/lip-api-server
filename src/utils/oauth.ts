@@ -29,7 +29,7 @@ class OAuth {
    */
   async setToken(type: TOAuthType, code: string) {
     if (type === constants.OAUTH.KAKAO.NAME) {
-      const { access_token: accessToken } = await this.kakaoAuthClient.getToken(code);
+      const { accessToken } = await this.kakaoAuthClient.getToken(code);
 
       this.kakaoApiClient.setAccessTokenInHeader(accessToken);
     }

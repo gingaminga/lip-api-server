@@ -55,8 +55,8 @@ class KakaoAuth extends AxiosBase {
     });
 
     const tokenData = {
-      access_token: data.access_token,
-      refresh_token: data.refresh_token,
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
     };
 
     return tokenData;
