@@ -25,8 +25,8 @@ describe("Login controller test :)", () => {
 
   test(`Should failure login`, async () => {
     // given
-    const error = new Error("Failure login with oauth");
-    jest.spyOn(userService, "loginWithOAuth").mockRejectedValue(error);
+    const error = new Error("Failure login with social");
+    jest.spyOn(userService, "loginWithSocial").mockRejectedValue(error);
 
     // when
     const result = expect(loginController(req, res, next));
@@ -42,7 +42,7 @@ describe("Login controller test :)", () => {
       refreshToken: "refresh token",
       userInfo: {} as User,
     };
-    jest.spyOn(userService, "loginWithOAuth").mockResolvedValue(result);
+    jest.spyOn(userService, "loginWithSocial").mockResolvedValue(result);
 
     // when
     await loginController(req, res, next);

@@ -10,7 +10,7 @@ import { RequestDTOHandler } from "@/types/express.custom";
 export const loginController: RequestDTOHandler<LoginRequestParamDTO> = async (req, res) => {
   const { code, type } = res.locals.dto;
 
-  const result = await userService.loginWithOAuth(code, type);
+  const result = await userService.loginWithSocial(code, type);
 
   res.result(result);
 };

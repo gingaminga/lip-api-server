@@ -1,6 +1,6 @@
 import Routine from "@/databases/rdb/entities/routine.entity";
 import Todo from "@/databases/rdb/entities/todo.entity";
-import { TOAuthType } from "@/types/oauth";
+import { TSocialType } from "@/types/social";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
@@ -17,18 +17,18 @@ export default class User {
   nickname!: string;
 
   @Column({
-    comment: "oauth 종류",
+    comment: "소셜 종류",
     length: 16,
     type: "varchar",
   })
-  oauthType!: TOAuthType;
+  socialType!: TSocialType;
 
   @Column({
-    comment: "oauth id",
+    comment: "소셜 unique id",
     type: "int",
     unsigned: true,
   })
-  oauthKey!: number;
+  socialKey!: number;
 
   @CreateDateColumn({
     type: "timestamp",

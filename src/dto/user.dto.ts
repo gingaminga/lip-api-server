@@ -1,11 +1,11 @@
-import { TOAuthType } from "@/types/oauth";
+import { TSocialType } from "@/types/social";
 
 export class LoginRequestParamDTO {
   code: string;
 
-  type: TOAuthType;
+  type: TSocialType;
 
-  constructor(type: TOAuthType, code: string) {
+  constructor(type: TSocialType, code: string) {
     this.type = type;
     this.code = code;
   }

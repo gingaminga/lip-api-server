@@ -1,17 +1,17 @@
-import { TOAuthType } from "@/types/oauth";
+import { TSocialType } from "@/types/social";
 import constants from "@/utils/constants";
 import joi from "joi";
 
-interface IGetOAuthURLSchema {
-  type: TOAuthType;
+interface IGetSocialURLSchema {
+  type: TSocialType;
 }
 
 interface IReissueToken {
   refreshToken: string;
 }
 
-export const getOAuthURLSchema = joi.object<IGetOAuthURLSchema>().keys({
-  type: joi.string().valid(constants.OAUTH.KAKAO.NAME).required(),
+export const getSocialURLSchema = joi.object<IGetSocialURLSchema>().keys({
+  type: joi.string().valid(constants.SOCIAL.KAKAO.NAME).required(),
 });
 
 export const reissueTokenSchema = joi.object<IReissueToken>().keys({

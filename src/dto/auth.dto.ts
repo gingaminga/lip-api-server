@@ -1,4 +1,4 @@
-import { TOAuthType } from "@/types/oauth";
+import { TSocialType } from "@/types/social";
 
 export class ReissueTokenRequestParamDTO {
   refreshToken: string;
@@ -11,9 +11,9 @@ export class ReissueTokenRequestParamDTO {
 export class ReissueTokenDTO extends ReissueTokenRequestParamDTO {
   nickname: string;
 
-  type: TOAuthType;
+  type: TSocialType;
 
-  constructor(token: string, nickname: string, type: TOAuthType) {
+  constructor(token: string, nickname: string, type: TSocialType) {
     super(token);
 
     this.nickname = nickname;
@@ -21,10 +21,10 @@ export class ReissueTokenDTO extends ReissueTokenRequestParamDTO {
   }
 }
 
-export class GetOAuthURLRequestParamDTO {
-  type: TOAuthType;
+export class GetSocialURLRequestParamDTO {
+  type: TSocialType;
 
-  constructor(type: TOAuthType) {
+  constructor(type: TSocialType) {
     this.type = type;
   }
 }

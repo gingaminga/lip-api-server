@@ -1,13 +1,13 @@
-import { TOAuthType } from "@/types/oauth";
+import { TSocialType } from "@/types/social";
 import constants from "@/utils/constants";
 import joi from "joi";
 
 interface ILoginSchema {
   code: string;
-  type: TOAuthType;
+  type: TSocialType;
 }
 
 export const loginSchema = joi.object<ILoginSchema>().keys({
   code: joi.string().required(),
-  type: joi.string().valid(constants.OAUTH.KAKAO.NAME).required(),
+  type: joi.string().valid(constants.SOCIAL.KAKAO.NAME).required(),
 });

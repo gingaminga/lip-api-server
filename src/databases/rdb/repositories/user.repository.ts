@@ -1,6 +1,6 @@
 import User from "@/databases/rdb/entities/user.entity";
 import BaseRepository from "@/databases/rdb/repositories/base.repository";
-import { TOAuthType } from "@/types/oauth";
+import { TSocialType } from "@/types/social";
 import { Service } from "typedi";
 
 @Service()
@@ -30,16 +30,16 @@ export default class UserRepository extends BaseRepository<User> {
   }
 
   /**
-   * @description OAuth 정보로 유저 찾기
-   * @param oAuthKey OAuth id
-   * @param oAuthType OAuth 종류
+   * @description 소셜 정보로 유저 찾기
+   * @param socialKey 소셜 id
+   * @param socialType 소셜 종류
    * @returns User | null
    */
-  async findUserByOAuth(oAuthKey: number, oAuthType: TOAuthType) {
+  async findUserBySocial(socialKey: number, socialType: TSocialType) {
     const userInfo = await this.getRepository().findOne({
       where: {
-        oauthKey: oAuthKey,
-        oauthType: oAuthType,
+        socialKey,
+        socialType,
       },
     });
 
@@ -48,15 +48,15 @@ export default class UserRepository extends BaseRepository<User> {
 
   /**
    * @description 유저 추가하기
-   * @param oAuthKey OAuth id
-   * @param oAuthType OAuth 종류
+   * @param socialKey 소셜 id
+   * @param socialType 소셜 종류
    * @param nickname 닉네임
    * @returns User
    */
-  async saveUser(oAuthKey: number, oAuthType: TOAuthType, nickname: string) {
+  async saveUser(socialKey: number, socialType: TSocialType, nickname: string) {
     const user = new User();
-    user.oauthKey = oAuthKey;
-    user.oauthType = oAuthType;
+    user.socialKey = socialKey;
+    user.socialType = socialType;
     user.nickname = nickname;
 
     const userInfo = await this.getRepository().save(user);

@@ -1,16 +1,16 @@
-import { GetOAuthURLRequestParamDTO, ReissueTokenDTO } from "@/dto/auth.dto";
+import { GetSocialURLRequestParamDTO, ReissueTokenDTO } from "@/dto/auth.dto";
 import { authService, userService } from "@/loaders/service.loader";
 import { RequestDTOHandler } from "@/types/express.custom";
 
 /**
- * @description OAuth URL을 가져오는 컨트롤러
+ * @description 소셜 URL을 가져오는 컨트롤러
  * @param req Request
  * @param res Response
  */
-export const getOAuthURLController: RequestDTOHandler<GetOAuthURLRequestParamDTO> = (req, res) => {
+export const getSocialURLController: RequestDTOHandler<GetSocialURLRequestParamDTO> = (req, res) => {
   const { type } = res.locals.dto;
 
-  const url = authService.getOAuthURL(type);
+  const url = authService.getSocialURL(type);
 
   const result = {
     url,

@@ -1,41 +1,41 @@
-import { getOAuthURLController, reissueTokenController } from "@/controllers/auth.controller";
+import { getSocialURLController, reissueTokenController } from "@/controllers/auth.controller";
 import User from "@/databases/rdb/entities/user.entity";
-import { GetOAuthURLRequestParamDTO, ReissueTokenDTO } from "@/dto/auth.dto";
+import { GetSocialURLRequestParamDTO, ReissueTokenDTO } from "@/dto/auth.dto";
 import { authService, userService } from "@/loaders/service.loader";
 import { ResponseDTO } from "@/types/express.custom";
 import { Request } from "express";
 
-describe("Get OAuth URL controller test :)", () => {
+describe("Get Social URL controller test :)", () => {
   const req = {} as Request;
-  let res = {} as unknown as ResponseDTO<GetOAuthURLRequestParamDTO>;
+  let res = {} as unknown as ResponseDTO<GetSocialURLRequestParamDTO>;
   const next = jest.fn();
 
   beforeAll(() => {
     res = {
       locals: {
-        dto: new GetOAuthURLRequestParamDTO("kakao"),
+        dto: new GetSocialURLRequestParamDTO("kakao"),
       },
       result: jest.fn(),
-    } as unknown as ResponseDTO<GetOAuthURLRequestParamDTO>;
+    } as unknown as ResponseDTO<GetSocialURLRequestParamDTO>;
   });
 
   beforeEach(() => {
     const fakeURL = "test.com";
-    jest.spyOn(authService, "getOAuthURL").mockReturnValue(fakeURL);
+    jest.spyOn(authService, "getSocialURL").mockReturnValue(fakeURL);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  test(`Should success OAuth URL`, () => {
+  test(`Should success Social URL`, () => {
     // given
     const result = {
       url: "test.com",
     };
 
     // when
-    getOAuthURLController(req, res, next);
+    getSocialURLController(req, res, next);
 
     // then
     expect(res.result).toBeCalledTimes(1);

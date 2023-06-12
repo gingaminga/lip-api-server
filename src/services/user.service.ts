@@ -1,17 +1,17 @@
 import User from "@/databases/rdb/entities/user.entity";
 import UserRepository from "@/databases/rdb/repositories/user.repository";
 import AuthService from "@/services/auth.service";
-import { TOAuthType } from "@/types/oauth";
+import { TSocialType } from "@/types/social";
 import { getRandomText } from "@/utils";
 import CError from "@/utils/error";
-import { OAuthCommuicator } from "@/utils/oauth";
+import { SocialCommuicator } from "@/utils/social";
 import { Inject, Service } from "typedi";
 
 const checkExistUser = (userInfo: User | null): userInfo is User => !!userInfo;
 
 @Service()
 export default class UserService {
-  private oAuthCommuicator = OAuthCommuicator;
+  private socialCommuicator = SocialCommuicator;
 
   constructor(@Inject() private authService: AuthService, @Inject() private userRepository: UserRepository) {
     /* empty */
@@ -54,12 +54,12 @@ export default class UserService {
   }
 
   /**
-   * @description oauth 유저 정보 가져오기
-   * @param code oauth 인가코드
-   * @param oAuthType oauth 종류
+   * @description 소셜 유저 정보 가져오기
+   * @param code 소셜 인가코드
+   * @param socialType 소셜 종류
    */
-  getOAuthUserInfo(code: string, oAuthType: TOAuthType) {
-    return this.oAuthCommuicator.getUserInfo(oAuthType, code);
+  getSocialUserInfo(code: string, socialType: TSocialType) {
+    return this.socialCommuicator.getUserInfo(socialType, code);
   }
 
   /**
@@ -75,15 +75,15 @@ export default class UserService {
 
   /**
    * @description 회원가입하기
-   * @param oAuthKey OAuth id
-   * @param oAuthType OAuth 종류
+   * @param socialKey 소셜 id
+   * @param socialType 소셜 종류
    * @param nickname 닉네임
    * @returns
    */
-  async join(oAuthKey: number, oAuthType: TOAuthType, nickname: string) {
+  async join(socialKey: number, socialType: TSocialType, nickname: string) {
     const finalNickname = await this.getFinalNickname(nickname);
 
-    const userInfo = await this.userRepository.saveUser(oAuthKey, oAuthType, finalNickname);
+    const userInfo = await this.userRepository.saveUser(socialKey, socialType, finalNickname);
 
     return userInfo;
   }
@@ -91,23 +91,23 @@ export default class UserService {
   /**
    * @description 로그인하기
    * @param nickname 닉네임
-   * @param oAuthType OAuth 종류
-   * @param oAuthKey OAuth id
+   * @param socialType 소셜 종류
+   * @param socialKey 소셜 id
    * @returns 로그인과 관련된 정보
    */
-  async login(nickname: string, oAuthType: TOAuthType, oAuthKey?: number) {
+  async login(nickname: string, socialType: TSocialType, socialKey?: number) {
     let userInfo = await this.getUserInfoByNickname(nickname);
 
     if (!checkExistUser(userInfo)) {
-      if (oAuthKey) {
+      if (socialKey) {
         // 회원가입
-        userInfo = await this.join(oAuthKey, oAuthType, nickname);
+        userInfo = await this.join(socialKey, socialType, nickname);
       } else {
         throw new CError("Not exist user.. :(");
       }
     }
 
-    const tokens = this.authService.generateToken(userInfo.nickname, userInfo.oauthType);
+    const tokens = this.authService.generateToken(userInfo.nickname, userInfo.socialType);
 
     await this.authService.saveRefreshToken(userInfo.nickname, tokens.refreshToken);
 
@@ -118,13 +118,13 @@ export default class UserService {
 
   /**
    * @description 로그인하기
-   * @param code oauth 인가코드
-   * @param oAuthType OAuth 종류
+   * @param code 소셜 인가코드
+   * @param socialType 소셜 종류
    * @returns 로그인과 관련된 정보
    */
-  async loginWithOAuth(code: string, oAuthType: TOAuthType) {
-    const { id: oAuthKey, nickname } = await this.getOAuthUserInfo(code, oAuthType);
+  async loginWithSocial(code: string, socialType: TSocialType) {
+    const { id: socialKey, nickname } = await this.getSocialUserInfo(code, socialType);
 
-    return this.login(nickname, oAuthType, oAuthKey);
+    return this.login(nickname, socialType, socialKey);
   }
 }

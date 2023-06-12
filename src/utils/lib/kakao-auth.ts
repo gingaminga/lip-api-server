@@ -23,14 +23,14 @@ interface ITokenData {
 }
 
 class KakaoAuth extends AxiosBase {
-  private readonly key = constants.OAUTH.KAKAO.KEY;
+  private readonly key = constants.SOCIAL.KAKAO.KEY;
 
-  private readonly redirectUri = `${constants.OAUTH.REDIRECT_URI}/callback/kakao`;
+  private readonly redirectUri = `${constants.SOCIAL.REDIRECT_URI}/callback/kakao`;
 
   /**
-   * @description OAuth URL 가져오기
+   * @description 소셜 URL 가져오기
    */
-  getOAuthURL() {
+  getSocialURL() {
     const { HOST, PATH } = KAKAO_URL.AUTH;
     const url = `${HOST}${PATH.AUTHORIZE}?client_id=${this.key}&redirect_uri=${this.redirectUri}&response_type=code`;
 

@@ -1,11 +1,11 @@
-import { GetOAuthURLRequestParamDTO, ReissueTokenRequestParamDTO } from "@/dto/auth.dto";
+import { GetSocialURLRequestParamDTO, ReissueTokenRequestParamDTO } from "@/dto/auth.dto";
 import { RequestDTOHandler } from "@/types/express.custom";
-import { getOAuthURLSchema, reissueTokenSchema } from "@/validators/schema/auth.schema";
+import { getSocialURLSchema, reissueTokenSchema } from "@/validators/schema/auth.schema";
 
-export const getOAuthURLValidator: RequestDTOHandler<GetOAuthURLRequestParamDTO> = async (req, res, next) => {
-  const { type } = await getOAuthURLSchema.validateAsync(req.query);
+export const getSocialURLValidator: RequestDTOHandler<GetSocialURLRequestParamDTO> = async (req, res, next) => {
+  const { type } = await getSocialURLSchema.validateAsync(req.query);
 
-  res.locals.dto = new GetOAuthURLRequestParamDTO(type);
+  res.locals.dto = new GetSocialURLRequestParamDTO(type);
 
   next();
 };
