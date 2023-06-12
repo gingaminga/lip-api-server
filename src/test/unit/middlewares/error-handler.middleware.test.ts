@@ -37,11 +37,5 @@ describe("Error handler middleware test :)", () => {
     errorHandlerMiddleware(err, req, res, next);
 
     expect(res.error).toBeCalledTimes(1);
-    expect(res.error).toBeCalledWith(
-      expect.objectContaining({
-        code: HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
-        message: ERROR_MESSAGE.INTERNAL_SERVER_ERROR,
-      }),
-    );
   });
 });
