@@ -1,5 +1,6 @@
 import { redisClient } from "@/loaders/database.loader";
 import { TSocialType } from "@/types/social";
+import { IAccessTokenPayload, IRefreshTokenPayload } from "@/types/token";
 import constants from "@/utils/constants";
 import CError from "@/utils/error";
 import { createJWTToken, verifyJWTToken } from "@/utils/jwt";
@@ -99,7 +100,7 @@ export default class AuthService {
    * @param token jwt 토큰
    */
   static validateAccessToken(token: string) {
-    const payload = verifyJWTToken<{ nickname: string; type: TSocialType }>(token);
+    const payload = verifyJWTToken<IAccessTokenPayload>(token);
 
     return payload;
   }
@@ -109,7 +110,7 @@ export default class AuthService {
    * @param token jwt 토큰
    */
   async validateRefreshToken(token: string) {
-    const payload = verifyJWTToken<{ nickname: string; type: TSocialType }>(token);
+    const payload = verifyJWTToken<IRefreshTokenPayload>(token);
 
     const originRefreshToken = await this.redisClient.get(payload.nickname);
 
