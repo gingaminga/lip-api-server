@@ -1,4 +1,4 @@
-import { ReissueTokenDTO } from "@/dto/auth.dto";
+import { ReissueTokenDTO, ReissueTokenRequestParamDTO } from "@/dto/auth.dto";
 import { authService } from "@/loaders/service.loader";
 import AuthService from "@/services/auth.service";
 import { RequestDTOHandler } from "@/types/express.custom";
@@ -6,7 +6,7 @@ import CError, { ERROR_MESSAGE } from "@/utils/error";
 import HTTP_STATUS_CODE from "@/utils/http-status-code";
 import { NextFunction, Request, Response } from "express";
 
-export const checkExpireAccessToken = async (req: Request, res: Response, next: NextFunction) => {
+export const checkExpireAccessToken = (req: Request, res: Response, next: NextFunction) => {
   try {
     const { authorization = "" } = req.headers;
 
@@ -24,11 +24,7 @@ export const checkExpireAccessToken = async (req: Request, res: Response, next: 
   }
 };
 
-export const checkExpireRefreshToken: RequestDTOHandler<ReissueTokenDTO> = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const checkExpireRefreshToken: RequestDTOHandler<ReissueTokenRequestParamDTO> = async (req, res, next) => {
   try {
     const { refreshToken } = res.locals.dto;
 
