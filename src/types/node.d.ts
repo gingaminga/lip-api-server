@@ -6,6 +6,8 @@ declare namespace NodeJS {
     DATABASE_SCHEMA: string;
     DATABASE_TYPE: "mysql";
     DATABASE_USER_NAME: string;
+    GOOGLE_KEY: string;
+    GOOGLE_SECRET_KEY: string;
     HTTPS: "true" | "false";
     JWT_KEY: string;
     KAKAO_KEY: string;

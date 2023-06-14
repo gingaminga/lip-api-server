@@ -29,3 +29,24 @@ export const NAVER_URL = {
     },
   },
 };
+
+export const GOOGLE_URL = {
+  API: {
+    HOST: "https://www.googleapis.com",
+    PATH: {
+      USER_DATA: "/userinfo/v2/me",
+    },
+  },
+  AUTH: {
+    HOST: "https://accounts.google.com",
+    PATH: {
+      AUTHORIZE: "/o/oauth2/v2/auth",
+    },
+  },
+  AUTH2: {
+    HOST: "https://oauth2.googleapis.com",
+    PATH: {
+      TOKEN: "/token",
+    },
+  },
+};

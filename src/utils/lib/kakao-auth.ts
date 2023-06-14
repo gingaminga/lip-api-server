@@ -1,4 +1,4 @@
-import { IResponseKakaoToken, ISocialAuth } from "@/types/social";
+import { IResponseKakaoToken, ISocailAuth2, ISocialAuth } from "@/types/social";
 import constants from "@/utils/constants";
 import CError from "@/utils/error";
 import HTTP_STATUS_CODE from "@/utils/http-status-code";
@@ -14,7 +14,7 @@ interface IRequestGetToken {
   redirect_uri: string;
 }
 
-class KakaoAuth extends AxiosBase implements ISocialAuth {
+class KakaoAuth extends AxiosBase implements ISocialAuth, ISocailAuth2 {
   private readonly key = constants.SOCIAL.KAKAO.KEY;
 
   private readonly secretKey = constants.SOCIAL.KAKAO.SECRET_KEY;

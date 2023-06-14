@@ -1,8 +1,8 @@
-import { IResponseNaverToken, ISocailAuth2, ISocialAuth } from "@/types/social";
+import { IResponseGoogleToken, ISocailAuth2 } from "@/types/social";
 import constants from "@/utils/constants";
 import CError from "@/utils/error";
 import HTTP_STATUS_CODE from "@/utils/http-status-code";
-import { NAVER_URL } from "@/utils/lib/url";
+import { GOOGLE_URL } from "@/utils/lib/url";
 import logger from "@/utils/logger";
 import { AxiosBase } from "axios-classification";
 
@@ -11,43 +11,31 @@ interface IRequestGetToken {
   client_secret: string;
   code: string;
   grant_type: string;
-  state: string;
+  redirect_uri: string;
 }
 
-class NaverAuth extends AxiosBase implements ISocialAuth, ISocailAuth2 {
-  private readonly key = constants.SOCIAL.NAVER.KEY;
+class GoogleAuth2 extends AxiosBase implements ISocailAuth2 {
+  private readonly key = constants.SOCIAL.GOOGLE.KEY;
 
-  private readonly secretKey = constants.SOCIAL.NAVER.SECRET_KEY;
+  private readonly secretKey = constants.SOCIAL.GOOGLE.SECRET_KEY;
 
-  private readonly redirectUri = `${constants.SOCIAL.REDIRECT_URI}/callback/naver`;
-
-  private readonly state = encodeURI(constants.PROJECT_NAME);
-
-  /**
-   * @description 소셜 URL 가져오기
-   */
-  getSocialURL() {
-    const { HOST, PATH } = NAVER_URL.AUTH;
-    const url = `${HOST}${PATH.AUTHORIZE}?client_id=${this.key}&redirect_uri=${this.redirectUri}&response_type=code&state=${this.state}`;
-
-    return url;
-  }
+  private readonly redirectUri = `${constants.SOCIAL.REDIRECT_URI}/callback/google`;
 
   /**
    * @description 토큰 발급하기
    * @param code 인가코드
    */
   async getToken(code: string) {
-    const endpoint = NAVER_URL.AUTH.PATH.TOKEN;
+    const endpoint = GOOGLE_URL.AUTH2.PATH.TOKEN;
     const params = {
       client_id: this.key,
       client_secret: this.secretKey,
       code,
       grant_type: "authorization_code", // 고정 값
-      state: this.state,
+      redirect_uri: this.redirectUri,
     };
 
-    const { data } = await this.post<IRequestGetToken, IResponseNaverToken>(endpoint, params, {
+    const { data } = await this.post<IRequestGetToken, IResponseGoogleToken>(endpoint, params, {
       "Content-Type": "application/x-www-form-urlencoded",
     });
 
@@ -60,11 +48,11 @@ class NaverAuth extends AxiosBase implements ISocialAuth, ISocailAuth2 {
   }
 }
 
-export const NaverAuthClient = new NaverAuth({
-  baseURL: NAVER_URL.AUTH.HOST,
+export const GoogleAuth2Client = new GoogleAuth2({
+  baseURL: GOOGLE_URL.AUTH2.HOST,
 });
 
-NaverAuthClient.setRequestInterceptor(
+GoogleAuth2Client.setRequestInterceptor(
   (request) => {
     const { baseURL, data, url } = request;
 
@@ -77,7 +65,7 @@ NaverAuthClient.setRequestInterceptor(
   },
 );
 
-NaverAuthClient.setResponseInterceptor(
+GoogleAuth2Client.setResponseInterceptor(
   (response) => {
     const { data, config } = response;
     const { baseURL, method = "", url } = config;
@@ -87,7 +75,7 @@ NaverAuthClient.setResponseInterceptor(
     return response;
   },
   async (error) => {
-    if (!NaverAuthClient.isAxiosError(error)) {
+    if (!GoogleAuth2Client.isAxiosError(error)) {
       throw error;
     }
 
@@ -97,7 +85,7 @@ NaverAuthClient.setResponseInterceptor(
 
     logger.error(`[${method?.toUpperCase()}] Response ${baseURL}${url} ${statusText}(${status})\n%o`, data);
 
-    const customError = new CError("Kakao Auth Error", HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR);
+    const customError = new CError("Google Auth2 Error", HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR);
 
     throw customError;
   },

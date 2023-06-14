@@ -3,6 +3,26 @@ import { AxiosBase } from "axios-classification";
 
 export type TSocialType = "kakao" | "naver" | "google";
 
+// google
+export interface IResponseGoogleToken {
+  access_token: string;
+  expires_in: number; // 액세스토큰 만료시간(초)
+  refresh_token: string;
+  scope?: string;
+  token_type: string; // bearer 고정
+}
+
+export interface IResponseGoogleUserData {
+  id: string;
+  email: string;
+  verified_email: boolean;
+  name: string;
+  given_name: string;
+  family_name: string;
+  picture: string;
+  locale: string;
+}
+
 // kakao
 export interface IResponseKakaoToken {
   access_token: string;
@@ -100,9 +120,12 @@ export interface ISocialUserData {
   nickname: string;
 }
 
+export interface ISocailAuth2 {
+  getToken(code: string): Promise<IToken>;
+}
+
 export interface ISocialAuth extends AxiosBase {
   getSocialURL(): string;
-  getToken(code: string): Promise<IToken>;
 }
 
 export interface ISocialApi extends AxiosBase {

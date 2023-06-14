@@ -29,17 +29,22 @@ export default {
     PORT: Number(process.env.REDIS_PORT || 6379),
   },
   SOCIAL: {
-    REDIRECT_URI: process.env.REDIRECT_URI,
-    NAVER: {
-      KEY: process.env.NAVER_KEY,
-      NAME: "naver",
-      SECRET_KEY: process.env.NAVER_SECRET_KEY,
+    GOOGLE: {
+      KEY: process.env.GOOGLE_KEY,
+      NAME: "google",
+      SECRET_KEY: process.env.GOOGLE_SECRET_KEY,
     },
     KAKAO: {
       KEY: process.env.KAKAO_KEY,
       NAME: "kakao",
       SECRET_KEY: process.env.KAKAO_SECRET_KEY,
     },
+    NAVER: {
+      KEY: process.env.NAVER_KEY,
+      NAME: "naver",
+      SECRET_KEY: process.env.NAVER_SECRET_KEY,
+    },
+    REDIRECT_URI: process.env.REDIRECT_URI,
   },
   SSL: {
     CERT: {
