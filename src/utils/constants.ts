@@ -38,6 +38,7 @@ export default {
     KAKAO: {
       KEY: process.env.KAKAO_KEY,
       NAME: "kakao",
+      SECRET_KEY: process.env.KAKAO_SECRET_KEY,
     },
   },
   SSL: {

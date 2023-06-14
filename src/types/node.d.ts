@@ -9,6 +9,7 @@ declare namespace NodeJS {
     HTTPS: "true" | "false";
     JWT_KEY: string;
     KAKAO_KEY: string;
+    KAKAO_SECRET_KEY: string;
     LOG_MAX_FILES: number;
     LOG_MAX_SIZE: string;
     LOG_PATH: string;

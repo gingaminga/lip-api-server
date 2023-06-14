@@ -8,6 +8,7 @@ import { AxiosBase } from "axios-classification";
 
 interface IRequestGetToken {
   client_id: string;
+  client_secret: string;
   code: string;
   grant_type: string;
   redirect_uri: string;
@@ -15,6 +16,8 @@ interface IRequestGetToken {
 
 class KakaoAuth extends AxiosBase implements ISocialAuth {
   private readonly key = constants.SOCIAL.KAKAO.KEY;
+
+  private readonly secretKey = constants.SOCIAL.KAKAO.SECRET_KEY;
 
   private readonly redirectUri = `${constants.SOCIAL.REDIRECT_URI}/callback/kakao`;
 
@@ -36,6 +39,7 @@ class KakaoAuth extends AxiosBase implements ISocialAuth {
     const endpoint = KAKAO_URL.AUTH.PATH.TOKEN;
     const params = {
       client_id: this.key,
+      client_secret: this.secretKey,
       code,
       grant_type: "authorization_code", // 고정 값
       redirect_uri: this.redirectUri,
