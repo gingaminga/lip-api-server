@@ -80,7 +80,7 @@ export default class UserService {
    * @param nickname 닉네임
    * @returns
    */
-  async join(socialKey: number, socialType: TSocialType, nickname: string) {
+  async join(socialKey: string, socialType: TSocialType, nickname: string) {
     const finalNickname = await this.getFinalNickname(nickname);
 
     const userInfo = await this.userRepository.saveUser(socialKey, socialType, finalNickname);
@@ -95,7 +95,7 @@ export default class UserService {
    * @param socialKey 소셜 id
    * @returns 로그인과 관련된 정보
    */
-  async login(nickname: string, socialType: TSocialType, socialKey?: number) {
+  async login(nickname: string, socialType: TSocialType, socialKey?: string) {
     let userInfo = await this.getUserInfoByNickname(nickname);
 
     if (!checkExistUser(userInfo)) {

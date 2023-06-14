@@ -25,10 +25,10 @@ export default class User {
 
   @Column({
     comment: "소셜 unique id",
-    type: "int",
-    unsigned: true,
+    length: 64,
+    type: "varchar",
   })
-  socialKey!: number;
+  socialKey!: string;
 
   @CreateDateColumn({
     type: "timestamp",

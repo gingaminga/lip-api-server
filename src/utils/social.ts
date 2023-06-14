@@ -41,13 +41,13 @@ class Social {
    */
   async getUserInfo(type: TSocialType, code: string) {
     let nickname = "";
-    let id = 0;
+    let id = "";
     if (type === constants.SOCIAL.KAKAO.NAME) {
       await this.setToken(type, code);
       const kakaoUserData = await this.kakaoApiClient.getUserInfo();
 
       nickname = kakaoUserData.nickname;
-      id = kakaoUserData.id;
+      id = String(kakaoUserData.id);
     }
 
     const userInfo = {
