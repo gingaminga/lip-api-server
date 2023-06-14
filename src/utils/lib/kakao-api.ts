@@ -1,63 +1,11 @@
+import { IResponseKakaoUserData, ISocialApi } from "@/types/social";
 import CError from "@/utils/error";
 import HTTP_STATUS_CODE from "@/utils/http-status-code";
 import { KAKAO_URL } from "@/utils/lib/url";
 import logger from "@/utils/logger";
 import { AxiosBase } from "axios-classification";
 
-interface IUserDataPartner {
-  uuid: string;
-}
-
-interface IUserDataAccountProfile {
-  is_default_image?: boolean;
-  nickname?: string;
-  profile_image_url?: string;
-  thumbnail_image_url?: string;
-}
-
-interface IUserDataProperties {
-  nickname: string;
-}
-
-interface IUserDataAccount {
-  age_range_needs_agreement?: boolean;
-  age_range?: string; // 연령대
-  birthday?: string; // 생일 (MMDD)
-  birthday_needs_agreement?: boolean;
-  birthday_type?: string; // 생일 타입 (양력/음력)
-  birthyear?: string; // 출생연도 (YYYY 형식)
-  birthyear_needs_agreement?: boolean;
-  ci?: string;
-  ci_authenticated_at?: Date;
-  ci_needs_agreement?: boolean;
-  email?: string;
-  email_needs_agreement?: boolean;
-  gender?: string;
-  gender_needs_agreement?: boolean;
-  has_email?: boolean;
-  is_email_valid?: boolean;
-  is_email_verified?: boolean;
-  name?: string; // 닉네임
-  name_needs_agreement?: boolean;
-  phone_number?: string;
-  phone_number_needs_agreement?: boolean;
-  profile?: IUserDataAccountProfile;
-  profile_image_needs_agreement?: boolean;
-  profile_needs_agreement?: boolean;
-  profile_nickname_needs_agreement?: boolean;
-}
-
-interface IUserData {
-  connected_at?: Date;
-  for_partner?: IUserDataPartner;
-  has_signed_up?: boolean;
-  id: number;
-  kakao_account?: IUserDataAccount;
-  properties?: IUserDataProperties;
-  synched_at?: Date;
-}
-
-class KakaoApi extends AxiosBase {
+class KakaoApi extends AxiosBase implements ISocialApi {
   /**
    * @description 헤더에 액세스토큰 설정하기
    * @param token 액세스토큰
@@ -71,7 +19,7 @@ class KakaoApi extends AxiosBase {
    * @param token 액세스토큰
    */
   async getUserInfo() {
-    const { data } = await this.post<null, IUserData>(KAKAO_URL.API.PATH.USER_DATA, null);
+    const { data } = await this.post<null, IResponseKakaoUserData>(KAKAO_URL.API.PATH.USER_DATA, null);
     const { id, kakao_account: kakaoAccount } = data;
     const { profile } = kakaoAccount || {};
     const { nickname = "" } = profile || {};

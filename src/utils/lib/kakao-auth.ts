@@ -1,3 +1,4 @@
+import { IResponseKakaoToken, ISocialAuth } from "@/types/social";
 import constants from "@/utils/constants";
 import CError from "@/utils/error";
 import HTTP_STATUS_CODE from "@/utils/http-status-code";
@@ -12,17 +13,7 @@ interface IRequestGetToken {
   redirect_uri: string;
 }
 
-interface ITokenData {
-  access_token: string;
-  expires_in: number; // 액세스토큰 만료시간(초)
-  id_token?: string;
-  refresh_token: string;
-  refresh_token_expires_in: number; // 리프레시토큰 만료시간(초)
-  scope?: string;
-  token_type: string; // bearer 고정
-}
-
-class KakaoAuth extends AxiosBase {
+class KakaoAuth extends AxiosBase implements ISocialAuth {
   private readonly key = constants.SOCIAL.KAKAO.KEY;
 
   private readonly redirectUri = `${constants.SOCIAL.REDIRECT_URI}/callback/kakao`;
@@ -50,7 +41,7 @@ class KakaoAuth extends AxiosBase {
       redirect_uri: this.redirectUri,
     };
 
-    const { data } = await this.post<IRequestGetToken, ITokenData>(endpoint, params, {
+    const { data } = await this.post<IRequestGetToken, IResponseKakaoToken>(endpoint, params, {
       "Content-Type": "application/x-www-form-urlencoded",
     });
 
