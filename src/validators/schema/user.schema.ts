@@ -9,5 +9,5 @@ interface ILoginSchema {
 
 export const loginSchema = joi.object<ILoginSchema>().keys({
   code: joi.string().required(),
-  type: joi.string().valid(constants.SOCIAL.KAKAO.NAME).required(),
+  type: joi.string().valid(constants.SOCIAL.KAKAO.NAME, constants.SOCIAL.NAVER.NAME).required(),
 });

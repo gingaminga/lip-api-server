@@ -30,6 +30,11 @@ export default {
   },
   SOCIAL: {
     REDIRECT_URI: process.env.REDIRECT_URI,
+    NAVER: {
+      KEY: process.env.NAVER_KEY,
+      NAME: "naver",
+      SECRET_KEY: process.env.NAVER_SECRET_KEY,
+    },
     KAKAO: {
       KEY: process.env.KAKAO_KEY,
       NAME: "kakao",

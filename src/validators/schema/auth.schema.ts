@@ -11,7 +11,7 @@ interface IReissueToken {
 }
 
 export const getSocialURLSchema = joi.object<IGetSocialURLSchema>().keys({
-  type: joi.string().valid(constants.SOCIAL.KAKAO.NAME).required(),
+  type: joi.string().valid(constants.SOCIAL.KAKAO.NAME, constants.SOCIAL.NAVER.NAME).required(),
 });
 
 export const reissueTokenSchema = joi.object<IReissueToken>().keys({

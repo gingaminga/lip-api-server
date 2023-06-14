@@ -12,6 +12,8 @@ declare namespace NodeJS {
     LOG_MAX_FILES: number;
     LOG_MAX_SIZE: string;
     LOG_PATH: string;
+    NAVER_KEY: string;
+    NAVER_SECRET_KEY: string;
     NODE_ENV: "development" | "production" | "test";
     PORT: number;
     PROJECT_NAME: string;

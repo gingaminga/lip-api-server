@@ -2,11 +2,17 @@ import { TSocialType } from "@/types/social";
 import constants from "@/utils/constants";
 import { KakaoApiClient } from "@/utils/lib/kakao-api";
 import { KakaoAuthClient } from "@/utils/lib/kakao-auth";
+import { NaverAuthClient } from "@/utils/lib/naver-auth";
+import { NaverApiClient } from "./lib/naver-api";
 
 class Social {
   private kakaoAuthClient = KakaoAuthClient;
 
   private kakaoApiClient = KakaoApiClient;
+
+  private naverAuthClient = NaverAuthClient;
+
+  private naverApiClient = NaverApiClient;
 
   /**
    * @description url 가져오기
@@ -17,6 +23,8 @@ class Social {
     let url = "";
     if (type === constants.SOCIAL.KAKAO.NAME) {
       url = this.kakaoAuthClient.getSocialURL();
+    } else if (type === constants.SOCIAL.NAVER.NAME) {
+      url = this.naverAuthClient.getSocialURL();
     }
 
     return url;
@@ -32,6 +40,10 @@ class Social {
       const { accessToken } = await this.kakaoAuthClient.getToken(code);
 
       this.kakaoApiClient.setAccessTokenInHeader(accessToken);
+    } else if (type === constants.SOCIAL.NAVER.NAME) {
+      const { accessToken } = await this.naverAuthClient.getToken(code);
+
+      this.naverApiClient.setAccessTokenInHeader(accessToken);
     }
   }
 
@@ -48,6 +60,12 @@ class Social {
 
       nickname = kakaoUserData.nickname;
       id = String(kakaoUserData.id);
+    } else if (type === constants.SOCIAL.NAVER.NAME) {
+      await this.setToken(type, code);
+      const naverUserData = await this.naverApiClient.getUserInfo();
+
+      nickname = naverUserData.nickname;
+      id = naverUserData.id;
     }
 
     const userInfo = {
