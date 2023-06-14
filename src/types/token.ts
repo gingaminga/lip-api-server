@@ -10,3 +10,8 @@ export interface IRefreshTokenPayload extends JwtPayload {
   nickname: string;
   type: TSocialType;
 }
+
+export interface IToken {
+  accessToken: string;
+  refreshToken: string;
+}
