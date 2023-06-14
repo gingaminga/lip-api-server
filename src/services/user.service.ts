@@ -23,7 +23,7 @@ export default class UserService {
    * @returns 중복 여부
    */
   async checkDuplicateNickname(nickname: string) {
-    const userInfo = await this.getUserInfoByNickname(nickname);
+    const userInfo = await this.getUserInfo(nickname);
 
     if (!userInfo) {
       return false;
@@ -63,12 +63,13 @@ export default class UserService {
   }
 
   /**
-   * @description 닉네임으로 유저 정보 가져오기
+   * @description 유저 정보 가져오기
    * @param nickname 닉네임
+   * @param socialType 소셜 종류
    * @returns User | null
    */
-  async getUserInfoByNickname(nickname: string) {
-    const userInfo = await this.userRepository.findUserByNickname(nickname);
+  async getUserInfo(nickname: string, socialType?: TSocialType) {
+    const userInfo = await this.userRepository.findUser(nickname, socialType);
 
     return userInfo;
   }
@@ -96,7 +97,7 @@ export default class UserService {
    * @returns 로그인과 관련된 정보
    */
   async login(nickname: string, socialType: TSocialType, socialKey?: string) {
-    let userInfo = await this.getUserInfoByNickname(nickname);
+    let userInfo = await this.getUserInfo(nickname, socialType);
 
     if (!checkExistUser(userInfo)) {
       if (socialKey) {

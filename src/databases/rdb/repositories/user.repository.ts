@@ -15,14 +15,16 @@ export default class UserRepository extends BaseRepository<User> {
   }
 
   /**
-   * @description 닉네임으로 유저 찾기
+   * @description 유저 찾기
    * @param nickname 닉네임
+   * @param socialType 소셜 종류
    * @returns User | null
    */
-  async findUserByNickname(nickname: string) {
+  async findUser(nickname: string, socialType?: TSocialType) {
     const userInfo = await this.getRepository().findOne({
       where: {
         nickname,
+        socialType,
       },
     });
 
