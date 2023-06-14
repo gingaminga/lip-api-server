@@ -21,10 +21,11 @@ class KakaoApi extends AxiosBase implements ISocialApi {
   async getUserInfo() {
     const { data } = await this.post<null, IResponseKakaoUserData>(KAKAO_URL.API.PATH.USER_DATA, null);
     const { id, kakao_account: kakaoAccount } = data;
-    const { profile } = kakaoAccount || {};
+    const { profile, email } = kakaoAccount || {};
     const { nickname = "" } = profile || {};
 
     const userInfo = {
+      email,
       id,
       nickname,
     };

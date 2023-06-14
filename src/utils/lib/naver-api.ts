@@ -21,9 +21,10 @@ class NaverApi extends AxiosBase implements ISocialApi {
   async getUserInfo() {
     const { data } = await this.post<null, IResponseNaverUserData>(NAVER_URL.API.PATH.USER_DATA, null);
     const { response } = data;
-    const { id, nickname } = response;
+    const { email, id, nickname } = response;
 
     const userInfo = {
+      email,
       id,
       nickname,
     };

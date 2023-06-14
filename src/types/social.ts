@@ -116,6 +116,7 @@ export interface IResponseNaverUserData {
 }
 
 export interface ISocialUserData {
+  email?: string;
   id: number | string;
   nickname: string;
 }

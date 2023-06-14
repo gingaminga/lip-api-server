@@ -20,9 +20,10 @@ class GoogleApi extends AxiosBase implements ISocialApi {
    */
   async getUserInfo() {
     const { data } = await this.get<null, IResponseGoogleUserData>(GOOGLE_URL.API.PATH.USER_DATA, null);
-    const { id, name } = data;
+    const { email, id, name } = data;
 
     const userInfo = {
+      email,
       id,
       nickname: name,
     };

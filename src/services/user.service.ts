@@ -79,12 +79,13 @@ export default class UserService {
    * @param socialKey 소셜 id
    * @param socialType 소셜 종류
    * @param nickname 닉네임
+   * @param email 이메일
    * @returns
    */
-  async join(socialKey: string, socialType: TSocialType, nickname: string) {
+  async join(socialKey: string, socialType: TSocialType, nickname: string, email?: string) {
     const finalNickname = await this.getFinalNickname(nickname);
 
-    const userInfo = await this.userRepository.saveUser(socialKey, socialType, finalNickname);
+    const userInfo = await this.userRepository.saveUser(socialKey, socialType, finalNickname, email);
 
     return userInfo;
   }
@@ -94,15 +95,16 @@ export default class UserService {
    * @param nickname 닉네임
    * @param socialType 소셜 종류
    * @param socialKey 소셜 id
+   * @param email 이메일
    * @returns 로그인과 관련된 정보
    */
-  async login(nickname: string, socialType: TSocialType, socialKey?: string) {
+  async login(nickname: string, socialType: TSocialType, socialKey?: string, email?: string) {
     let userInfo = await this.getUserInfo(nickname, socialType);
 
     if (!checkExistUser(userInfo)) {
       if (socialKey) {
         // 회원가입
-        userInfo = await this.join(socialKey, socialType, nickname);
+        userInfo = await this.join(socialKey, socialType, nickname, email);
       } else {
         throw new CError("Not exist user.. :(");
       }
@@ -124,8 +126,8 @@ export default class UserService {
    * @returns 로그인과 관련된 정보
    */
   async loginWithSocial(code: string, socialType: TSocialType) {
-    const { id: socialKey, nickname } = await this.getSocialUserInfo(code, socialType);
+    const { email, id: socialKey, nickname } = await this.getSocialUserInfo(code, socialType);
 
-    return this.login(nickname, socialType, socialKey);
+    return this.login(nickname, socialType, socialKey, email);
   }
 }

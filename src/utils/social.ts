@@ -69,27 +69,33 @@ class Social {
   async getUserInfo(type: TSocialType, code: string) {
     let nickname = "";
     let id = "";
+    let email: undefined | string;
+
     if (type === constants.SOCIAL.KAKAO.NAME) {
       await this.setToken(type, code);
       const kakaoUserData = await this.kakaoApiClient.getUserInfo();
 
       nickname = kakaoUserData.nickname;
       id = String(kakaoUserData.id);
+      email = kakaoUserData.email;
     } else if (type === constants.SOCIAL.NAVER.NAME) {
       await this.setToken(type, code);
       const naverUserData = await this.naverApiClient.getUserInfo();
 
       nickname = naverUserData.nickname;
       id = naverUserData.id;
+      email = naverUserData.email;
     } else if (type === constants.SOCIAL.GOOGLE.NAME) {
       await this.setToken(type, code);
       const googleUserData = await this.googleApiClient.getUserInfo();
 
       nickname = googleUserData.nickname;
       id = googleUserData.id;
+      email = googleUserData.email;
     }
 
     const userInfo = {
+      email,
       id,
       nickname,
     };

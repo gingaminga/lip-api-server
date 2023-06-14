@@ -17,6 +17,14 @@ export default class User {
   nickname!: string;
 
   @Column({
+    comment: "이메일",
+    default: null,
+    length: 64,
+    type: "varchar",
+  })
+  email!: string | null;
+
+  @Column({
     comment: "소셜 종류",
     length: 16,
     type: "varchar",

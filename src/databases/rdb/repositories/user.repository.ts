@@ -36,13 +36,15 @@ export default class UserRepository extends BaseRepository<User> {
    * @param socialKey 소셜 id
    * @param socialType 소셜 종류
    * @param nickname 닉네임
+   * @param email 이메일
    * @returns User
    */
-  async saveUser(socialKey: string, socialType: TSocialType, nickname: string) {
+  async saveUser(socialKey: string, socialType: TSocialType, nickname: string, email?: string) {
     const user = new User();
     user.socialKey = socialKey;
     user.socialType = socialType;
     user.nickname = nickname;
+    user.email = email || null;
 
     const userInfo = await this.getRepository().save(user);
 
