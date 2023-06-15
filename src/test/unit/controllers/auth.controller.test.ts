@@ -1,7 +1,7 @@
 import { getSocialURLController, reissueTokenController } from "@/controllers/auth.controller";
 import User from "@/databases/rdb/entities/user.entity";
 import { GetSocialURLRequestParamDTO, ReissueTokenDTO } from "@/dto/auth.dto";
-import { authService, userService } from "@/loaders/service.loader";
+import { authService } from "@/loaders/service.loader";
 import { ResponseDTO } from "@/types/express.custom";
 import { Request } from "express";
 
@@ -66,7 +66,7 @@ describe("Reissue token controller test :)", () => {
   test(`Should failure reissue token`, async () => {
     // given
     const error = new Error("Failure login");
-    jest.spyOn(userService, "login").mockRejectedValue(error);
+    jest.spyOn(authService, "login").mockRejectedValue(error);
 
     // when
     const result = expect(reissueTokenController(req, res, next));
@@ -82,7 +82,7 @@ describe("Reissue token controller test :)", () => {
       refreshToken: "refresh token",
       userInfo: {} as User,
     };
-    jest.spyOn(userService, "login").mockResolvedValue(result);
+    jest.spyOn(authService, "login").mockResolvedValue(result);
 
     // when
     await reissueTokenController(req, res, next);

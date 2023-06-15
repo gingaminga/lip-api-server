@@ -1,5 +1,5 @@
 import User from "@/databases/rdb/entities/user.entity";
-import { userService } from "@/loaders/service.loader";
+import { authService } from "@/loaders/service.loader";
 
 describe("Method checkDuplicateNickname test :)", () => {
   const fakeNickname = "nickname";
@@ -12,14 +12,14 @@ describe("Method checkDuplicateNickname test :)", () => {
   test("Should throw error when userRepository findUserByNickname method error", async () => {
     // given
     const error = new Error("Find user error");
-    Object.defineProperty(userService, "userRepository", {
+    Object.defineProperty(authService, "userRepository", {
       value: {
         findUserByNickname: jest.fn().mockRejectedValue(error),
       },
     });
 
     // when
-    const result = expect(userService.checkDuplicateNickname(fakeNickname));
+    const result = expect(authService.checkDuplicateNickname(fakeNickname));
 
     // then
     await result.rejects.toThrowError(error);
@@ -27,14 +27,14 @@ describe("Method checkDuplicateNickname test :)", () => {
 
   test("Should success on duplicate nickname", async () => {
     // given
-    Object.defineProperty(userService, "userRepository", {
+    Object.defineProperty(authService, "userRepository", {
       value: {
         findUserByNickname: jest.fn().mockResolvedValue(fakeUserInfo),
       },
     });
 
     // when
-    const isDuplicate = await userService.checkDuplicateNickname(fakeNickname);
+    const isDuplicate = await authService.checkDuplicateNickname(fakeNickname);
 
     // then
     expect(isDuplicate).toBeTruthy();
@@ -43,7 +43,7 @@ describe("Method checkDuplicateNickname test :)", () => {
   test("Should success on unique nickname", async () => {
     // given
     // when
-    const isDuplicate = await userService.checkDuplicateNickname(fakeNickname);
+    const isDuplicate = await authService.checkDuplicateNickname(fakeNickname);
 
     // then
     expect(isDuplicate).toBeFalsy();
@@ -57,13 +57,13 @@ describe("Method getFinalNickname test :)", () => {
     jest.clearAllMocks();
   });
 
-  test("Should throw error when userService checkDuplicateNickname method error", async () => {
+  test("Should throw error when authService checkDuplicateNickname method error", async () => {
     // given
     const error = new Error("Check duplidate nickname error");
-    jest.spyOn(userService, "checkDuplicateNickname").mockRejectedValue(error);
+    jest.spyOn(authService, "checkDuplicateNickname").mockRejectedValue(error);
 
     // when
-    const result = expect(userService.getFinalNickname(fakeNickname));
+    const result = expect(authService.getFinalNickname(fakeNickname));
 
     // then
     await result.rejects.toThrowError(error);
@@ -71,10 +71,10 @@ describe("Method getFinalNickname test :)", () => {
 
   test("Should unique nickname", async () => {
     // given
-    jest.spyOn(userService, "checkDuplicateNickname").mockResolvedValue(false);
+    jest.spyOn(authService, "checkDuplicateNickname").mockResolvedValue(false);
 
     // when
-    const nickname = await userService.getFinalNickname(fakeNickname);
+    const nickname = await authService.getFinalNickname(fakeNickname);
 
     // then
     expect(nickname).toBe(fakeNickname);
@@ -82,10 +82,10 @@ describe("Method getFinalNickname test :)", () => {
 
   test("Should duplicate nickname", async () => {
     // given
-    jest.spyOn(userService, "checkDuplicateNickname").mockResolvedValue(true);
+    jest.spyOn(authService, "checkDuplicateNickname").mockResolvedValue(true);
 
     // when
-    const nickname = await userService.getFinalNickname(fakeNickname);
+    const nickname = await authService.getFinalNickname(fakeNickname);
 
     // then
     expect(nickname).not.toBe(fakeNickname);

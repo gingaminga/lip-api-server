@@ -1,5 +1,5 @@
 import { GetSocialURLRequestParamDTO, ReissueTokenDTO } from "@/dto/auth.dto";
-import { authService, userService } from "@/loaders/service.loader";
+import { authService } from "@/loaders/service.loader";
 import { RequestDTOHandler } from "@/types/express.custom";
 
 /**
@@ -27,7 +27,7 @@ export const getSocialURLController: RequestDTOHandler<GetSocialURLRequestParamD
 export const reissueTokenController: RequestDTOHandler<ReissueTokenDTO> = async (req, res) => {
   const { nickname, type } = res.locals.requestDTO;
 
-  const result = await userService.login(nickname, type);
+  const result = await authService.login(nickname, type);
 
   res.result(result);
 };

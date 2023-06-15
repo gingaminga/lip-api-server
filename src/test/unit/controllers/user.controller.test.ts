@@ -1,7 +1,7 @@
 import { loginController } from "@/controllers/user.controller";
 import User from "@/databases/rdb/entities/user.entity";
 import { LoginRequestParamDTO } from "@/dto/user.dto";
-import { userService } from "@/loaders/service.loader";
+import { authService } from "@/loaders/service.loader";
 import { ResponseDTO } from "@/types/express.custom";
 import { Request } from "express";
 
@@ -26,7 +26,7 @@ describe("Login controller test :)", () => {
   test(`Should failure login`, async () => {
     // given
     const error = new Error("Failure login with social");
-    jest.spyOn(userService, "loginWithSocial").mockRejectedValue(error);
+    jest.spyOn(authService, "loginWithSocial").mockRejectedValue(error);
 
     // when
     const result = expect(loginController(req, res, next));
@@ -42,7 +42,7 @@ describe("Login controller test :)", () => {
       refreshToken: "refresh token",
       userInfo: {} as User,
     };
-    jest.spyOn(userService, "loginWithSocial").mockResolvedValue(result);
+    jest.spyOn(authService, "loginWithSocial").mockResolvedValue(result);
 
     // when
     await loginController(req, res, next);

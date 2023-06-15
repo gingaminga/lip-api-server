@@ -1,5 +1,5 @@
 import { LoginRequestParamDTO } from "@/dto/user.dto";
-import { userService } from "@/loaders/service.loader";
+import { authService } from "@/loaders/service.loader";
 import { RequestDTOHandler } from "@/types/express.custom";
 
 /**
@@ -10,7 +10,7 @@ import { RequestDTOHandler } from "@/types/express.custom";
 export const loginController: RequestDTOHandler<LoginRequestParamDTO> = async (req, res) => {
   const { code, type } = res.locals.requestDTO;
 
-  const result = await userService.loginWithSocial(code, type);
+  const result = await authService.loginWithSocial(code, type);
 
   res.result(result);
 };
