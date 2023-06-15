@@ -8,7 +8,7 @@ import { RequestDTOHandler } from "@/types/express.custom";
  * @param res Response
  */
 export const loginController: RequestDTOHandler<LoginRequestParamDTO> = async (req, res) => {
-  const { code, type } = res.locals.dto;
+  const { code, type } = res.locals.requestDTO;
 
   const result = await userService.loginWithSocial(code, type);
 

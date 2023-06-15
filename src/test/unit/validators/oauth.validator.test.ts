@@ -28,9 +28,9 @@ describe("Validator check status test :)", () => {
     await expect(getSocialURLValidator(req, res, next)).rejects.toThrowError(error);
   });
 
-  test(`Should success when parameter is ${constants.OAUTH.KAKAO.NAME} value`, async () => {
+  test(`Should success when parameter is ${constants.SOCIAL.KAKAO.NAME} value`, async () => {
     // given
-    res.locals.dto = new GetSocialURLRequestParamDTO("kakao");
+    res.locals.requestDTO = new GetSocialURLRequestParamDTO("kakao");
     jest.spyOn(getSocialURLSchema, "validateAsync").mockResolvedValue({
       type: "kakao",
     });
@@ -39,7 +39,7 @@ describe("Validator check status test :)", () => {
     await getSocialURLValidator(req, res, next);
 
     // then
-    expect(res.locals.dto).toEqual(new GetSocialURLRequestParamDTO("kakao"));
+    expect(res.locals.requestDTO).toEqual(new GetSocialURLRequestParamDTO("kakao"));
     expect(next).toBeCalled();
   });
 });

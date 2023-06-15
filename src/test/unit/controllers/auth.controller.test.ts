@@ -13,7 +13,7 @@ describe("Get Social URL controller test :)", () => {
   beforeAll(() => {
     res = {
       locals: {
-        dto: new GetSocialURLRequestParamDTO("kakao"),
+        requestDTO: new GetSocialURLRequestParamDTO("kakao"),
       },
       result: jest.fn(),
     } as unknown as ResponseDTO<GetSocialURLRequestParamDTO>;
@@ -54,7 +54,7 @@ describe("Reissue token controller test :)", () => {
 
   const res = {
     locals: {
-      dto: new ReissueTokenDTO(token, nickname, type),
+      requestDTO: new ReissueTokenDTO(token, nickname, type),
     },
     result: jest.fn(),
   } as unknown as ResponseDTO<ReissueTokenDTO>;

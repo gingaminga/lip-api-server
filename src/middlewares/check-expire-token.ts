@@ -26,11 +26,11 @@ export const checkExpireAccessToken = (req: Request, res: Response, next: NextFu
 
 export const checkExpireRefreshToken: RequestDTOHandler<ReissueTokenRequestParamDTO> = async (req, res, next) => {
   try {
-    const { refreshToken } = res.locals.dto;
+    const { refreshToken } = res.locals.requestDTO;
 
     const payload = await authService.validateRefreshToken(refreshToken);
 
-    res.locals.dto = new ReissueTokenDTO(refreshToken, payload.nickname, payload.type);
+    res.locals.requestDTO = new ReissueTokenDTO(refreshToken, payload.nickname, payload.type);
 
     next();
   } catch (error) {

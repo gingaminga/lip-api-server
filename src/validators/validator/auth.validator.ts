@@ -5,7 +5,7 @@ import { getSocialURLSchema, reissueTokenSchema } from "@/validators/schema/auth
 export const getSocialURLValidator: RequestDTOHandler<GetSocialURLRequestParamDTO> = async (req, res, next) => {
   const { type } = await getSocialURLSchema.validateAsync(req.query);
 
-  res.locals.dto = new GetSocialURLRequestParamDTO(type);
+  res.locals.requestDTO = new GetSocialURLRequestParamDTO(type);
 
   next();
 };
@@ -13,7 +13,7 @@ export const getSocialURLValidator: RequestDTOHandler<GetSocialURLRequestParamDT
 export const reissueTokenValidator: RequestDTOHandler<ReissueTokenRequestParamDTO> = async (req, res, next) => {
   const { refreshToken } = await reissueTokenSchema.validateAsync(req.body);
 
-  res.locals.dto = new ReissueTokenRequestParamDTO(refreshToken);
+  res.locals.requestDTO = new ReissueTokenRequestParamDTO(refreshToken);
 
   next();
 };

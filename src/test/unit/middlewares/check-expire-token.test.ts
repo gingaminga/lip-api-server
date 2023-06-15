@@ -53,7 +53,7 @@ describe("Check expire refresh token middleware test :)", () => {
   const req = {} as Request;
   const res = {
     locals: {
-      dto: new ReissueTokenRequestParamDTO("fake refresh token"),
+      requestDTO: new ReissueTokenRequestParamDTO("fake refresh token"),
     },
   } as unknown as ResponseDTO<ReissueTokenRequestParamDTO>;
   const next = jest.fn();

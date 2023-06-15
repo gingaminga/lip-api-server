@@ -14,7 +14,7 @@ describe("Login controller test :)", () => {
 
   const res = {
     locals: {
-      dto: new LoginRequestParamDTO(type, code),
+      requestDTO: new LoginRequestParamDTO(type, code),
     },
     result: jest.fn(),
   } as unknown as ResponseDTO<LoginRequestParamDTO>;

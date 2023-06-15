@@ -7,7 +7,7 @@ export type RequestDTOHandler<T> = (
   req: Request,
   res: Response & {
     locals: Response["locals"] & {
-      dto: T;
+      requestDTO: T;
     };
   },
   next: NextFunction,

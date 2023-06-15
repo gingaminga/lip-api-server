@@ -5,7 +5,7 @@ import { loginSchema } from "@/validators/schema/user.schema";
 export const loginValidator: RequestDTOHandler<LoginRequestParamDTO> = async (req, res, next) => {
   const { code, type } = await loginSchema.validateAsync(req.body);
 
-  res.locals.dto = new LoginRequestParamDTO(type, code);
+  res.locals.requestDTO = new LoginRequestParamDTO(type, code);
 
   next();
 };
