@@ -1,12 +1,10 @@
 import { ReissueTokenDTO, ReissueTokenRequestParamDTO } from "@/dto/auth.dto";
 import { authService } from "@/loaders/service.loader";
-import AuthService from "@/services/auth.service";
 import { RequestDTOHandler } from "@/types/express.custom";
 import CError, { ERROR_MESSAGE } from "@/utils/error";
 import HTTP_STATUS_CODE from "@/utils/http-status-code";
-import { NextFunction, Request, Response } from "express";
 
-export const checkExpireAccessToken = (req: Request, res: Response, next: NextFunction) => {
+export const checkExpireAccessToken: RequestDTOHandler = async (req, res, next) => {
   try {
     const { authorization = "" } = req.headers;
 
@@ -16,7 +14,9 @@ export const checkExpireAccessToken = (req: Request, res: Response, next: NextFu
       throw new CError(ERROR_MESSAGE.UNAUTHORIZED, HTTP_STATUS_CODE.UNAUTHORIZED);
     }
 
-    AuthService.validateAccessToken(token);
+    const userInfo = await authService.getUserInfoByAccessToken(token);
+
+    res.locals.userInfo = userInfo;
 
     next();
   } catch (error) {

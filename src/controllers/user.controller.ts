@@ -14,3 +14,16 @@ export const loginController: RequestDTOHandler<LoginRequestParamDTO> = async (r
 
   res.result(result);
 };
+
+/**
+ * @description 로그아웃 컨트롤러
+ * @param req Request
+ * @param res Response
+ */
+export const logoutController: RequestDTOHandler = async (req, res) => {
+  const { nickname } = res.locals.userInfo;
+
+  const result = await authService.logout(nickname);
+
+  res.result(result);
+};

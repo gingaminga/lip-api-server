@@ -120,6 +120,23 @@ export default class AuthService {
   }
 
   /**
+   * @description access token으로 유저 정보 가져오기
+   * @param token access token
+   * @returns User | null
+   */
+  async getUserInfoByAccessToken(token: string) {
+    const { nickname } = AuthService.validateAccessToken(token);
+
+    const userInfo = await this.getUserInfo(nickname);
+
+    if (!userInfo) {
+      throw new CError("Not exist user.. :(");
+    }
+
+    return userInfo;
+  }
+
+  /**
    * @description 소셜 유저 정보 가져오기
    * @param code 소셜 인가코드
    * @param socialType 소셜 종류
@@ -186,6 +203,16 @@ export default class AuthService {
   }
 
   /**
+   * @description 로그아웃
+   * @param nickname 닉네임
+   */
+  async logout(nickname: string) {
+    await this.removeToken(nickname);
+
+    return true;
+  }
+
+  /**
    * @description 로그인하기
    * @param code 소셜 인가코드
    * @param socialType 소셜 종류
@@ -204,6 +231,14 @@ export default class AuthService {
    */
   getSocialURL(socialType: TSocialType) {
     return this.socialCommuicator.getURL(socialType);
+  }
+
+  /**
+   * @description 토큰 삭제하기
+   * @param nickname 닉네임
+   */
+  async removeToken(nickname: string) {
+    await this.redisClient.del(nickname);
   }
 
   /**
