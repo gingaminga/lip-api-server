@@ -15,6 +15,25 @@ export default class TodoRepository extends BaseRepository<Todo> {
   }
 
   /**
+   * @description todo 추가하기
+   * @param content 할 일 내용
+   * @param date 날짜
+   * @param user 유저 정보
+   * @returns ToDo
+   */
+  async addToDo(content: string, date: string, user: User) {
+    const todo = new Todo();
+    todo.content = content;
+    todo.checked = false; // 최초 생성 시에는 무조건 check 비활성화
+    todo.user = user;
+    todo.date = date;
+
+    const todoInfo = await this.getRepository().save(todo);
+
+    return todoInfo;
+  }
+
+  /**
    * @description 해당 날짜의 todo 정보 찾기
    * @param date 날짜
    * @param userID 유저 id
@@ -78,24 +97,5 @@ export default class TodoRepository extends BaseRepository<Todo> {
     }
 
     return false;
-  }
-
-  /**
-   * @description todo 추가하기
-   * @param content 할 일 내용
-   * @param date 날짜
-   * @param user 유저 정보
-   * @returns ToDo
-   */
-  async saveToDo(content: string, date: string, user: User) {
-    const todo = new Todo();
-    todo.content = content;
-    todo.checked = false; // 최초 생성 시에는 무조건 check 비활성화
-    todo.user = user;
-    todo.date = date;
-
-    const todoInfo = await this.getRepository().save(todo);
-
-    return todoInfo;
   }
 }

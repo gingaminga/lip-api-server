@@ -17,7 +17,7 @@ export default class ToDoService {
    * @returns ToDo
    */
   async addToDo(content: string, date: string, user: User) {
-    const todo = await this.todoRepository.saveToDo(content, date, user);
+    const todo = await this.todoRepository.addToDo(content, date, user);
 
     return todo;
   }
