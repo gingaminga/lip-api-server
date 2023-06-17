@@ -43,4 +43,16 @@ export default class ToDoService {
 
     return todo;
   }
+
+  /**
+   * @description 투두 삭제하기
+   * @param todoID todo id
+   * @param todoID user id
+   * @returns true (삭제) / false (삭제 실패)
+   */
+  async removeToDo(todoID: number, userID: number) {
+    const isSuccess = await this.todoRepository.removeToDo(todoID, userID);
+
+    return isSuccess;
+  }
 }

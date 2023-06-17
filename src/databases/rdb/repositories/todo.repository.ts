@@ -57,6 +57,30 @@ export default class TodoRepository extends BaseRepository<Todo> {
   }
 
   /**
+   * @description todo 삭제하기
+   * @param todoID 할 일 id
+   * @param userID 유저 id
+   * @returns true (삭제) / false (삭제 실패)
+   */
+  async removeToDo(todoID: number, userID: number) {
+    const result = await this.queryBuilder
+      .delete()
+      .where("todo.id = :todoID", {
+        todoID,
+      })
+      .andWhere("todo.user_id = :userID", {
+        userID,
+      })
+      .execute();
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
    * @description todo 추가하기
    * @param content 할 일 내용
    * @param date 날짜

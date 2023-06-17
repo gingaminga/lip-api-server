@@ -8,6 +8,10 @@ interface IAddToDoSchema {
   date: string;
 }
 
+interface IRemoveToDoSchema {
+  id: number;
+}
+
 interface IGetToDoSchema {
   date: string;
 }
@@ -38,4 +42,8 @@ export const addToDoSchema = joi.object<IAddToDoSchema>().keys({
     .length(8)
     .regex(/^[0-9]+$/)
     .custom((origin: string) => dayjs(origin).format("YYYYMMDD")),
+});
+
+export const removeToDoSchema = joi.object<IRemoveToDoSchema>().keys({
+  id: joi.number().required(),
 });

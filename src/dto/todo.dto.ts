@@ -16,3 +16,11 @@ export class AddToDoRequestParamDTO {
     this.date = date;
   }
 }
+
+export class RemoveToDoRequestParamDTO {
+  id: number;
+
+  constructor(id: number) {
+    this.id = id;
+  }
+}
