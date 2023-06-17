@@ -13,6 +13,11 @@ interface IModifyCheckToDoSchema {
   id: number;
 }
 
+interface IModifyContentToDoSchema {
+  content: string;
+  id: number;
+}
+
 interface IGetToDoSchema {
   date: string;
 }
@@ -51,6 +56,11 @@ export const getToDoSchema = joi.object<IGetToDoSchema>().keys({
 
 export const modifyCheckToDoSchema = joi.object<IModifyCheckToDoSchema>().keys({
   checked: joi.number().valid(0, 1).required(),
+  id: joi.number().required(),
+});
+
+export const modifyContentToDoSchema = joi.object<IModifyContentToDoSchema>().keys({
+  content: joi.string().required(),
   id: joi.number().required(),
 });
 

@@ -2,10 +2,17 @@ import {
   AddToDoRequestParamDTO,
   GetToDoRequestParamDTO,
   ModifyCheckToDoRequestParamDTO,
+  ModifyContentToDoRequestParamDTO,
   RemoveToDoRequestParamDTO,
 } from "@/dto/todo.dto";
 import { RequestDTOHandler } from "@/types/express.custom";
-import { addToDoSchema, getToDoSchema, modifyCheckToDoSchema, removeToDoSchema } from "@/validators/schema/todo.schema";
+import {
+  addToDoSchema,
+  getToDoSchema,
+  modifyCheckToDoSchema,
+  modifyContentToDoSchema,
+  removeToDoSchema,
+} from "@/validators/schema/todo.schema";
 
 export const addToDoValidator: RequestDTOHandler<AddToDoRequestParamDTO> = async (req, res, next) => {
   const { content, date } = await addToDoSchema.validateAsync(req.body);
@@ -27,6 +34,18 @@ export const modifyCheckToDoValidator: RequestDTOHandler<ModifyCheckToDoRequestP
   const { checked, id } = await modifyCheckToDoSchema.validateAsync(req.body);
 
   res.locals.requestDTO = new ModifyCheckToDoRequestParamDTO(id, checked);
+
+  next();
+};
+
+export const modifyContentToDoValidator: RequestDTOHandler<ModifyContentToDoRequestParamDTO> = async (
+  req,
+  res,
+  next,
+) => {
+  const { content, id } = await modifyContentToDoSchema.validateAsync(req.body);
+
+  res.locals.requestDTO = new ModifyContentToDoRequestParamDTO(id, content);
 
   next();
 };

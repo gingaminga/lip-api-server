@@ -58,6 +58,19 @@ export default class ToDoService {
   }
 
   /**
+   * @description 투두 완료 유무 선택하기
+   * @param todoID 투두 id
+   * @param content 할 일 내용
+   * @param userID 유저 id
+   * @returns true (수정) / false (수정 실패)
+   */
+  async modifyContentToDo(todoID: number, content: string, userID: number) {
+    const isSuccess = await this.todoRepository.modifyContentToDo(todoID, content, userID);
+
+    return isSuccess;
+  }
+
+  /**
    * @description 투두 삭제하기
    * @param todoID todo id
    * @param todoID user id

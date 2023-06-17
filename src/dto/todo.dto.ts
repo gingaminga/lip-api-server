@@ -28,6 +28,17 @@ export class ModifyCheckToDoRequestParamDTO {
   }
 }
 
+export class ModifyContentToDoRequestParamDTO {
+  content: string;
+
+  id: number;
+
+  constructor(id: number, content: string) {
+    this.content = content;
+    this.id = id;
+  }
+}
+
 export class RemoveToDoRequestParamDTO {
   id: number;
 
