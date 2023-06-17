@@ -1,11 +1,3 @@
-export class GetToDoRequestParamDTO {
-  date: string;
-
-  constructor(date: string) {
-    this.date = date;
-  }
-}
-
 export class AddToDoRequestParamDTO {
   content: string;
 
@@ -13,6 +5,14 @@ export class AddToDoRequestParamDTO {
 
   constructor(content: string, date: string) {
     this.content = content;
+    this.date = date;
+  }
+}
+
+export class GetToDoRequestParamDTO {
+  date: string;
+
+  constructor(date: string) {
     this.date = date;
   }
 }

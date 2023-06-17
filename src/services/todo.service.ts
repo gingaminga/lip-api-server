@@ -10,6 +10,19 @@ export default class ToDoService {
   }
 
   /**
+   * @description 투두 추가하기
+   * @param content 할 일 내용
+   * @param date 날짜
+   * @param user 유저
+   * @returns ToDo
+   */
+  async addToDo(content: string, date: string, user: User) {
+    const todo = await this.todoRepository.saveToDo(content, date, user);
+
+    return todo;
+  }
+
+  /**
    * @description 투두 가져오기
    * @param date 날짜
    * @param userID 유저 id
@@ -29,19 +42,6 @@ export default class ToDoService {
     const todos = await this.todoRepository.findToDosByDate(date, userID);
 
     return todos;
-  }
-
-  /**
-   * @description 투두 추가하기
-   * @param content 할 일 내용
-   * @param date 날짜
-   * @param user 유저
-   * @returns ToDo
-   */
-  async addToDo(content: string, date: string, user: User) {
-    const todo = await this.todoRepository.saveToDo(content, date, user);
-
-    return todo;
   }
 
   /**

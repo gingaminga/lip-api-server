@@ -8,13 +8,22 @@ interface IAddToDoSchema {
   date: string;
 }
 
+interface IGetToDoSchema {
+  date: string;
+}
+
 interface IRemoveToDoSchema {
   id: number;
 }
 
-interface IGetToDoSchema {
-  date: string;
-}
+export const addToDoSchema = joi.object<IAddToDoSchema>().keys({
+  content: joi.string().required(),
+  date: joi
+    .string()
+    .length(8)
+    .regex(/^[0-9]+$/)
+    .custom((origin: string) => dayjs(origin).format("YYYYMMDD")),
+});
 
 export const getToDoSchema = joi.object<IGetToDoSchema>().keys({
   date: joi
@@ -33,15 +42,6 @@ export const getToDoSchema = joi.object<IGetToDoSchema>().keys({
 
       throw new CError(ERROR_MESSAGE.INVALID_VALUE, HTTP_STATUS_CODE.INVALID_VALUE);
     }),
-});
-
-export const addToDoSchema = joi.object<IAddToDoSchema>().keys({
-  content: joi.string().required(),
-  date: joi
-    .string()
-    .length(8)
-    .regex(/^[0-9]+$/)
-    .custom((origin: string) => dayjs(origin).format("YYYYMMDD")),
 });
 
 export const removeToDoSchema = joi.object<IRemoveToDoSchema>().keys({
