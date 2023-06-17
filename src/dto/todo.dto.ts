@@ -17,6 +17,17 @@ export class GetToDoRequestParamDTO {
   }
 }
 
+export class ModifyCheckToDoRequestParamDTO {
+  checked: boolean;
+
+  id: number;
+
+  constructor(id: number, checked: number) {
+    this.checked = checked === 1;
+    this.id = id;
+  }
+}
+
 export class RemoveToDoRequestParamDTO {
   id: number;
 

@@ -8,6 +8,11 @@ interface IAddToDoSchema {
   date: string;
 }
 
+interface IModifyCheckToDoSchema {
+  checked: number;
+  id: number;
+}
+
 interface IGetToDoSchema {
   date: string;
 }
@@ -42,6 +47,11 @@ export const getToDoSchema = joi.object<IGetToDoSchema>().keys({
 
       throw new CError(ERROR_MESSAGE.INVALID_VALUE, HTTP_STATUS_CODE.INVALID_VALUE);
     }),
+});
+
+export const modifyCheckToDoSchema = joi.object<IModifyCheckToDoSchema>().keys({
+  checked: joi.number().valid(0, 1).required(),
+  id: joi.number().required(),
 });
 
 export const removeToDoSchema = joi.object<IRemoveToDoSchema>().keys({

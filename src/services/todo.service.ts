@@ -45,6 +45,19 @@ export default class ToDoService {
   }
 
   /**
+   * @description 투두 완료 유무 선택하기
+   * @param todoID 투두 id
+   * @param checked 할 일 완료 유무
+   * @param userID 유저 id
+   * @returns true (수정) / false (수정 실패)
+   */
+  async modifyCheckToDo(todoID: number, checked: boolean, userID: number) {
+    const isSuccess = await this.todoRepository.modifyCheckToDo(todoID, checked, userID);
+
+    return isSuccess;
+  }
+
+  /**
    * @description 투두 삭제하기
    * @param todoID todo id
    * @param todoID user id

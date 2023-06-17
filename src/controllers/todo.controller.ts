@@ -1,4 +1,9 @@
-import { AddToDoRequestParamDTO, GetToDoRequestParamDTO, RemoveToDoRequestParamDTO } from "@/dto/todo.dto";
+import {
+  AddToDoRequestParamDTO,
+  GetToDoRequestParamDTO,
+  ModifyCheckToDoRequestParamDTO,
+  RemoveToDoRequestParamDTO,
+} from "@/dto/todo.dto";
 import { todoService } from "@/loaders/service.loader";
 import { RequestDTOHandler } from "@/types/express.custom";
 
@@ -26,6 +31,20 @@ export const getTodoController: RequestDTOHandler<GetToDoRequestParamDTO> = asyn
   const { id } = res.locals.userInfo;
 
   const result = await todoService.getToDos(date, id);
+
+  res.result(result);
+};
+
+/**
+ * @description 할 일 완료 유무 컨트롤러
+ * @param req Request
+ * @param res Response
+ */
+export const modifyCheckTodoController: RequestDTOHandler<ModifyCheckToDoRequestParamDTO> = async (req, res) => {
+  const { checked, id } = res.locals.requestDTO;
+  const { id: userID } = res.locals.userInfo;
+
+  const result = await todoService.modifyCheckToDo(id, checked, userID);
 
   res.result(result);
 };
