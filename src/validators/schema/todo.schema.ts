@@ -13,24 +13,22 @@ interface IGetToDoSchema {
 }
 
 export const getToDoSchema = joi.object<IGetToDoSchema>().keys({
-  date: joi.string().custom((origin: string) => {
-    const numberRegEXp = /^[0-9]+$/;
-    if (!numberRegEXp.test(origin)) {
+  date: joi
+    .string()
+    .regex(/^[0-9]+$/)
+    .custom((origin: string) => {
+      if (origin.length === 6) {
+        // 월
+        return dayjs(origin).format("YYYYMM");
+      }
+
+      if (origin.length === 8) {
+        // 일
+        return dayjs(origin).format("YYYYMMDD");
+      }
+
       throw new CError(ERROR_MESSAGE.INVALID_VALUE, HTTP_STATUS_CODE.INVALID_VALUE);
-    }
-
-    if (origin.length === 6) {
-      // 월
-      return dayjs(origin).format("YYYYMM");
-    }
-
-    if (origin.length === 8) {
-      // 일
-      return dayjs(origin).format("YYYYMMDD");
-    }
-
-    throw new CError(ERROR_MESSAGE.INVALID_VALUE, HTTP_STATUS_CODE.INVALID_VALUE);
-  }),
+    }),
 });
 
 export const addToDoSchema = joi.object<IAddToDoSchema>().keys({
