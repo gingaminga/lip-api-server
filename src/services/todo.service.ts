@@ -1,3 +1,4 @@
+import User from "@/databases/rdb/entities/user.entity";
 import TodoRepository from "@/databases/rdb/repositories/todo.repository";
 import { getFirstAndLastDay } from "@/utils/date";
 import { Inject, Service } from "typedi";
@@ -28,5 +29,18 @@ export default class ToDoService {
     const todos = await this.todoRepository.findToDosByDate(date, userID);
 
     return todos;
+  }
+
+  /**
+   * @description 투두 추가하기
+   * @param content 할 일 내용
+   * @param date 날짜
+   * @param user 유저
+   * @returns ToDo
+   */
+  async addToDo(content: string, date: string, user: User) {
+    const todo = await this.todoRepository.saveToDo(content, date, user);
+
+    return todo;
   }
 }

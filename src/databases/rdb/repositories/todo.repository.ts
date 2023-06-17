@@ -1,4 +1,5 @@
 import Todo from "@/databases/rdb/entities/todo.entity";
+import User from "@/databases/rdb/entities/user.entity";
 import BaseRepository from "@/databases/rdb/repositories/base.repository";
 import { Service } from "typedi";
 
@@ -53,5 +54,24 @@ export default class TodoRepository extends BaseRepository<Todo> {
       .getMany();
 
     return todos;
+  }
+
+  /**
+   * @description todo 추가하기
+   * @param content 할 일 내용
+   * @param date 날짜
+   * @param user 유저 정보
+   * @returns ToDo
+   */
+  async saveToDo(content: string, date: string, user: User) {
+    const todo = new Todo();
+    todo.content = content;
+    todo.checked = false; // 최초 생성 시에는 무조건 check 비활성화
+    todo.user = user;
+    todo.date = date;
+
+    const todoInfo = await this.getRepository().save(todo);
+
+    return todoInfo;
   }
 }

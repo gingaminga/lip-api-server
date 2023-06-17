@@ -3,6 +3,11 @@ import HTTP_STATUS_CODE from "@/utils/http-status-code";
 import dayjs from "dayjs";
 import joi from "joi";
 
+interface IAddToDoSchema {
+  content: string;
+  date: string;
+}
+
 interface IGetToDoSchema {
   date: string;
 }
@@ -26,4 +31,13 @@ export const getToDoSchema = joi.object<IGetToDoSchema>().keys({
 
     throw new CError(ERROR_MESSAGE.INVALID_VALUE, HTTP_STATUS_CODE.INVALID_VALUE);
   }),
+});
+
+export const addToDoSchema = joi.object<IAddToDoSchema>().keys({
+  content: joi.string().required(),
+  date: joi
+    .string()
+    .length(8)
+    .regex(/^[0-9]+$/)
+    .custom((origin: string) => dayjs(origin).format("YYYYMMDD")),
 });
