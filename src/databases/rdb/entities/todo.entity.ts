@@ -32,9 +32,10 @@ export default class Todo {
 
   @Column({
     comment: "할 일 체크 여부",
-    type: "date",
+    length: 8,
+    type: "varchar",
   })
-  date!: Date;
+  date!: string;
 
   @CreateDateColumn({
     type: "timestamp",
