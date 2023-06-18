@@ -77,3 +77,16 @@ export const removeTodoController: RequestDTOHandler<RemoveToDoRequestParamDTO> 
 
   res.result(result);
 };
+
+/**
+ * @description 할 일 전체 삭제하기 컨트롤러
+ * @param req Request
+ * @param res Response
+ */
+export const removeAllTodoController: RequestDTOHandler<RemoveToDoRequestParamDTO> = async (req, res) => {
+  const { id } = res.locals.userInfo;
+
+  const result = await todoService.removeAllToDo(id);
+
+  res.result(result);
+};

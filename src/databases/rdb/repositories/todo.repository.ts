@@ -154,4 +154,24 @@ export default class TodoRepository extends BaseRepository<Todo> {
 
     return false;
   }
+
+  /**
+   * @description todo 전체 삭제하기
+   * @param id 유저 id
+   * @returns true (삭제) / false (삭제 실패)
+   */
+  async removeAllToDo(id: number) {
+    const result = await this.queryBuilder
+      .delete()
+      .where("todo.user_id = :userID", {
+        userID: id,
+      })
+      .execute();
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    return false;
+  }
 }
