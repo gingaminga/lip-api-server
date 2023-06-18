@@ -51,10 +51,6 @@ export default class Todo {
   @ManyToOne(() => User, (user) => user.todos)
   user!: User;
 
-  @OneToOne(() => Routine)
-  @JoinColumn()
-  routine!: Routine;
-
   @OneToOne(() => Alarm)
   @JoinColumn()
   alarm!: Alarm;

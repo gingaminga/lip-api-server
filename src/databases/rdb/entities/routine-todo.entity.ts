@@ -1,41 +1,38 @@
-import Alarm from "@/databases/rdb/entities/alarm.entity";
-import User from "@/databases/rdb/entities/user.entity";
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
-  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import Routine from "./routine.entity";
 
 @Entity()
-export default class Routine {
+export default class RoutineTodo {
   @PrimaryGeneratedColumn()
   id!: number;
 
   @Column({
-    comment: "내용",
+    comment: "할 일 내용",
     length: 100,
     type: "varchar",
   })
-  title!: string;
+  content!: string;
 
   @Column({
-    comment: "요일",
-    length: 7,
-    type: "varchar",
+    comment: "할 일 체크 여부",
+    type: "boolean",
   })
-  days!: string;
+  checked!: boolean;
 
   @Column({
-    comment: "테마 색상",
-    length: 10,
+    comment: "할 일 날짜",
+    length: 8,
     type: "varchar",
   })
-  color!: string;
+  date!: string;
 
   @CreateDateColumn({
     type: "timestamp",
@@ -48,10 +45,7 @@ export default class Routine {
   })
   updatedAt!: Date;
 
-  @ManyToOne(() => User, (user) => user.routines)
-  user!: User;
-
-  @OneToOne(() => Alarm)
+  @OneToOne(() => Routine)
   @JoinColumn()
-  alarm!: Alarm;
+  routine!: Routine;
 }
