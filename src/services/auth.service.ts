@@ -1,5 +1,5 @@
 import User from "@/databases/rdb/entities/user.entity";
-import UserRepository from "@/databases/rdb/repositories/user.repository";
+import { UserRepository } from "@/databases/rdb/repositories/user.repository";
 import { redisClient } from "@/loaders/database.loader";
 import { TSocialType } from "@/types/social";
 import { IAccessTokenPayload, IRefreshTokenPayload } from "@/types/token";
@@ -8,7 +8,7 @@ import constants from "@/utils/constants";
 import CError from "@/utils/error";
 import { createJWTToken, verifyJWTToken } from "@/utils/jwt";
 import { SocialCommuicator } from "@/utils/social";
-import { Inject, Service } from "typedi";
+import { Service } from "typedi";
 
 const checkExistUser = (userInfo: User | null): userInfo is User => !!userInfo;
 
@@ -22,9 +22,7 @@ export default class AuthService {
 
   private redisClient = redisClient;
 
-  constructor(@Inject() private userRepository: UserRepository) {
-    /* empty */
-  }
+  private userRepository = UserRepository;
 
   /**
    * @description 닉네임이 중복되는지 여부 확인하기

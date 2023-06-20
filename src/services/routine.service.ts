@@ -1,12 +1,10 @@
 import Routine from "@/databases/rdb/entities/routine.entity";
-import RoutineRepository from "@/databases/rdb/repositories/routine.repository";
-import { Inject, Service } from "typedi";
+import { RoutineRepository } from "@/databases/rdb/repositories/routine.repository";
+import { Service } from "typedi";
 
 @Service()
 export default class RoutineService {
-  constructor(@Inject() private routineRepository: RoutineRepository) {
-    /* empty */
-  }
+  routineRepository = RoutineRepository;
 
   /**
    * @description 전체 루틴 가져오기

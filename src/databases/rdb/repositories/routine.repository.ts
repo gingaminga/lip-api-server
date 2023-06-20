@@ -1,18 +1,9 @@
+import { dataSource } from "@/databases/rdb/client";
 import Routine from "@/databases/rdb/entities/routine.entity";
-import BaseRepository from "@/databases/rdb/repositories/base.repository";
-import { Service } from "typedi";
 
-@Service()
-export default class RoutineRepository extends BaseRepository<Routine> {
-  constructor() {
-    super();
-    this.setTarget(Routine);
-  }
+const alias = "routine";
 
-  get queryBuilder() {
-    return this.getQueryBuilder("routine");
-  }
-
+export const RoutineRepository = dataSource.getRepository(Routine).extend({
   /**
    * @description 특정 루틴 가져하기
    * @param id routine ID
@@ -20,7 +11,7 @@ export default class RoutineRepository extends BaseRepository<Routine> {
    * @returns Routine | null
    */
   async findRoutine(id: number, userID: number) {
-    const routine = await this.queryBuilder
+    const routine = await this.createQueryBuilder(alias)
       .select()
       .where("routine.id = :id", {
         id,
@@ -31,15 +22,14 @@ export default class RoutineRepository extends BaseRepository<Routine> {
       .getOne();
 
     return routine;
-  }
-
+  },
   /**
    * @description 마지막 루틴 가져하기
    * @param userID 유저 ID
    * @returns Routine | null
    */
   async findFinalRoutine(userID: number) {
-    const routine = await this.queryBuilder
+    const routine = await this.createQueryBuilder(alias)
       .select()
       .where("routine.user_id = :userID", {
         userID,
@@ -52,8 +42,7 @@ export default class RoutineRepository extends BaseRepository<Routine> {
       .getOne();
 
     return routine;
-  }
-
+  },
   /**
    * @description 전체 루틴 가져오기
    * @param routineID 기준이 될 루틴 id
@@ -62,7 +51,7 @@ export default class RoutineRepository extends BaseRepository<Routine> {
    * @returns Routine[]
    */
   async findAllRoutine(routineID: number, count: number, userID: number) {
-    const routines = await this.queryBuilder
+    const routines = await this.createQueryBuilder(alias)
       .select()
       .where("routine.id < :routineID", {
         routineID,
@@ -78,5 +67,5 @@ export default class RoutineRepository extends BaseRepository<Routine> {
       .getMany();
 
     return routines;
-  }
-}
+  },
+});

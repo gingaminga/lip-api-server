@@ -1,19 +1,10 @@
+import { dataSource } from "@/databases/rdb/client";
 import Todo from "@/databases/rdb/entities/todo.entity";
 import User from "@/databases/rdb/entities/user.entity";
-import BaseRepository from "@/databases/rdb/repositories/base.repository";
-import { Service } from "typedi";
 
-@Service()
-export default class TodoRepository extends BaseRepository<Todo> {
-  constructor() {
-    super();
-    this.setTarget(Todo);
-  }
+const alias = "todo";
 
-  get queryBuilder() {
-    return this.getQueryBuilder("todo");
-  }
-
+export const TodoRepository = dataSource.getRepository(Todo).extend({
   /**
    * @description todo 추가하기
    * @param content 할 일 내용
@@ -28,11 +19,10 @@ export default class TodoRepository extends BaseRepository<Todo> {
     todo.user = user;
     todo.date = date;
 
-    const todoInfo = await this.getRepository().save(todo);
+    const todoInfo = await this.save(todo);
 
     return todoInfo;
-  }
-
+  },
   /**
    * @description 해당 날짜의 todo 정보 찾기
    * @param date 날짜
@@ -40,7 +30,7 @@ export default class TodoRepository extends BaseRepository<Todo> {
    * @returns ToDo[]
    */
   async findToDosByDate(date: string, userID: number) {
-    const todos = await this.queryBuilder
+    const todos = await this.createQueryBuilder(alias)
       .where("todo.date = :date", {
         date,
       })
@@ -50,8 +40,7 @@ export default class TodoRepository extends BaseRepository<Todo> {
       .getMany();
 
     return todos;
-  }
-
+  },
   /**
    * @description 기간별 todo 정보 찾기
    * @param startDate 날짜
@@ -60,7 +49,7 @@ export default class TodoRepository extends BaseRepository<Todo> {
    * @returns ToDo[]
    */
   async findToDosByMonth(startDate: string, endDate: string, userID: number) {
-    const todos = await this.queryBuilder
+    const todos = await this.createQueryBuilder(alias)
       .where("todo.user_id = :userID", {
         userID,
       })
@@ -73,8 +62,7 @@ export default class TodoRepository extends BaseRepository<Todo> {
       .getMany();
 
     return todos;
-  }
-
+  },
   /**
    * @description todo 완료 유무 선택하기
    * @param todoID 할 일 id
@@ -83,7 +71,7 @@ export default class TodoRepository extends BaseRepository<Todo> {
    * @returns true (수정) / false (수정 실패)
    */
   async modifyCheckToDo(todoID: number, checked: boolean, userID: number) {
-    const result = await this.queryBuilder
+    const result = await this.createQueryBuilder(alias)
       .update()
       .set({
         checked,
@@ -101,8 +89,7 @@ export default class TodoRepository extends BaseRepository<Todo> {
     }
 
     return false;
-  }
-
+  },
   /**
    * @description todo 완료 유무 선택하기
    * @param todoID 할 일 id
@@ -111,7 +98,7 @@ export default class TodoRepository extends BaseRepository<Todo> {
    * @returns true (수정) / false (수정 실패)
    */
   async modifyContentToDo(todoID: number, content: string, userID: number) {
-    const result = await this.queryBuilder
+    const result = await this.createQueryBuilder(alias)
       .update()
       .set({
         content,
@@ -129,8 +116,7 @@ export default class TodoRepository extends BaseRepository<Todo> {
     }
 
     return false;
-  }
-
+  },
   /**
    * @description todo 삭제하기
    * @param todoID 할 일 id
@@ -138,7 +124,7 @@ export default class TodoRepository extends BaseRepository<Todo> {
    * @returns true (삭제) / false (삭제 실패)
    */
   async removeToDo(todoID: number, userID: number) {
-    const result = await this.queryBuilder
+    const result = await this.createQueryBuilder(alias)
       .delete()
       .where("todo.id = :todoID", {
         todoID,
@@ -153,15 +139,14 @@ export default class TodoRepository extends BaseRepository<Todo> {
     }
 
     return false;
-  }
-
+  },
   /**
    * @description todo 전체 삭제하기
    * @param id 유저 id
    * @returns true (삭제) / false (삭제 실패)
    */
   async removeAllToDo(id: number) {
-    const result = await this.queryBuilder
+    const result = await this.createQueryBuilder(alias)
       .delete()
       .where("todo.user_id = :userID", {
         userID: id,
@@ -173,5 +158,5 @@ export default class TodoRepository extends BaseRepository<Todo> {
     }
 
     return false;
-  }
-}
+  },
+});

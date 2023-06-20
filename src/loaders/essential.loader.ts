@@ -1,4 +1,4 @@
-import { startRedis, startRelationDatabase } from "@/databases/index";
+import { startRedis } from "@/databases/index";
 import logger from "@/utils/logger";
 
 /**
@@ -7,7 +7,6 @@ import logger from "@/utils/logger";
 export const essentialInitLoader = async () => {
   try {
     await startRedis();
-    await startRelationDatabase();
   } catch (error) {
     logger.error(error);
   }
