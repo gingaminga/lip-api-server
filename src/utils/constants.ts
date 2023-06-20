@@ -10,7 +10,7 @@ export default {
   HTTPS: process.env.HTTPS === "true",
   JWT: {
     EXPRIED: {
-      ACCESS_TOKEN: "1h",
+      ACCESS_TOKEN: "24h",
       REFRESH_TOKEN: "20d",
     },
     KEY: process.env.JWT_KEY || "",

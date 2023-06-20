@@ -1,6 +1,20 @@
-import { GetAllRoutineRequestParamDTO, GetRoutineRequestParamDTO } from "@/dto/routine.dto";
+import { AddRoutineRequestParamDTO, GetAllRoutineRequestParamDTO, GetRoutineRequestParamDTO } from "@/dto/routine.dto";
 import { RequestDTOHandler } from "@/types/express.custom";
-import { getAllRoutineSchema, getRoutineSchema } from "@/validators/schema/routine.schema";
+import { addRoutineSchema, getAllRoutineSchema, getRoutineSchema } from "@/validators/schema/routine.schema";
+
+export const addRoutineValidator: RequestDTOHandler<AddRoutineRequestParamDTO> = async (req, res, next) => {
+  const {
+    alarm_hour: alarmHour,
+    alarm_minute: alarmMinute,
+    color,
+    days,
+    title,
+  } = await addRoutineSchema.validateAsync(req.body);
+
+  res.locals.requestDTO = new AddRoutineRequestParamDTO(title, days, alarmHour, alarmMinute, color);
+
+  next();
+};
 
 export const getAllRoutineValidator: RequestDTOHandler<GetAllRoutineRequestParamDTO> = async (req, res, next) => {
   const { limit, id } = await getAllRoutineSchema.validateAsync(req.query);

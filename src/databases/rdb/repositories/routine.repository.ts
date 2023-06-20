@@ -1,9 +1,31 @@
 import { dataSource } from "@/databases/rdb/client";
+import Alarm from "@/databases/rdb/entities/alarm.entity";
 import Routine from "@/databases/rdb/entities/routine.entity";
+import User from "@/databases/rdb/entities/user.entity";
 
 const alias = "routine";
 
 export const RoutineRepository = dataSource.getRepository(Routine).extend({
+  /**
+   * @description 루틴 등록하기
+   * @param title 내용
+   * @param days 요일
+   * @param themeColor 테마 색상
+   * @param user 유저 정보
+   * @returns Routine
+   */
+  async addRoutine(title: string, days: string, themeColor: string, alarm: Alarm, user: User) {
+    const routine = new Routine();
+    routine.title = title;
+    routine.days = days;
+    routine.color = themeColor;
+    routine.alarm = alarm;
+    routine.user = user;
+
+    const routineInfo = await this.save(routine);
+
+    return routineInfo;
+  },
   /**
    * @description 특정 루틴 가져하기
    * @param id routine ID

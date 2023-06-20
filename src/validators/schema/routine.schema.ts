@@ -1,5 +1,13 @@
-import { GetAllRoutineRequestParamDTO, GetRoutineRequestParamDTO } from "@/dto/routine.dto";
+import { AddRoutineRequestParamDTO, GetAllRoutineRequestParamDTO, GetRoutineRequestParamDTO } from "@/dto/routine.dto";
 import joi from "joi";
+
+export const addRoutineSchema = joi.object<AddRoutineRequestParamDTO>().keys({
+  alarm_hour: joi.number().min(0).max(23).required(),
+  alarm_minute: joi.number().min(0).max(59).required(),
+  color: joi.string().required(),
+  days: joi.string().max(7).required(),
+  title: joi.string().required(),
+});
 
 export const getAllRoutineSchema = joi.object<GetAllRoutineRequestParamDTO>().keys({
   limit: joi.number().min(1).max(100),

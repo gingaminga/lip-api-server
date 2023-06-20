@@ -7,17 +7,15 @@ export default class Alarm {
 
   @Column({
     comment: "시",
-    length: 2,
-    type: "varchar",
+    type: "int",
   })
-  hour!: string;
+  hour!: number;
 
   @Column({
     comment: "분",
-    length: 2,
-    type: "varchar",
+    type: "int",
   })
-  minute!: string;
+  minute!: number;
 
   @CreateDateColumn({
     type: "timestamp",
