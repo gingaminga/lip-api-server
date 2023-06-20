@@ -1,10 +1,10 @@
 export class GetAllRoutineRequestParamDTO {
-  lastID: number;
-
   limit: number;
 
-  constructor(lastID: number, limit = 30) {
-    this.lastID = lastID;
+  id: number;
+
+  constructor(id: number, limit = 30) {
     this.limit = limit;
+    this.id = id;
   }
 }

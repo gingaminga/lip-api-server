@@ -6,6 +6,6 @@ import asyncify from "express-asyncify";
 
 const router = asyncify(Router());
 
-router.get("/", checkExpireAccessToken, getAllRoutineValidator, getAllRoutineController);
+router.get("/all", checkExpireAccessToken, getAllRoutineValidator, getAllRoutineController);
 
 export default router;

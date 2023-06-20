@@ -8,10 +8,10 @@ import { RequestDTOHandler } from "@/types/express.custom";
  * @param res Response
  */
 export const getAllRoutineController: RequestDTOHandler<GetAllRoutineRequestParamDTO> = async (req, res) => {
-  const { lastID, limit } = res.locals.requestDTO;
-  const { id } = res.locals.userInfo;
+  const { limit, id } = res.locals.requestDTO;
+  const { id: userID } = res.locals.userInfo;
 
-  const result = await routineService.getAllRoutine(lastID, limit, id);
+  const result = await routineService.getAllRoutine(id, limit, userID);
 
   res.result(result);
 };
