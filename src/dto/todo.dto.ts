@@ -22,8 +22,8 @@ export class ModifyCheckToDoRequestParamDTO {
 
   id: number;
 
-  constructor(id: number, checked: number) {
-    this.checked = checked === 1;
+  constructor(id: number, checked: boolean) {
+    this.checked = checked;
     this.id = id;
   }
 }

@@ -1,13 +1,8 @@
-import { TSocialType } from "@/types/social";
+import { LoginRequestParamDTO } from "@/dto/user.dto";
 import constants from "@/utils/constants";
 import joi from "joi";
 
-interface ILoginSchema {
-  code: string;
-  type: TSocialType;
-}
-
-export const loginSchema = joi.object<ILoginSchema>().keys({
+export const loginSchema = joi.object<LoginRequestParamDTO>().keys({
   code: joi.string().required(),
   type: joi
     .string()
