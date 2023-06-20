@@ -14,6 +14,26 @@ export default class RoutineRepository extends BaseRepository<Routine> {
   }
 
   /**
+   * @description 특정 루틴 가져하기
+   * @param id routine ID
+   * @param userID 유저 ID
+   * @returns Routine | null
+   */
+  async findRoutine(id: number, userID: number) {
+    const routine = await this.queryBuilder
+      .select()
+      .where("routine.id = :id", {
+        id,
+      })
+      .andWhere("routine.user_id = :userID", {
+        userID,
+      })
+      .getOne();
+
+    return routine;
+  }
+
+  /**
    * @description 마지막 루틴 가져하기
    * @param userID 유저 ID
    * @returns Routine | null

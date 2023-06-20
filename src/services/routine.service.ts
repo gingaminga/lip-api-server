@@ -32,4 +32,16 @@ export default class RoutineService {
 
     return routines;
   }
+
+  /**
+   * @description 특정 루틴 가져오기
+   * @param id 루틴 id
+   * @param userID 유저 id
+   * @returns Routine[]
+   */
+  async getRoutine(id: number, userID: number) {
+    const routine = await this.routineRepository.findRoutine(id, userID);
+
+    return routine;
+  }
 }

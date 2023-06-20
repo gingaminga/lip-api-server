@@ -8,3 +8,11 @@ export class GetAllRoutineRequestParamDTO {
     this.id = id;
   }
 }
+
+export class GetRoutineRequestParamDTO {
+  id: number;
+
+  constructor(id: number) {
+    this.id = id;
+  }
+}
