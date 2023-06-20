@@ -1,15 +1,6 @@
+import { dataSource } from "@/databases/rdb/client";
 import Alarm from "@/databases/rdb/entities/alarm.entity";
-import BaseRepository from "@/databases/rdb/repositories/base.repository";
-import { Service } from "typedi";
 
-@Service()
-export default class AlarmRepository extends BaseRepository<Alarm> {
-  constructor() {
-    super();
-    this.setTarget(Alarm);
-  }
+const alias = "alarm";
 
-  get queryBuilder() {
-    return this.getQueryBuilder("alarm");
-  }
-}
+export const AlarmRepository = dataSource.getRepository(Alarm);

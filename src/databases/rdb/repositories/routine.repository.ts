@@ -1,15 +1,6 @@
+import { dataSource } from "@/databases/rdb/client";
 import Routine from "@/databases/rdb/entities/routine.entity";
-import BaseRepository from "@/databases/rdb/repositories/base.repository";
-import { Service } from "typedi";
 
-@Service()
-export default class RoutineRepository extends BaseRepository<Routine> {
-  constructor() {
-    super();
-    this.setTarget(Routine);
-  }
+const alias = "routine";
 
-  get queryBuilder() {
-    return this.getQueryBuilder("routine");
-  }
-}
+export const routineRepository = dataSource.getRepository(Routine);

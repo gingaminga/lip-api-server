@@ -1,19 +1,8 @@
+import { dataSource } from "@/databases/rdb/client";
 import User from "@/databases/rdb/entities/user.entity";
-import BaseRepository from "@/databases/rdb/repositories/base.repository";
 import { TSocialType } from "@/types/social";
-import { Service } from "typedi";
 
-@Service()
-export default class UserRepository extends BaseRepository<User> {
-  constructor() {
-    super();
-    this.setTarget(User);
-  }
-
-  get queryBuilder() {
-    return this.getQueryBuilder("user");
-  }
-
+export const UserRepository = dataSource.getRepository(User).extend({
   /**
    * @description 유저 찾기
    * @param nickname 닉네임
@@ -21,7 +10,7 @@ export default class UserRepository extends BaseRepository<User> {
    * @returns User | null
    */
   async findUser(nickname: string, socialType?: TSocialType) {
-    const userInfo = await this.getRepository().findOne({
+    const userInfo = await this.findOne({
       where: {
         nickname,
         socialType,
@@ -29,8 +18,7 @@ export default class UserRepository extends BaseRepository<User> {
     });
 
     return userInfo;
-  }
-
+  },
   /**
    * @description 유저 추가하기
    * @param socialKey 소셜 id
@@ -46,8 +34,8 @@ export default class UserRepository extends BaseRepository<User> {
     user.nickname = nickname;
     user.email = email || null;
 
-    const userInfo = await this.getRepository().save(user);
+    const userInfo = await this.save(user);
 
     return userInfo;
-  }
-}
+  },
+});

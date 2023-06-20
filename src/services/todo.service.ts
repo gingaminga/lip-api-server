@@ -1,13 +1,11 @@
 import User from "@/databases/rdb/entities/user.entity";
-import TodoRepository from "@/databases/rdb/repositories/todo.repository";
+import { TodoRepository } from "@/databases/rdb/repositories/todo.repository";
 import { getFirstAndLastDay } from "@/utils/date";
-import { Inject, Service } from "typedi";
+import { Service } from "typedi";
 
 @Service()
 export default class ToDoService {
-  constructor(@Inject() private todoRepository: TodoRepository) {
-    /* empty */
-  }
+  private todoRepository = TodoRepository;
 
   /**
    * @description 투두 추가하기
