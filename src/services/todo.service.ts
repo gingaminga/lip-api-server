@@ -15,9 +15,9 @@ export default class ToDoService {
    * @returns ToDo
    */
   async addToDo(content: string, date: string, user: User) {
-    const todo = await this.todoRepository.addToDo(content, date, user);
+    const { user: userInfo, ...rest } = await this.todoRepository.addToDo(content, date, user);
 
-    return todo;
+    return rest;
   }
 
   /**
@@ -32,12 +32,16 @@ export default class ToDoService {
       const { final, first } = getFirstAndLastDay(date, "0");
       const startDate = `${date}${first}`;
       const endDate = `${date}${final}`;
-      const todos = await this.todoRepository.findToDosByMonth(startDate, endDate, userID);
+      const todos = await this.todoRepository.findToDosByMonth(startDate, endDate, userID, {
+        alarm: true,
+      });
 
       return todos;
     }
 
-    const todos = await this.todoRepository.findToDosByDate(date, userID);
+    const todos = await this.todoRepository.findToDosByDate(date, userID, {
+      alarm: true,
+    });
 
     return todos;
   }

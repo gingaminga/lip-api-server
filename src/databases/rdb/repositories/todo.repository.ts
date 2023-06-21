@@ -1,8 +1,7 @@
 import { dataSource } from "@/databases/rdb/client";
 import Todo from "@/databases/rdb/entities/todo.entity";
 import User from "@/databases/rdb/entities/user.entity";
-
-const alias = "todo";
+import { Between, FindOptionsRelations } from "typeorm";
 
 export const TodoRepository = dataSource.getRepository(Todo).extend({
   /**
@@ -16,8 +15,8 @@ export const TodoRepository = dataSource.getRepository(Todo).extend({
     const todo = new Todo();
     todo.content = content;
     todo.checked = false; // 최초 생성 시에는 무조건 check 비활성화
-    todo.user = user;
     todo.date = date;
+    todo.user = user;
 
     const todoInfo = await this.save(todo);
 
@@ -27,17 +26,19 @@ export const TodoRepository = dataSource.getRepository(Todo).extend({
    * @description 해당 날짜의 todo 정보 찾기
    * @param date 날짜
    * @param userID 유저 id
+   * @param relations 관계형 옵션
    * @returns ToDo[]
    */
-  async findToDosByDate(date: string, userID: number) {
-    const todos = await this.createQueryBuilder(alias)
-      .where("todo.date = :date", {
+  async findToDosByDate(date: string, userID: number, relations?: FindOptionsRelations<Todo>) {
+    const todos = await this.find({
+      relations,
+      where: {
         date,
-      })
-      .andWhere("todo.user_id = :userID", {
-        userID,
-      })
-      .getMany();
+        user: {
+          id: userID,
+        },
+      },
+    });
 
     return todos;
   },
@@ -46,20 +47,19 @@ export const TodoRepository = dataSource.getRepository(Todo).extend({
    * @param startDate 날짜
    * @param endDate 날짜
    * @param userID 유저 id
+   * @param relations 관계형 옵션
    * @returns ToDo[]
    */
-  async findToDosByMonth(startDate: string, endDate: string, userID: number) {
-    const todos = await this.createQueryBuilder(alias)
-      .where("todo.user_id = :userID", {
-        userID,
-      })
-      .andWhere("todo.date >= :startDate", {
-        startDate,
-      })
-      .andWhere("todo.date <= :endDate", {
-        endDate,
-      })
-      .getMany();
+  async findToDosByMonth(startDate: string, endDate: string, userID: number, relations?: FindOptionsRelations<Todo>) {
+    const todos = await this.find({
+      relations,
+      where: {
+        date: Between(startDate, endDate),
+        user: {
+          id: userID,
+        },
+      },
+    });
 
     return todos;
   },
@@ -71,18 +71,17 @@ export const TodoRepository = dataSource.getRepository(Todo).extend({
    * @returns true (수정) / false (수정 실패)
    */
   async modifyCheckToDo(todoID: number, checked: boolean, userID: number) {
-    const result = await this.createQueryBuilder(alias)
-      .update()
-      .set({
+    const result = await this.update(
+      {
+        id: todoID,
+        user: {
+          id: userID,
+        },
+      },
+      {
         checked,
-      })
-      .where("todo.id = :todoID", {
-        todoID,
-      })
-      .andWhere("todo.user_id = :userID", {
-        userID,
-      })
-      .execute();
+      },
+    );
 
     if (result.affected && result.affected > 0) {
       return true;
@@ -98,18 +97,17 @@ export const TodoRepository = dataSource.getRepository(Todo).extend({
    * @returns true (수정) / false (수정 실패)
    */
   async modifyContentToDo(todoID: number, content: string, userID: number) {
-    const result = await this.createQueryBuilder(alias)
-      .update()
-      .set({
+    const result = await this.update(
+      {
+        id: todoID,
+        user: {
+          id: userID,
+        },
+      },
+      {
         content,
-      })
-      .where("todo.id = :todoID", {
-        todoID,
-      })
-      .andWhere("todo.user_id = :userID", {
-        userID,
-      })
-      .execute();
+      },
+    );
 
     if (result.affected && result.affected > 0) {
       return true;
@@ -124,15 +122,12 @@ export const TodoRepository = dataSource.getRepository(Todo).extend({
    * @returns true (삭제) / false (삭제 실패)
    */
   async removeToDo(todoID: number, userID: number) {
-    const result = await this.createQueryBuilder(alias)
-      .delete()
-      .where("todo.id = :todoID", {
-        todoID,
-      })
-      .andWhere("todo.user_id = :userID", {
-        userID,
-      })
-      .execute();
+    const result = await this.delete({
+      id: todoID,
+      user: {
+        id: userID,
+      },
+    });
 
     if (result.affected && result.affected > 0) {
       return true;
@@ -146,12 +141,11 @@ export const TodoRepository = dataSource.getRepository(Todo).extend({
    * @returns true (삭제) / false (삭제 실패)
    */
   async removeAllToDo(id: number) {
-    const result = await this.createQueryBuilder(alias)
-      .delete()
-      .where("todo.user_id = :userID", {
-        userID: id,
-      })
-      .execute();
+    const result = await this.delete({
+      user: {
+        id,
+      },
+    });
 
     if (result.affected && result.affected > 0) {
       return true;

@@ -2,9 +2,7 @@ import { dataSource } from "@/databases/rdb/client";
 import Alarm from "@/databases/rdb/entities/alarm.entity";
 import Routine from "@/databases/rdb/entities/routine.entity";
 import User from "@/databases/rdb/entities/user.entity";
-import { FindOptionsRelations } from "typeorm";
-
-const alias = "routine";
+import { FindOptionsRelations, LessThan } from "typeorm";
 
 export const RoutineRepository = dataSource.getRepository(Routine).extend({
   /**
@@ -17,10 +15,10 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
    */
   async addRoutine(title: string, days: string, themeColor: string, alarm: Alarm, user: User) {
     const routine = new Routine();
-    routine.title = title;
-    routine.days = days;
-    routine.color = themeColor;
     routine.alarm = alarm;
+    routine.color = themeColor;
+    routine.days = days;
+    routine.title = title;
     routine.user = user;
 
     const routineInfo = await this.save(routine);
@@ -28,40 +26,44 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
     return routineInfo;
   },
   /**
-   * @description 특정 루틴 가져하기
+   * @description 특정 루틴 가져오기
    * @param id routine ID
    * @param userID 유저 ID
    * @param relations relation 허용 객체
    * @returns Routine | null
    */
-  findRoutine(id: number, userID: number, relations?: FindOptionsRelations<Routine>) {
-    return this.findOne({
+  async findRoutine(id: number, userID: number, relations?: FindOptionsRelations<Routine>) {
+    const routine = await this.findOne({
+      relations,
       where: {
         id,
         user: {
           id: userID,
         },
       },
-      relations,
     });
+
+    return routine;
   },
   /**
-   * @description 마지막 루틴 가져하기
+   * @description 마지막 루틴 가져오기
    * @param userID 유저 ID
+   * @param relations relation 허용 객체
    * @returns Routine | null
    */
-  async findFinalRoutine(userID: number) {
-    const routine = await this.createQueryBuilder(alias)
-      .select()
-      .where("routine.user_id = :userID", {
-        userID,
-      })
-      .orderBy({
-        "routine.created_at": "DESC",
-        "routine.id": "DESC",
-      })
-      .limit(1)
-      .getOne();
+  async findFinalRoutine(userID: number, relations?: FindOptionsRelations<Routine>) {
+    const routine = await this.findOne({
+      order: {
+        createdAt: "DESC",
+        id: "DESC",
+      },
+      relations,
+      where: {
+        user: {
+          id: userID,
+        },
+      },
+    });
 
     return routine;
   },
@@ -70,23 +72,24 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
    * @param routineID 기준이 될 루틴 id
    * @param count 개수
    * @param userID 유저 id
+   * @param relations relation 허용 객체
    * @returns Routine[]
    */
-  async findAllRoutine(routineID: number, count: number, userID: number) {
-    const routines = await this.createQueryBuilder(alias)
-      .select()
-      .where("routine.id < :routineID", {
-        routineID,
-      })
-      .andWhere("routine.user_id = :userID", {
-        userID,
-      })
-      .orderBy({
-        "routine.created_at": "DESC",
-        "routine.id": "DESC",
-      })
-      .limit(count)
-      .getMany();
+  async findAllRoutine(routineID: number, count: number, userID: number, relations?: FindOptionsRelations<Routine>) {
+    const routines = await this.find({
+      order: {
+        createdAt: "DESC",
+        id: "DESC",
+      },
+      relations,
+      take: count,
+      where: {
+        id: LessThan(routineID),
+        user: {
+          id: userID,
+        },
+      },
+    });
 
     return routines;
   },
@@ -96,30 +99,44 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
    * @param title 내용
    * @param days 요일
    * @param themeColor 테마 색상
-   * @param user 유저 정보
-   * @returns Routine
+   * @returns true (수정) / false (수정 실패)
    */
-  async modifyRoutine(id: number, title: string, days: string, themeColor: string, alarm: Alarm, user: User) {
-    const routine = new Routine();
-    routine.id = id;
-    routine.title = title;
-    routine.days = days;
-    routine.color = themeColor;
-    routine.alarm = alarm;
-    routine.user = user;
+  async modifyRoutine(id: number, title: string, days: string, themeColor: string) {
+    const result = await this.update(
+      {
+        id,
+      },
+      {
+        color: themeColor,
+        days,
+        title,
+      },
+    );
 
-    const routineInfo = await this.save(routine);
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
 
-    return routineInfo;
+    return false;
   },
   /**
    * @description 루틴 삭제하기
-   * @param routine 루틴 정보
-   * @returns Routine
+   * @param routineID 루틴 id
+   * @param userID 유저 id
+   * @returns true (삭제) / false (삭제 실패)
    */
-  async removeRoutine(routine: Routine) {
-    const result = await this.remove(routine);
+  async removeRoutine(routineID: number, userID: number) {
+    const result = await this.delete({
+      id: routineID,
+      user: {
+        id: userID,
+      },
+    });
 
-    return result;
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    return false;
   },
 });

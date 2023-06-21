@@ -34,14 +34,15 @@ export default class RoutineService {
       const routineRepository = manager.withRepository(this.routineRepository);
 
       const alarm = await alarmRepository.addAlarm(alarmHour, alarmMinute);
-      const routine = await routineRepository.addRoutine(title, days, themeColor, alarm, user);
+      const { user: userInfo, ...rest } = await routineRepository.addRoutine(title, days, themeColor, alarm, user);
 
-      return routine;
+      return rest;
     });
   }
 
   /**
    * @description 루틴 수정하기
+   * @param routineID 루틴 id
    * @param title 내용
    * @param days 요일
    * @param themeColor 테마 색상
@@ -57,23 +58,23 @@ export default class RoutineService {
     themeColor: string,
     alarmHour: number,
     alarmMinute: number,
-    user: User,
+    userID: number,
   ) {
     return dataSource.transaction(async (manager) => {
       const alarmRepository = manager.withRepository(this.alarmRepository);
       const routineRepository = manager.withRepository(this.routineRepository);
 
-      const routineInfo = await routineRepository.findRoutine(routineID, user.id, {
+      const routineInfo = await routineRepository.findRoutine(routineID, userID, {
         alarm: true,
       });
       if (!routineInfo) {
         throw new Error("Not exist routine.. :(");
       }
 
-      const alarm = await alarmRepository.modifyAlarm(routineInfo.alarm.id, alarmHour, alarmMinute);
-      const routine = await routineRepository.modifyRoutine(routineID, title, days, themeColor, alarm, user);
+      await alarmRepository.modifyAlarm(routineInfo.alarm.id, alarmHour, alarmMinute);
+      const isSuccessModifyRoutine = await routineRepository.modifyRoutine(routineID, title, days, themeColor);
 
-      return routine;
+      return isSuccessModifyRoutine;
     });
   }
 
@@ -95,8 +96,8 @@ export default class RoutineService {
         throw new Error("Not exist routine.. :(");
       }
 
-      await routineRepository.removeRoutine(routineInfo);
-      await alarmRepository.removeAlarm(routineInfo.alarm);
+      await routineRepository.removeRoutine(routineID, userID);
+      await alarmRepository.removeAlarm(routineInfo.alarm.id);
 
       return true;
     });
@@ -122,7 +123,9 @@ export default class RoutineService {
       id = finalRoutine.id + 1; // 마지막 데이터도 조회되도록 하기 위함
     }
 
-    const routines = await this.routineRepository.findAllRoutine(id, count, userID);
+    const routines = await this.routineRepository.findAllRoutine(id, count, userID, {
+      alarm: true,
+    });
 
     return routines;
   }
@@ -134,7 +137,9 @@ export default class RoutineService {
    * @returns Routine[]
    */
   async getRoutine(id: number, userID: number) {
-    const routine = await this.routineRepository.findRoutine(id, userID);
+    const routine = await this.routineRepository.findRoutine(id, userID, {
+      alarm: true,
+    });
 
     return routine;
   }

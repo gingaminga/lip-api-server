@@ -57,9 +57,9 @@ export const getRoutineController: RequestDTOHandler<GetRoutineRequestParamDTO> 
  */
 export const modifyRoutineController: RequestDTOHandler<ModifyRoutineRequestParamDTO> = async (req, res) => {
   const { alarm_hour: alarmHour, alarm_minute: alarmMinute, color, days, id, title } = res.locals.requestDTO;
-  const { userInfo } = res.locals;
+  const { id: userID } = res.locals.userInfo;
 
-  const result = await routineService.modifyRoutine(id, title, days, color, alarmHour, alarmMinute, userInfo);
+  const result = await routineService.modifyRoutine(id, title, days, color, alarmHour, alarmMinute, userID);
 
   res.result(result);
 };

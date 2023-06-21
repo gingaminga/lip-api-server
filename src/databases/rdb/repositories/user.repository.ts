@@ -29,10 +29,10 @@ export const UserRepository = dataSource.getRepository(User).extend({
    */
   async saveUser(socialKey: string, socialType: TSocialType, nickname: string, email?: string) {
     const user = new User();
+    user.email = email || null;
+    user.nickname = nickname;
     user.socialKey = socialKey;
     user.socialType = socialType;
-    user.nickname = nickname;
-    user.email = email || null;
 
     const userInfo = await this.save(user);
 
