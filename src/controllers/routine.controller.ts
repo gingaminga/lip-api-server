@@ -1,4 +1,9 @@
-import { AddRoutineRequestParamDTO, GetAllRoutineRequestParamDTO, GetRoutineRequestParamDTO } from "@/dto/routine.dto";
+import {
+  AddRoutineRequestParamDTO,
+  GetAllRoutineRequestParamDTO,
+  GetRoutineRequestParamDTO,
+  ModifyRoutineRequestParamDTO,
+} from "@/dto/routine.dto";
 import { routineService } from "@/loaders/service.loader";
 import { RequestDTOHandler } from "@/types/express.custom";
 
@@ -40,6 +45,20 @@ export const getRoutineController: RequestDTOHandler<GetRoutineRequestParamDTO> 
   const { id: userID } = res.locals.userInfo;
 
   const result = await routineService.getRoutine(id, userID);
+
+  res.result(result);
+};
+
+/**
+ * @description 루틴 수정하기 컨트롤러
+ * @param req Request
+ * @param res Response
+ */
+export const modifyRoutineController: RequestDTOHandler<ModifyRoutineRequestParamDTO> = async (req, res) => {
+  const { alarm_hour: alarmHour, alarm_minute: alarmMinute, color, days, id, title } = res.locals.requestDTO;
+  const { userInfo } = res.locals;
+
+  const result = await routineService.modifyRoutine(id, title, days, color, alarmHour, alarmMinute, userInfo);
 
   res.result(result);
 };

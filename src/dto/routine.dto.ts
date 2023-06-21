@@ -36,3 +36,26 @@ export class GetRoutineRequestParamDTO {
     this.id = id;
   }
 }
+
+export class ModifyRoutineRequestParamDTO {
+  alarm_hour: number;
+
+  alarm_minute: number;
+
+  color: string;
+
+  days: string;
+
+  id: number;
+
+  title: string;
+
+  constructor(id: number, title: string, days: string, hour: number, minute: number, color: string) {
+    this.alarm_hour = hour;
+    this.alarm_minute = minute;
+    this.color = color;
+    this.days = days;
+    this.id = id;
+    this.title = title;
+  }
+}

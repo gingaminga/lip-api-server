@@ -19,4 +19,21 @@ export const AlarmRepository = dataSource.getRepository(Alarm).extend({
 
     return alarmInfo;
   },
+  /**
+   * @description 알람 수정하기
+   * @param id 알람 id
+   * @param hour 시
+   * @param minute 분
+   * @returns Alarm
+   */
+  async modifyAlarm(id: number, hour: number, minute: number) {
+    const alarm = new Alarm();
+    alarm.id = id;
+    alarm.hour = hour;
+    alarm.minute = minute;
+
+    const alarmInfo = await this.save(alarm);
+
+    return alarmInfo;
+  },
 });

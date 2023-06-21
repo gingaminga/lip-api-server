@@ -29,13 +29,49 @@ export default class RoutineService {
     alarmMinute: number,
     user: User,
   ) {
-    // transaction을 해야함
     return dataSource.transaction(async (manager) => {
       const alarmRepository = manager.withRepository(this.alarmRepository);
       const routineRepository = manager.withRepository(this.routineRepository);
 
       const alarm = await alarmRepository.addAlarm(alarmHour, alarmMinute);
       const routine = await routineRepository.addRoutine(title, days, themeColor, alarm, user);
+
+      return routine;
+    });
+  }
+
+  /**
+   * @description 루틴 수정하기
+   * @param title 내용
+   * @param days 요일
+   * @param themeColor 테마 색상
+   * @param alarmHour 알람 시
+   * @param alarmMinute 알람 분
+   * @param userID 유저 id
+   * @returns Routine
+   */
+  async modifyRoutine(
+    routineID: number,
+    title: string,
+    days: string,
+    themeColor: string,
+    alarmHour: number,
+    alarmMinute: number,
+    user: User,
+  ) {
+    return dataSource.transaction(async (manager) => {
+      const alarmRepository = manager.withRepository(this.alarmRepository);
+      const routineRepository = manager.withRepository(this.routineRepository);
+
+      const routineInfo = await routineRepository.findRoutine(routineID, user.id, {
+        alarm: true,
+      });
+      if (!routineInfo) {
+        throw new Error("Not exist routine.. :(");
+      }
+
+      const alarm = await alarmRepository.modifyAlarm(routineInfo.alarm.id, alarmHour, alarmMinute);
+      const routine = await routineRepository.modifyRoutine(routineID, title, days, themeColor, alarm, user);
 
       return routine;
     });
