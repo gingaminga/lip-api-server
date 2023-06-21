@@ -112,4 +112,14 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
 
     return routineInfo;
   },
+  /**
+   * @description 루틴 삭제하기
+   * @param routine 루틴 정보
+   * @returns Routine
+   */
+  async removeRoutine(routine: Routine) {
+    const result = await this.remove(routine);
+
+    return result;
+  },
 });

@@ -3,6 +3,7 @@ import {
   getAllRoutineController,
   getRoutineController,
   modifyRoutineController,
+  removeRoutineController,
 } from "@/controllers/routine.controller";
 import { checkExpireAccessToken } from "@/middlewares/check-expire-token";
 import {
@@ -10,6 +11,7 @@ import {
   getAllRoutineValidator,
   getRoutineValidator,
   modifyRoutineValidator,
+  removeRoutineValidator,
 } from "@/validators/validator/routine.validator";
 import { Router } from "express";
 import asyncify from "express-asyncify";
@@ -20,5 +22,6 @@ router.get("/all", checkExpireAccessToken, getAllRoutineValidator, getAllRoutine
 router.get("/", checkExpireAccessToken, getRoutineValidator, getRoutineController);
 router.post("/", checkExpireAccessToken, addRoutineValidator, addRoutineController);
 router.put("/", checkExpireAccessToken, modifyRoutineValidator, modifyRoutineController);
+router.delete("/", checkExpireAccessToken, removeRoutineValidator, removeRoutineController);
 
 export default router;

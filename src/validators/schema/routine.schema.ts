@@ -3,6 +3,7 @@ import {
   GetAllRoutineRequestParamDTO,
   GetRoutineRequestParamDTO,
   ModifyRoutineRequestParamDTO,
+  RemoveRoutineRequestParamDTO,
 } from "@/dto/routine.dto";
 import joi from "joi";
 
@@ -30,4 +31,8 @@ export const modifyRoutineSchema = joi.object<ModifyRoutineRequestParamDTO>().ke
   days: joi.string().max(7).required(),
   id: joi.number().required(),
   title: joi.string().required(),
+});
+
+export const removeRoutineSchema = joi.object<RemoveRoutineRequestParamDTO>().keys({
+  id: joi.number().required(),
 });

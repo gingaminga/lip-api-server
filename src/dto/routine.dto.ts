@@ -59,3 +59,11 @@ export class ModifyRoutineRequestParamDTO {
     this.title = title;
   }
 }
+
+export class RemoveRoutineRequestParamDTO {
+  id: number;
+
+  constructor(id: number) {
+    this.id = id;
+  }
+}

@@ -36,4 +36,14 @@ export const AlarmRepository = dataSource.getRepository(Alarm).extend({
 
     return alarmInfo;
   },
+  /**
+   * @description 알람 삭제하기
+   * @param alarm 알람
+   * @returns Alarm
+   */
+  async removeAlarm(alarm: Alarm) {
+    const result = await this.remove(alarm);
+
+    return result;
+  },
 });

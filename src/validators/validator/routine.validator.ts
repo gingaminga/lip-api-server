@@ -3,6 +3,7 @@ import {
   GetAllRoutineRequestParamDTO,
   GetRoutineRequestParamDTO,
   ModifyRoutineRequestParamDTO,
+  RemoveRoutineRequestParamDTO,
 } from "@/dto/routine.dto";
 import { RequestDTOHandler } from "@/types/express.custom";
 import {
@@ -10,6 +11,7 @@ import {
   getAllRoutineSchema,
   getRoutineSchema,
   modifyRoutineSchema,
+  removeRoutineSchema,
 } from "@/validators/schema/routine.schema";
 
 export const addRoutineValidator: RequestDTOHandler<AddRoutineRequestParamDTO> = async (req, res, next) => {
@@ -53,6 +55,14 @@ export const modifyRoutineValidator: RequestDTOHandler<ModifyRoutineRequestParam
   } = await modifyRoutineSchema.validateAsync(req.body);
 
   res.locals.requestDTO = new ModifyRoutineRequestParamDTO(id, title, days, alarmHour, alarmMinute, color);
+
+  next();
+};
+
+export const removeRoutineValidator: RequestDTOHandler<RemoveRoutineRequestParamDTO> = async (req, res, next) => {
+  const { id } = await removeRoutineSchema.validateAsync(req.body);
+
+  res.locals.requestDTO = new RemoveRoutineRequestParamDTO(id);
 
   next();
 };

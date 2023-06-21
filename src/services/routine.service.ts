@@ -78,6 +78,31 @@ export default class RoutineService {
   }
 
   /**
+   * @description 루틴 삭제하기
+   * @param routineID 루틴 id내용
+   * @param userID 유저 id
+   * @returns Routine
+   */
+  async removeRoutine(routineID: number, userID: number) {
+    return dataSource.transaction(async (manager) => {
+      const alarmRepository = manager.withRepository(this.alarmRepository);
+      const routineRepository = manager.withRepository(this.routineRepository);
+
+      const routineInfo = await routineRepository.findRoutine(routineID, userID, {
+        alarm: true,
+      });
+      if (!routineInfo) {
+        throw new Error("Not exist routine.. :(");
+      }
+
+      await routineRepository.removeRoutine(routineInfo);
+      await alarmRepository.removeAlarm(routineInfo.alarm);
+
+      return true;
+    });
+  }
+
+  /**
    * @description 전체 루틴 가져오기
    * @param lastRoutineID 마지막 ID
    * @param count 개수
