@@ -65,6 +65,19 @@ export const modifyRoutineController: RequestDTOHandler<ModifyRoutineRequestPara
 };
 
 /**
+ * @description 전체 루틴 삭제하기 컨트롤러
+ * @param req Request
+ * @param res Response
+ */
+export const removeAllRoutineController: RequestDTOHandler = async (req, res) => {
+  const { id } = res.locals.userInfo;
+
+  const result = await routineService.removeAllRoutine(id);
+
+  res.result(result);
+};
+
+/**
  * @description 루틴 가져오기 컨트롤러
  * @param req Request
  * @param res Response

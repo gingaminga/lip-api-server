@@ -128,6 +128,24 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
     return false;
   },
   /**
+   * @description routine 전체 삭제하기
+   * @param id 유저 id
+   * @returns true (삭제) / false (삭제 실패)
+   */
+  async removeAllRoutine(id: number) {
+    const result = await this.delete({
+      user: {
+        id,
+      },
+    });
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    return false;
+  },
+  /**
    * @description 루틴 삭제하기
    * @param routineID 루틴 id
    * @param userID 유저 id

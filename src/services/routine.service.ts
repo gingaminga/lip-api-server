@@ -91,6 +91,17 @@ export default class RoutineService {
   }
 
   /**
+   * @description 전체 루틴 삭제하기
+   * @param userID 유저 id
+   * @returns Routine
+   */
+  async removeAllRoutine(userID: number) {
+    const isSuccess = await this.routineRepository.removeAllRoutine(userID);
+
+    return isSuccess;
+  }
+
+  /**
    * @description 루틴 삭제하기
    * @param routineID 루틴 id내용
    * @param userID 유저 id

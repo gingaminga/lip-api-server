@@ -3,6 +3,7 @@ import {
   getAllRoutineController,
   getRoutineController,
   modifyRoutineController,
+  removeAllRoutineController,
   removeRoutineController,
 } from "@/controllers/routine.controller";
 import { checkExpireAccessToken } from "@/middlewares/check-expire-token";
@@ -23,5 +24,6 @@ router.get("/", checkExpireAccessToken, getRoutineValidator, getRoutineControlle
 router.post("/", checkExpireAccessToken, addRoutineValidator, addRoutineController);
 router.put("/", checkExpireAccessToken, modifyRoutineValidator, modifyRoutineController);
 router.delete("/", checkExpireAccessToken, removeRoutineValidator, removeRoutineController);
+router.delete("/all", checkExpireAccessToken, removeAllRoutineController);
 
 export default router;
