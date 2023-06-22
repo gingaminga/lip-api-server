@@ -15,11 +15,46 @@ export default class Routine {
   title!: string;
 
   @Column({
-    comment: "요일",
-    length: 7,
-    type: "varchar",
+    comment: "월요일",
+    type: "boolean",
   })
-  days!: string;
+  monday!: boolean;
+
+  @Column({
+    comment: "화요일",
+    type: "boolean",
+  })
+  tuesday!: boolean;
+
+  @Column({
+    comment: "수요일",
+    type: "boolean",
+  })
+  wednesday!: boolean;
+
+  @Column({
+    comment: "목요일",
+    type: "boolean",
+  })
+  thursday!: boolean;
+
+  @Column({
+    comment: "금요일",
+    type: "boolean",
+  })
+  friday!: boolean;
+
+  @Column({
+    comment: "토요일",
+    type: "boolean",
+  })
+  saturday!: boolean;
+
+  @Column({
+    comment: "일요일",
+    type: "boolean",
+  })
+  sunday!: boolean;
 
   @Column({
     comment: "테마 색상",

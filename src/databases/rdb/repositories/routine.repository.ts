@@ -2,6 +2,7 @@ import { dataSource } from "@/databases/rdb/client";
 import Alarm from "@/databases/rdb/entities/alarm.entity";
 import Routine from "@/databases/rdb/entities/routine.entity";
 import User from "@/databases/rdb/entities/user.entity";
+import { getExistDay } from "@/utils/date";
 import { FindOptionsRelations, LessThan } from "typeorm";
 
 export const RoutineRepository = dataSource.getRepository(Routine).extend({
@@ -14,12 +15,20 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
    * @returns Routine
    */
   async addRoutine(title: string, days: string, themeColor: string, alarm: Alarm, user: User) {
+    const { friday, monday, saturday, sunday, thursday, tuesday, wednesday } = getExistDay(days);
+
     const routine = new Routine();
     routine.alarm = alarm;
     routine.color = themeColor;
-    routine.days = days;
+    routine.friday = friday;
+    routine.monday = monday;
+    routine.saturday = saturday;
+    routine.sunday = sunday;
+    routine.thursday = thursday;
     routine.title = title;
+    routine.tuesday = tuesday;
     routine.user = user;
+    routine.wednesday = wednesday;
 
     const routineInfo = await this.save(routine);
 
@@ -104,6 +113,8 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
    * @returns true (수정) / false (수정 실패)
    */
   async modifyRoutine(id: number, title: string, days: string, themeColor: string, alarmID: number, userID: number) {
+    const { friday, monday, saturday, sunday, thursday, tuesday, wednesday } = getExistDay(days);
+
     const result = await this.update(
       {
         id,
@@ -116,8 +127,14 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
           id: alarmID,
         },
         color: themeColor,
-        days,
+        friday,
+        monday,
+        saturday,
+        sunday,
+        thursday,
         title,
+        tuesday,
+        wednesday,
       },
     );
 
