@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import Routine from "@/databases/rdb/entities/routine.entity";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export default class Alarm {
@@ -27,4 +28,7 @@ export default class Alarm {
     type: "timestamp",
   })
   updatedAt!: Date;
+
+  @OneToMany(() => Routine, (routine) => routine.alarm)
+  routines!: Routine[];
 }

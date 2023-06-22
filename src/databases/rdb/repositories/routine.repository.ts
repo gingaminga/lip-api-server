@@ -99,14 +99,22 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
    * @param title 내용
    * @param days 요일
    * @param themeColor 테마 색상
+   * @param alarmID 알람 ID
+   * @param userID 유저 id
    * @returns true (수정) / false (수정 실패)
    */
-  async modifyRoutine(id: number, title: string, days: string, themeColor: string) {
+  async modifyRoutine(id: number, title: string, days: string, themeColor: string, alarmID: number, userID: number) {
     const result = await this.update(
       {
         id,
+        user: {
+          id: userID,
+        },
       },
       {
+        alarm: {
+          id: alarmID,
+        },
         color: themeColor,
         days,
         title,

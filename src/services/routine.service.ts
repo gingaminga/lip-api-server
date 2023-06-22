@@ -33,7 +33,13 @@ export default class RoutineService {
       const alarmRepository = manager.withRepository(this.alarmRepository);
       const routineRepository = manager.withRepository(this.routineRepository);
 
-      const alarm = await alarmRepository.addAlarm(alarmHour, alarmMinute);
+      let alarm = await alarmRepository.findAlarm(alarmHour, alarmMinute);
+
+      if (!alarm) {
+        // 알람 정보가 없는 경우 추가
+        alarm = await alarmRepository.addAlarm(alarmHour, alarmMinute);
+      }
+
       const { user: userInfo, ...rest } = await routineRepository.addRoutine(title, days, themeColor, alarm, user);
 
       return rest;
@@ -64,15 +70,21 @@ export default class RoutineService {
       const alarmRepository = manager.withRepository(this.alarmRepository);
       const routineRepository = manager.withRepository(this.routineRepository);
 
-      const routineInfo = await routineRepository.findRoutine(routineID, userID, {
-        alarm: true,
-      });
-      if (!routineInfo) {
-        throw new Error("Not exist routine.. :(");
+      let alarm = await alarmRepository.findAlarm(alarmHour, alarmMinute);
+
+      if (!alarm) {
+        // 알람 정보가 없는 경우 추가
+        alarm = await alarmRepository.addAlarm(alarmHour, alarmMinute);
       }
 
-      await alarmRepository.modifyAlarm(routineInfo.alarm.id, alarmHour, alarmMinute);
-      const isSuccessModifyRoutine = await routineRepository.modifyRoutine(routineID, title, days, themeColor);
+      const isSuccessModifyRoutine = await routineRepository.modifyRoutine(
+        routineID,
+        title,
+        days,
+        themeColor,
+        alarm.id,
+        userID,
+      );
 
       return isSuccessModifyRoutine;
     });
@@ -85,22 +97,9 @@ export default class RoutineService {
    * @returns Routine
    */
   async removeRoutine(routineID: number, userID: number) {
-    return dataSource.transaction(async (manager) => {
-      const alarmRepository = manager.withRepository(this.alarmRepository);
-      const routineRepository = manager.withRepository(this.routineRepository);
+    const isSuccess = await this.routineRepository.removeRoutine(routineID, userID);
 
-      const routineInfo = await routineRepository.findRoutine(routineID, userID, {
-        alarm: true,
-      });
-      if (!routineInfo) {
-        throw new Error("Not exist routine.. :(");
-      }
-
-      await routineRepository.removeRoutine(routineID, userID);
-      await alarmRepository.removeAlarm(routineInfo.alarm.id);
-
-      return true;
-    });
+    return isSuccess;
   }
 
   /**

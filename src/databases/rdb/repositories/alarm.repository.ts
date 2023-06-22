@@ -18,6 +18,22 @@ export const AlarmRepository = dataSource.getRepository(Alarm).extend({
     return alarmInfo;
   },
   /**
+   * @description 시/분으로 알람 가져오기
+   * @param hour 시
+   * @param minute 분
+   * @returns Alarm
+   */
+  async findAlarm(hour: number, minute: number) {
+    const alarm = await this.findOne({
+      where: {
+        hour,
+        minute,
+      },
+    });
+
+    return alarm;
+  },
+  /**
    * @description 알람 수정하기
    * @param id 알람 id
    * @param hour 시
