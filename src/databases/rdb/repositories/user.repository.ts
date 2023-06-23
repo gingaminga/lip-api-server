@@ -42,6 +42,22 @@ export const UserRepository = dataSource.getRepository(User).extend({
     return userInfo;
   },
   /**
+   * @description 유저 삭제하기
+   * @param userID 소셜 id
+   * @returns true (수정) / false (수정 실패)
+   */
+  async removeUser(userID: number) {
+    const result = await this.delete({
+      id: userID,
+    });
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    return false;
+  },
+  /**
    * @description 닉네임으로 유저 찾기
    * @param nickname 닉네임
    * @returns User | null

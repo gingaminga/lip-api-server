@@ -84,7 +84,9 @@ export default class Routine {
   })
   updatedAt!: Date;
 
-  @ManyToOne(() => User, (user) => user.routines)
+  @ManyToOne(() => User, (user) => user.routines, {
+    onDelete: "CASCADE",
+  })
   user!: User;
 
   @ManyToOne(() => Alarm, (alarm) => alarm.routines)

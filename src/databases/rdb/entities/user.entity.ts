@@ -1,4 +1,5 @@
 import Routine from "@/databases/rdb/entities/routine.entity";
+import RoutineTodo from "@/databases/rdb/entities/routine-todo.entity";
 import Todo from "@/databases/rdb/entities/todo.entity";
 import { TSocialType } from "@/types/social";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
@@ -54,4 +55,7 @@ export default class User {
 
   @OneToMany(() => Routine, (routine) => routine.user)
   routines!: Routine[];
+
+  @OneToMany(() => RoutineTodo, (routineTodo) => routineTodo.user)
+  routineTodos!: RoutineTodo[];
 }

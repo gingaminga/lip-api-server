@@ -1,3 +1,4 @@
+import { dataSource } from "@/databases/rdb/client";
 import User from "@/databases/rdb/entities/user.entity";
 import { UserRepository } from "@/databases/rdb/repositories/user.repository";
 import { redisClient } from "@/loaders/database.loader";
@@ -316,5 +317,25 @@ export default class AuthService {
     }
 
     return payload;
+  }
+
+  /**
+   * @description 회원 탈퇴하기
+   * @param userID 유저 id
+   * @param nickname 닉네임
+   * @returns 성공/실패
+   */
+  async withdrawal(userID: number, nickname: string) {
+    return dataSource.transaction(async (manager) => {
+      const userRepository = manager.withRepository(this.userRepository);
+
+      // 토큰 삭제
+      await this.removeToken(nickname);
+
+      // 유저 삭제
+      const isSuccess = await userRepository.removeUser(userID);
+
+      return isSuccess;
+    });
   }
 }

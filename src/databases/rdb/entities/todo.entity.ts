@@ -1,5 +1,4 @@
 import Alarm from "@/databases/rdb/entities/alarm.entity";
-import Routine from "@/databases/rdb/entities/routine.entity";
 import User from "@/databases/rdb/entities/user.entity";
 import {
   Column,
@@ -48,7 +47,9 @@ export default class Todo {
   })
   updatedAt!: Date;
 
-  @ManyToOne(() => User, (user) => user.todos)
+  @ManyToOne(() => User, (user) => user.todos, {
+    onDelete: "CASCADE",
+  })
   user!: User;
 
   @OneToOne(() => Alarm)

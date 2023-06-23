@@ -54,3 +54,16 @@ export const logoutController: RequestDTOHandler = async (req, res) => {
 
   res.result(result);
 };
+
+/**
+ * @description 회원탈퇴 컨트롤러
+ * @param req Request
+ * @param res Response
+ */
+export const withdrawalController: RequestDTOHandler = async (req, res) => {
+  const { id, nickname } = res.locals.userInfo;
+
+  const result = await authService.withdrawal(id, nickname);
+
+  res.result(result);
+};
