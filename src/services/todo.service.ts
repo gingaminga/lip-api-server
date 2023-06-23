@@ -1,11 +1,15 @@
+import Routine from "@/databases/rdb/entities/routine.entity";
 import User from "@/databases/rdb/entities/user.entity";
+import { RoutineRepository } from "@/databases/rdb/repositories/routine.repository";
 import { TodoRepository } from "@/databases/rdb/repositories/todo.repository";
-import { getFirstAndLastDay } from "@/utils/date";
+import { getDayfromDate, getFirstAndLastDay } from "@/utils/date";
 import { Service } from "typedi";
 
 @Service()
 export default class ToDoService {
   private todoRepository = TodoRepository;
+
+  private routineRepository = RoutineRepository;
 
   /**
    * @description 투두 추가하기
@@ -36,14 +40,48 @@ export default class ToDoService {
         alarm: true,
       });
 
-      return todos;
+      return [todos];
     }
 
     const todos = await this.todoRepository.findToDosByDate(date, userID, {
       alarm: true,
     });
 
-    return todos;
+    const day = String(getDayfromDate(date));
+    const routines = await this.routineRepository.findRoutineToDoByDate(date, day, userID);
+    const fakeRoutines = ToDoService.makeFakeRoutineToDo(routines, date);
+
+    return [todos, fakeRoutines];
+  }
+
+  /**
+   * @description 루틴은 있지만 todo가 비어있는 경우 임시 값 넣어주기
+   * @param routines 루틴 + 저장되어있는 루틴 할 일
+   * @param date 날짜
+   * @returns 루틴 + 가짜 루틴 할 일
+   */
+  static makeFakeRoutineToDo(routines: Routine[], date: string) {
+    let i = 0;
+
+    const fakeRoutines = routines.map((routine) => {
+      if (!routine.routineTodo) {
+        i -= 1;
+        return {
+          ...routine,
+          routineTodo: {
+            checked: false,
+            createdAt: routine.createdAt,
+            date,
+            id: i,
+            updatedAt: routine.updatedAt,
+          },
+        };
+      }
+
+      return routine;
+    });
+
+    return fakeRoutines;
   }
 
   /**

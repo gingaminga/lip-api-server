@@ -31,7 +31,12 @@ export const getTodoController: RequestDTOHandler<GetToDoRequestParamDTO> = asyn
   const { date } = res.locals.requestDTO;
   const { id } = res.locals.userInfo;
 
-  const result = await todoService.getToDos(date, id);
+  const [todos, routineTodos] = await todoService.getToDos(date, id);
+
+  const result = {
+    todos,
+    routineTodos,
+  };
 
   res.result(result);
 };

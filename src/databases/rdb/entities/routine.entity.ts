@@ -1,6 +1,16 @@
 import Alarm from "@/databases/rdb/entities/alarm.entity";
+import RoutineTodo from "@/databases/rdb/entities/routine-todo.entity";
 import User from "@/databases/rdb/entities/user.entity";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
 @Entity()
 export default class Routine {
@@ -79,4 +89,10 @@ export default class Routine {
 
   @ManyToOne(() => Alarm, (alarm) => alarm.routines)
   alarm!: Alarm;
+
+  @OneToOne(() => RoutineTodo, {
+    nullable: true,
+  })
+  @JoinColumn()
+  routineTodo!: RoutineTodo;
 }

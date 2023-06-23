@@ -1,25 +1,9 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
-import Routine from "./routine.entity";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export default class RoutineTodo {
   @PrimaryGeneratedColumn()
   id!: number;
-
-  @Column({
-    comment: "할 일 내용",
-    length: 100,
-    type: "varchar",
-  })
-  content!: string;
 
   @Column({
     comment: "할 일 체크 여부",
@@ -44,8 +28,4 @@ export default class RoutineTodo {
     type: "timestamp",
   })
   updatedAt!: Date;
-
-  @OneToOne(() => Routine)
-  @JoinColumn()
-  routine!: Routine;
 }

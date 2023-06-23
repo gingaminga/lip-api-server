@@ -5,6 +5,8 @@ import User from "@/databases/rdb/entities/user.entity";
 import { getExistDay } from "@/utils/date";
 import { FindOptionsRelations, LessThan } from "typeorm";
 
+const alias = "routine";
+
 export const RoutineRepository = dataSource.getRepository(Routine).extend({
   /**
    * @description 루틴 등록하기
@@ -53,6 +55,61 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
     });
 
     return routine;
+  },
+  /**
+   * @description 날짜별 루틴과 루틴 할 일을 조합하여 가져오기
+   * @param date 날짜
+   * @param days 요일
+   * @param userID 유저 id
+   * @returns Routine[]
+   */
+  async findRoutineToDoByDate(date: string, days: string, userID: number) {
+    const { friday, monday, saturday, sunday, thursday, tuesday, wednesday } = getExistDay(days);
+
+    const routineToDoAlias = "routine_todo";
+
+    const routineTodos = await this.createQueryBuilder(alias)
+      .select([
+        `${alias}.id`,
+        `${alias}.title`,
+        `${alias}.createdAt`,
+        `${alias}.updatedAt`,
+        `${routineToDoAlias}.id`,
+        `routine_todo.id`,
+      ])
+      .leftJoinAndSelect(`${alias}.routineTodo`, routineToDoAlias)
+      .where(`${alias}.user_id = :userID`, {
+        userID,
+      })
+      .andWhere(`(${routineToDoAlias}.date = :date`, {
+        date,
+      })
+      .orWhere(`${routineToDoAlias}.date IS NULL)`)
+      .andWhere(`(${alias}.sunday = :sunday`, {
+        sunday,
+      })
+      .orWhere(`${alias}.monday = :monday`, {
+        monday,
+      })
+      .orWhere(`${alias}.tuesday = :tuesday`, {
+        tuesday,
+      })
+      .orWhere(`${alias}.wednesday = :wednesday`, {
+        wednesday,
+      })
+      .orWhere(`${alias}.thursday = :thursday`, {
+        thursday,
+      })
+      .orWhere(`${alias}.friday = :friday`, {
+        friday,
+      })
+      .orWhere(`${alias}.saturday = :saturday)`, {
+        saturday,
+      })
+      .orderBy(`${alias}.created_at`, "DESC")
+      .getMany();
+
+    return routineTodos;
   },
   /**
    * @description 마지막 루틴 가져오기

@@ -42,3 +42,10 @@ export const getExistDay = (days: string) => {
     wednesday,
   };
 };
+
+/**
+ * @description 날짜에 해당하는 요일 가져오기
+ * @param date 날짜
+ * @returns
+ */
+export const getDayfromDate = (date: string) => dayjs(date).get("day");
