@@ -203,9 +203,16 @@ export default class AuthService {
    * @param socialType 소셜 종류
    * @param socialKey 소셜 id
    * @param email 이메일
+   * @param socialRefreshToken 소셜 리프레시 토큰
    * @returns 로그인과 관련된 정보
    */
-  async login(nickname: string, socialType: TSocialType, socialKey?: string, email?: string) {
+  async login(
+    nickname: string,
+    socialType: TSocialType,
+    socialKey?: string,
+    email?: string,
+    socialRefreshToken?: string,
+  ) {
     let userInfo = await this.getUserInfo(nickname, socialType);
 
     if (!checkExistUser(userInfo)) {
@@ -219,7 +226,7 @@ export default class AuthService {
 
     const tokens = this.generateToken(userInfo.nickname, userInfo.socialType);
 
-    await this.saveRefreshToken(userInfo.nickname, tokens.refreshToken);
+    await this.saveRefreshToken(userInfo.nickname, tokens.refreshToken, socialType, socialRefreshToken);
 
     const loginInfo = { userInfo, ...tokens };
 
@@ -243,9 +250,9 @@ export default class AuthService {
    * @returns 로그인과 관련된 정보
    */
   async loginWithSocial(code: string, socialType: TSocialType) {
-    const { email, id: socialKey, nickname } = await this.getSocialUserInfo(code, socialType);
+    const { email, id: socialKey, nickname, socialRefrshToken } = await this.getSocialUserInfo(code, socialType);
 
-    return this.login(nickname, socialType, socialKey, email);
+    return this.login(nickname, socialType, socialKey, email, socialRefrshToken);
   }
 
   /**
@@ -269,10 +276,16 @@ export default class AuthService {
    * @description 리프레시 토큰 저장하기
    * @param key 유니크한 값
    * @param token 리프레시 토큰
+   * @param socialType 소셜 종류
+   * @param socialToken 소셜 리프레시 토큰
    * @returns boolean
    */
-  async saveRefreshToken(key: string, token: string) {
-    await this.redisClient.set(key, token);
+  async saveRefreshToken(key: string, token: string, socialType?: TSocialType, socialToken?: string) {
+    await this.redisClient.hset(key, constants.PROJECT_NAME, token);
+
+    if (socialType && socialToken) {
+      await this.redisClient.hset(key, socialType, socialToken);
+    }
 
     return true;
   }
@@ -294,7 +307,7 @@ export default class AuthService {
   async validateRefreshToken(token: string) {
     const payload = verifyJWTToken<IRefreshTokenPayload>(token);
 
-    const originRefreshToken = await this.redisClient.get(payload.nickname);
+    const originRefreshToken = await this.redisClient.hget(payload.nickname, constants.PROJECT_NAME);
 
     const isSameToken = token === originRefreshToken;
 

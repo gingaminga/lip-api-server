@@ -45,21 +45,39 @@ class Social {
    * @description token 설정하기
    * @param type 소셜 주체
    * @param code 인가코드
+   * @returs social token
    */
   async setToken(type: TSocialType, code: string) {
+    let socialAccessToken = "";
+    let socialRefreshToken = "";
+
     if (type === constants.SOCIAL.KAKAO.NAME) {
-      const { accessToken } = await this.kakaoAuthClient.getToken(code);
+      const { accessToken, refreshToken } = await this.kakaoAuthClient.getToken(code);
+
+      socialAccessToken = accessToken;
+      socialRefreshToken = refreshToken;
 
       this.kakaoApiClient.setAccessTokenInHeader(accessToken);
     } else if (type === constants.SOCIAL.NAVER.NAME) {
-      const { accessToken } = await this.naverAuthClient.getToken(code);
+      const { accessToken, refreshToken } = await this.naverAuthClient.getToken(code);
+
+      socialAccessToken = accessToken;
+      socialRefreshToken = refreshToken;
 
       this.naverApiClient.setAccessTokenInHeader(accessToken);
     } else if (type === constants.SOCIAL.GOOGLE.NAME) {
-      const { accessToken } = await this.googleAuth2Client.getToken(code);
+      const { accessToken, refreshToken } = await this.googleAuth2Client.getToken(code);
+
+      socialAccessToken = accessToken;
+      socialRefreshToken = refreshToken;
 
       this.googleApiClient.setAccessTokenInHeader(accessToken);
     }
+
+    return {
+      accessToken: socialAccessToken,
+      refreshToken: socialRefreshToken,
+    };
   }
 
   /**
@@ -70,34 +88,44 @@ class Social {
     let nickname = "";
     let id = "";
     let email: undefined | string;
+    let socialAccessToken = "";
+    let socialRefrshToken = "";
 
     if (type === constants.SOCIAL.KAKAO.NAME) {
-      await this.setToken(type, code);
+      const { accessToken, refreshToken } = await this.setToken(type, code);
       const kakaoUserData = await this.kakaoApiClient.getUserInfo();
 
       nickname = kakaoUserData.nickname;
       id = String(kakaoUserData.id);
       email = kakaoUserData.email;
+      socialAccessToken = accessToken;
+      socialRefrshToken = refreshToken;
     } else if (type === constants.SOCIAL.NAVER.NAME) {
-      await this.setToken(type, code);
+      const { accessToken, refreshToken } = await this.setToken(type, code);
       const naverUserData = await this.naverApiClient.getUserInfo();
 
       nickname = naverUserData.nickname;
       id = naverUserData.id;
       email = naverUserData.email;
+      socialAccessToken = accessToken;
+      socialRefrshToken = refreshToken;
     } else if (type === constants.SOCIAL.GOOGLE.NAME) {
-      await this.setToken(type, code);
+      const { accessToken, refreshToken } = await this.setToken(type, code);
       const googleUserData = await this.googleApiClient.getUserInfo();
 
       nickname = googleUserData.nickname;
       id = googleUserData.id;
       email = googleUserData.email;
+      socialAccessToken = accessToken;
+      socialRefrshToken = refreshToken;
     }
 
     const userInfo = {
       email,
       id,
       nickname,
+      socialAccessToken,
+      socialRefrshToken,
     };
 
     return userInfo;
