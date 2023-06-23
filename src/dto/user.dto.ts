@@ -1,5 +1,13 @@
 import { TSocialType } from "@/types/social";
 
+export class DuplicateNicknameRequestParamDTO {
+  nickname: string;
+
+  constructor(nickname: string) {
+    this.nickname = nickname;
+  }
+}
+
 export class LoginRequestParamDTO {
   code: string;
 

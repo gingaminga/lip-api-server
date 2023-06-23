@@ -1,6 +1,18 @@
-import { LoginRequestParamDTO } from "@/dto/user.dto";
+import { DuplicateNicknameRequestParamDTO, LoginRequestParamDTO } from "@/dto/user.dto";
 import { RequestDTOHandler } from "@/types/express.custom";
-import { loginSchema } from "@/validators/schema/user.schema";
+import { duplicateNicknameSchema, loginSchema } from "@/validators/schema/user.schema";
+
+export const duplicateNicknameValidator: RequestDTOHandler<DuplicateNicknameRequestParamDTO> = async (
+  req,
+  res,
+  next,
+) => {
+  const { nickname } = await duplicateNicknameSchema.validateAsync(req.query);
+
+  res.locals.requestDTO = new DuplicateNicknameRequestParamDTO(nickname);
+
+  next();
+};
 
 export const loginValidator: RequestDTOHandler<LoginRequestParamDTO> = async (req, res, next) => {
   const { code, type } = await loginSchema.validateAsync(req.body);
