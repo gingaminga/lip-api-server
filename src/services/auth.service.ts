@@ -25,6 +25,26 @@ export default class AuthService {
   private userRepository = UserRepository;
 
   /**
+   * @description 닉네임 변경하기
+   * @param nickname 닉네임
+   * @param userID 유저 id
+   * @returns 변경 성공 여부
+   */
+  async changeNickname(nickname: string, userID: number) {
+    const isDuplicate = await this.checkDuplicateNickname(nickname);
+
+    if (isDuplicate) {
+      throw new Error("Exist user.. :(");
+    }
+
+    const isSuccess = await this.userRepository.changeNickname(nickname, userID);
+
+    await this.logout(nickname);
+
+    return isSuccess;
+  }
+
+  /**
    * @description 닉네임이 중복되는지 여부 확인하기
    * @param nickname 닉네임
    * @returns 중복 여부

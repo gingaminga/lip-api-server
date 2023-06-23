@@ -1,6 +1,14 @@
-import { DuplicateNicknameRequestParamDTO, LoginRequestParamDTO } from "@/dto/user.dto";
+import { ChangeNicknameRequestParamDTO, DuplicateNicknameRequestParamDTO, LoginRequestParamDTO } from "@/dto/user.dto";
 import { RequestDTOHandler } from "@/types/express.custom";
-import { duplicateNicknameSchema, loginSchema } from "@/validators/schema/user.schema";
+import { changeNicknameSchema, duplicateNicknameSchema, loginSchema } from "@/validators/schema/user.schema";
+
+export const changeNicknameValidator: RequestDTOHandler<ChangeNicknameRequestParamDTO> = async (req, res, next) => {
+  const { nickname } = await changeNicknameSchema.validateAsync(req.body);
+
+  res.locals.requestDTO = new ChangeNicknameRequestParamDTO(nickname);
+
+  next();
+};
 
 export const duplicateNicknameValidator: RequestDTOHandler<DuplicateNicknameRequestParamDTO> = async (
   req,

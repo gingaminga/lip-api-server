@@ -1,6 +1,20 @@
-import { DuplicateNicknameRequestParamDTO, LoginRequestParamDTO } from "@/dto/user.dto";
+import { ChangeNicknameRequestParamDTO, DuplicateNicknameRequestParamDTO, LoginRequestParamDTO } from "@/dto/user.dto";
 import { authService } from "@/loaders/service.loader";
 import { RequestDTOHandler } from "@/types/express.custom";
+
+/**
+ * @description 닉네임 중복 확인 컨트롤러
+ * @param req Request
+ * @param res Response
+ */
+export const changeNicknameController: RequestDTOHandler<ChangeNicknameRequestParamDTO> = async (req, res) => {
+  const { nickname } = res.locals.requestDTO;
+  const { id } = res.locals.userInfo;
+
+  const result = await authService.changeNickname(nickname, id);
+
+  res.result(result);
+};
 
 /**
  * @description 닉네임 중복 확인 컨트롤러

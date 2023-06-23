@@ -1,6 +1,10 @@
-import { DuplicateNicknameRequestParamDTO, LoginRequestParamDTO } from "@/dto/user.dto";
+import { ChangeNicknameRequestParamDTO, DuplicateNicknameRequestParamDTO, LoginRequestParamDTO } from "@/dto/user.dto";
 import constants from "@/utils/constants";
 import joi from "joi";
+
+export const changeNicknameSchema = joi.object<ChangeNicknameRequestParamDTO>().keys({
+  nickname: joi.string().required(),
+});
 
 export const duplicateNicknameSchema = joi.object<DuplicateNicknameRequestParamDTO>().keys({
   nickname: joi.string().required(),
