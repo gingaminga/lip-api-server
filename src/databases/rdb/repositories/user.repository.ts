@@ -26,16 +26,30 @@ export const UserRepository = dataSource.getRepository(User).extend({
     return false;
   },
   /**
-   * @description 유저 찾기
-   * @param nickname 닉네임
+   * @description 소셜 정보로 유저 찾기
    * @param socialType 소셜 종류
+   * @param socialKey 소셜 id
    * @returns User | null
    */
-  async findUser(nickname: string, socialType?: TSocialType) {
+  async findUserBySocial(socialType?: TSocialType, socialKey?: string) {
+    const userInfo = await this.findOne({
+      where: {
+        socialType,
+        socialKey,
+      },
+    });
+
+    return userInfo;
+  },
+  /**
+   * @description 닉네임으로 유저 찾기
+   * @param nickname 닉네임
+   * @returns User | null
+   */
+  async findUserByNickname(nickname: string) {
     const userInfo = await this.findOne({
       where: {
         nickname,
-        socialType,
       },
     });
 

@@ -169,8 +169,14 @@ export default class AuthService {
    * @param socialType 소셜 종류
    * @returns User | null
    */
-  async getUserInfo(nickname: string, socialType?: TSocialType) {
-    const userInfo = await this.userRepository.findUser(nickname, socialType);
+  async getUserInfo(nickname: string, socialType?: TSocialType, socialKey?: string) {
+    if (!socialType && !socialKey) {
+      const userInfo = await this.userRepository.findUserByNickname(nickname);
+
+      return userInfo;
+    }
+
+    const userInfo = await this.userRepository.findUserBySocial(socialType, socialKey);
 
     return userInfo;
   }
