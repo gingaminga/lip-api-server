@@ -18,7 +18,7 @@ const router = asyncify(Router());
 
 router.post("/in", loginValidator, loginController);
 router.post("/out", checkExpireAccessToken, logoutController);
-router.post("/nickname", checkExpireAccessToken, changeNicknameValidator, changeNicknameController);
+router.patch("/nickname", checkExpireAccessToken, changeNicknameValidator, changeNicknameController);
 router.get("/nickname/dup", checkExpireAccessToken, duplicateNicknameValidator, duplicateNicknameController);
 router.delete("/", checkExpireAccessToken, withdrawalController);
 
