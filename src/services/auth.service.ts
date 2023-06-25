@@ -173,22 +173,6 @@ export default class AuthService {
   }
 
   /**
-   * @description 회원가입하기
-   * @param socialKey 소셜 id
-   * @param socialType 소셜 종류
-   * @param nickname 닉네임
-   * @param email 이메일
-   * @returns
-   */
-  async join(socialKey: string, socialType: TSocialType, nickname: string, email?: string) {
-    const finalNickname = await this.getFinalNickname(nickname);
-
-    const userInfo = await this.userRepository.saveUser(socialKey, socialType, finalNickname, email);
-
-    return userInfo;
-  }
-
-  /**
    * @description 로그인하기
    * @param nickname 닉네임
    * @param socialType 소셜 종류
@@ -204,24 +188,28 @@ export default class AuthService {
     email?: string,
     socialRefreshToken?: string,
   ) {
-    let userInfo = await this.getUserInfo(nickname, socialType);
+    return dataSource.transaction(async (manager) => {
+      const userRepository = manager.withRepository(this.userRepository);
 
-    if (!checkExistUser(userInfo)) {
-      if (socialKey) {
-        // 회원가입
-        userInfo = await this.join(socialKey, socialType, nickname, email);
-      } else {
-        throw new CError("Not exist user.. :(");
+      let userInfo = await this.getUserInfo(nickname, socialType);
+
+      if (!checkExistUser(userInfo)) {
+        if (socialKey) {
+          // 회원가입
+          const finalNickname = await this.getFinalNickname(nickname);
+          userInfo = await userRepository.saveUser(socialKey, socialType, finalNickname, email);
+        } else {
+          throw new CError("Not exist user.. :(");
+        }
       }
-    }
 
-    const tokens = this.generateToken(userInfo.nickname, userInfo.socialType);
+      const tokens = this.generateToken(userInfo.nickname, userInfo.socialType);
+      await this.saveRefreshToken(socialType, userInfo.id, tokens.refreshToken, socialKey, socialRefreshToken);
 
-    await this.saveRefreshToken(socialType, userInfo.id, tokens.refreshToken, socialKey, socialRefreshToken);
+      const loginInfo = { userInfo, ...tokens };
 
-    const loginInfo = { userInfo, ...tokens };
-
-    return loginInfo;
+      return loginInfo;
+    });
   }
 
   /**
