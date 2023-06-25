@@ -48,9 +48,9 @@ export const loginController: RequestDTOHandler<LoginRequestParamDTO> = async (r
  * @param res Response
  */
 export const logoutController: RequestDTOHandler = async (req, res) => {
-  const { nickname } = res.locals.userInfo;
+  const { id } = res.locals.userInfo;
 
-  const result = await authService.logout(nickname);
+  const result = await authService.logout(id);
 
   res.result(result);
 };
@@ -61,9 +61,9 @@ export const logoutController: RequestDTOHandler = async (req, res) => {
  * @param res Response
  */
 export const withdrawalController: RequestDTOHandler = async (req, res) => {
-  const { id, nickname } = res.locals.userInfo;
+  const { id, socialKey, socialType } = res.locals.userInfo;
 
-  const result = await authService.withdrawal(id, nickname);
+  const result = await authService.withdrawal(id, socialType, socialKey);
 
   res.result(result);
 };

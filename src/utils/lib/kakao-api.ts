@@ -1,4 +1,4 @@
-import { IResponseKakaoUserData, ISocialApi } from "@/types/social";
+import { IResponseKakaoUnlink, IResponseKakaoUserData, ISocialApi } from "@/types/social";
 import CError from "@/utils/error";
 import HTTP_STATUS_CODE from "@/utils/http-status-code";
 import { KAKAO_URL } from "@/utils/lib/url";
@@ -31,6 +31,19 @@ class KakaoApi extends AxiosBase implements ISocialApi {
     };
 
     return userInfo;
+  }
+
+  /**
+   * @description 연결 끊기
+   */
+  async unlink() {
+    const endpoint = KAKAO_URL.API.PATH.UNLINK;
+
+    await this.post<null, IResponseKakaoUnlink>(endpoint, null, {
+      "Content-Type": "application/x-www-form-urlencoded",
+    });
+
+    return true;
   }
 }
 

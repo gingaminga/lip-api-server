@@ -40,7 +40,7 @@ export default class AuthService {
 
     const isSuccess = await this.userRepository.changeNickname(nickname, userID);
 
-    await this.logout(nickname);
+    await this.logout(userID);
 
     return isSuccess;
   }
@@ -100,7 +100,6 @@ export default class AuthService {
 
   /**
    * @description 토큰 만들기
-   * @param id user id
    * @param nickname 닉네임
    * @param socialType 소셜 종류
    * @returns 토큰들
@@ -153,15 +152,6 @@ export default class AuthService {
     }
 
     return userInfo;
-  }
-
-  /**
-   * @description 소셜 유저 정보 가져오기
-   * @param code 소셜 인가코드
-   * @param socialType 소셜 종류
-   */
-  getSocialUserInfo(code: string, socialType: TSocialType) {
-    return this.socialCommuicator.getUserInfo(socialType, code);
   }
 
   /**
@@ -227,7 +217,7 @@ export default class AuthService {
 
     const tokens = this.generateToken(userInfo.nickname, userInfo.socialType);
 
-    await this.saveRefreshToken(userInfo.nickname, tokens.refreshToken, socialType, socialRefreshToken);
+    await this.saveRefreshToken(socialType, userInfo.id, tokens.refreshToken, socialKey, socialRefreshToken);
 
     const loginInfo = { userInfo, ...tokens };
 
@@ -236,10 +226,10 @@ export default class AuthService {
 
   /**
    * @description 로그아웃
-   * @param nickname 닉네임
+   * @param userID user id
    */
-  async logout(nickname: string) {
-    await this.removeToken(nickname);
+  async logout(userID: number) {
+    await this.removeToken(userID);
 
     return true;
   }
@@ -251,7 +241,12 @@ export default class AuthService {
    * @returns 로그인과 관련된 정보
    */
   async loginWithSocial(code: string, socialType: TSocialType) {
-    const { email, id: socialKey, nickname, socialRefrshToken } = await this.getSocialUserInfo(code, socialType);
+    const {
+      email,
+      id: socialKey,
+      nickname,
+      socialRefrshToken,
+    } = await this.socialCommuicator.getUserInfo(socialType, code);
 
     return this.login(nickname, socialType, socialKey, email, socialRefrshToken);
   }
@@ -267,10 +262,30 @@ export default class AuthService {
 
   /**
    * @description 토큰 삭제하기
-   * @param nickname 닉네임
+   * @param userID 유저 id
+   * @param socialType 소셜 종류
+   * @param socialKey 소셜 id
+   * @returns true
    */
-  async removeToken(nickname: string) {
-    await this.redisClient.del(nickname);
+  async removeToken(userID: number, socialType?: TSocialType, socialKey?: string) {
+    await this.redisClient.hdel(constants.PROJECT_NAME, String(userID));
+
+    if (socialType && socialKey) {
+      await this.redisClient.hdel(socialType, socialKey);
+    }
+
+    return true;
+  }
+
+  /**
+   * @description 소셜 토큰 가져오기
+   * @param socialType 소셜 종류
+   * @param socialKey 소셜 id
+   */
+  async getSocialRefrshToken(socialType: TSocialType, socialKey: string) {
+    const refreshToken = await this.redisClient.hget(socialType, socialKey);
+
+    return refreshToken;
   }
 
   /**
@@ -281,11 +296,17 @@ export default class AuthService {
    * @param socialToken 소셜 리프레시 토큰
    * @returns boolean
    */
-  async saveRefreshToken(key: string, token: string, socialType?: TSocialType, socialToken?: string) {
-    await this.redisClient.hset(key, constants.PROJECT_NAME, token);
+  async saveRefreshToken(
+    socialType: TSocialType,
+    userID: number,
+    token: string,
+    socialKey?: string,
+    socialToken?: string,
+  ) {
+    await this.redisClient.hset(constants.PROJECT_NAME, String(userID), token);
 
-    if (socialType && socialToken) {
-      await this.redisClient.hset(key, socialType, socialToken);
+    if (socialKey && socialToken) {
+      await this.redisClient.hset(socialType, socialKey, socialToken);
     }
 
     return true;
@@ -308,7 +329,13 @@ export default class AuthService {
   async validateRefreshToken(token: string) {
     const payload = verifyJWTToken<IRefreshTokenPayload>(token);
 
-    const originRefreshToken = await this.redisClient.hget(payload.nickname, constants.PROJECT_NAME);
+    const userInfo = await this.getUserInfo(payload.nickname);
+
+    if (!userInfo) {
+      throw new CError("Not exist user.. :(");
+    }
+
+    const originRefreshToken = await this.redisClient.hget(constants.PROJECT_NAME, String(userInfo.id));
 
     const isSameToken = token === originRefreshToken;
 
@@ -322,15 +349,28 @@ export default class AuthService {
   /**
    * @description 회원 탈퇴하기
    * @param userID 유저 id
-   * @param nickname 닉네임
+   * @param socialType 소셜 종류
+   * @param socialKey 소셜 키
    * @returns 성공/실패
    */
-  async withdrawal(userID: number, nickname: string) {
+  async withdrawal(userID: number, socialType: TSocialType, socialKey: string) {
     return dataSource.transaction(async (manager) => {
       const userRepository = manager.withRepository(this.userRepository);
 
+      const refreshToken = await this.getSocialRefrshToken(socialType, socialKey);
+
+      if (refreshToken) {
+        // 토큰이 있을 경우에만 social 링크 끊기
+        try {
+          await this.socialCommuicator.unlink(socialType, refreshToken);
+        } catch (error) {
+          // 에러가 발생하더라도 회원탈퇴 진행
+          /** nothing to do */
+        }
+      }
+
       // 토큰 삭제
-      await this.removeToken(nickname);
+      await this.removeToken(userID, socialType, socialKey);
 
       // 유저 삭제
       const isSuccess = await userRepository.removeUser(userID);

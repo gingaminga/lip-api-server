@@ -1,10 +1,17 @@
-import { IResponseKakaoToken, ISocailAuth2, ISocialAuth } from "@/types/social";
+import { IResponseKakaoRenewToken, IResponseKakaoToken, ISocailAuth2, ISocialAuth } from "@/types/social";
 import constants from "@/utils/constants";
 import CError from "@/utils/error";
 import HTTP_STATUS_CODE from "@/utils/http-status-code";
 import { KAKAO_URL } from "@/utils/lib/url";
 import logger from "@/utils/logger";
 import { AxiosBase } from "axios-classification";
+
+interface IRequestGetRenewToken {
+  client_id: string;
+  client_secret: string;
+  grant_type: string;
+  refresh_token: string;
+}
 
 interface IRequestGetToken {
   client_id: string;
@@ -20,6 +27,31 @@ class KakaoAuth extends AxiosBase implements ISocialAuth, ISocailAuth2 {
   private readonly secretKey = constants.SOCIAL.KAKAO.SECRET_KEY;
 
   private readonly redirectUri = `${constants.SOCIAL.REDIRECT_URI}/callback/kakao`;
+
+  /**
+   * @description 소셜 액세스 토큰 재발급하기
+   * @param token refresh token
+   * @returns 토큰 정보
+   */
+  async getRenewToken(token: string) {
+    const endpoint = KAKAO_URL.AUTH.PATH.TOKEN;
+    const params = {
+      client_id: this.key,
+      client_secret: this.secretKey,
+      grant_type: "refresh_token",
+      refresh_token: token,
+    };
+
+    const { data } = await this.post<IRequestGetRenewToken, IResponseKakaoRenewToken>(endpoint, params, {
+      "Content-Type": "application/x-www-form-urlencoded",
+    });
+
+    const tokenData = {
+      accessToken: data.access_token,
+    };
+
+    return tokenData;
+  }
 
   /**
    * @description 소셜 URL 가져오기

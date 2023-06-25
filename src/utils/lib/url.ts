@@ -3,6 +3,7 @@ export const KAKAO_URL = {
     HOST: "https://kapi.kakao.com",
     PATH: {
       USER_DATA: "/v2/user/me",
+      UNLINK: "/v1/user/unlink",
     },
   },
   AUTH: {
@@ -26,6 +27,7 @@ export const NAVER_URL = {
     PATH: {
       AUTHORIZE: "/oauth2.0/authorize",
       TOKEN: "/oauth2.0/token",
+      UNLINK: "/oauth2.0/token",
     },
   },
 };
@@ -47,6 +49,7 @@ export const GOOGLE_URL = {
     HOST: "https://oauth2.googleapis.com",
     PATH: {
       TOKEN: "/token",
+      UNLINK: "/revoke",
     },
   },
 };

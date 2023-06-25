@@ -1,13 +1,29 @@
-import { IToken } from "@/types/token";
+import { IAccessToken, IToken } from "@/types/token";
 import { AxiosBase } from "axios-classification";
 
 export type TSocialType = "kakao" | "naver" | "google";
 
 // google
+export interface IResponseGoogleUnlink {
+  access_token: string;
+  expires_in: number;
+  refresh_token?: string;
+  scope: string;
+  token_type: string;
+  id_token?: string;
+}
+
+export interface IResponseGoogleRenewToken {
+  access_token: string;
+  expires_in: number; // 액세스토큰 만료시간(초)
+  scope?: string;
+  token_type: string; // bearer 고정
+}
+
 export interface IResponseGoogleToken {
   access_token: string;
   expires_in: number; // 액세스토큰 만료시간(초)
-  refresh_token: string;
+  refresh_token?: string;
   scope?: string;
   token_type: string; // bearer 고정
 }
@@ -24,6 +40,18 @@ export interface IResponseGoogleUserData {
 }
 
 // kakao
+export interface IResponseKakaoUnlink {
+  id: number;
+}
+
+export interface IResponseKakaoRenewToken {
+  access_token: string;
+  expires_in: number; // 액세스토큰 만료시간(초)
+  refresh_token: string;
+  refresh_token_expires_in: number; // 리프레시토큰 만료시간(초)
+  token_type: string; // bearer 고정
+}
+
 export interface IResponseKakaoToken {
   access_token: string;
   expires_in: number; // 액세스토큰 만료시간(초)
@@ -33,6 +61,7 @@ export interface IResponseKakaoToken {
   scope?: string;
   token_type: string; // bearer 고정
 }
+
 export interface IKakaoPartnerUserData {
   uuid: string;
 }
@@ -87,6 +116,17 @@ export interface IResponseKakaoUserData {
 }
 
 // naver
+export interface IResponseNaverUnlink {
+  access_token: string;
+  result: string;
+}
+
+export interface IResponseNaverRenewToken {
+  access_token: string;
+  expires_in: number;
+  token_type: string;
+}
+
 export interface IResponseNaverToken {
   access_token: string;
   expires_in: number;
@@ -123,6 +163,8 @@ export interface ISocialUserData {
 
 export interface ISocailAuth2 {
   getToken(code: string): Promise<IToken>;
+  getRenewToken(token: string): Promise<IAccessToken>;
+  unlink?(token: string): Promise<boolean>;
 }
 
 export interface ISocialAuth extends AxiosBase {
@@ -132,4 +174,5 @@ export interface ISocialAuth extends AxiosBase {
 export interface ISocialApi extends AxiosBase {
   setAccessTokenInHeader(token: string): void;
   getUserInfo(): Promise<ISocialUserData>;
+  unlink?(): Promise<boolean>;
 }

@@ -1,10 +1,21 @@
-import { IResponseGoogleToken, ISocailAuth2 } from "@/types/social";
+import { IResponseGoogleRenewToken, IResponseGoogleToken, IResponseGoogleUnlink, ISocailAuth2 } from "@/types/social";
 import constants from "@/utils/constants";
 import CError from "@/utils/error";
 import HTTP_STATUS_CODE from "@/utils/http-status-code";
 import { GOOGLE_URL } from "@/utils/lib/url";
 import logger from "@/utils/logger";
 import { AxiosBase } from "axios-classification";
+
+interface IRequestUnlink {
+  token: string;
+}
+
+interface IRequestGetRenewToken {
+  client_id: string;
+  client_secret: string;
+  grant_type: string;
+  refresh_token: string;
+}
 
 interface IRequestGetToken {
   client_id: string;
@@ -20,6 +31,31 @@ class GoogleAuth2 extends AxiosBase implements ISocailAuth2 {
   private readonly secretKey = constants.SOCIAL.GOOGLE.SECRET_KEY;
 
   private readonly redirectUri = `${constants.SOCIAL.REDIRECT_URI}/callback/google`;
+
+  /**
+   * @description 소셜 액세스 토큰 재발급하기
+   * @param token refresh token
+   * @returns 토큰 정보
+   */
+  async getRenewToken(token: string) {
+    const endpoint = GOOGLE_URL.AUTH2.PATH.TOKEN;
+    const params = {
+      client_id: this.key,
+      client_secret: this.secretKey,
+      grant_type: "refresh_token",
+      refresh_token: token,
+    };
+
+    const { data } = await this.post<IRequestGetRenewToken, IResponseGoogleRenewToken>(endpoint, params, {
+      "Content-Type": "application/x-www-form-urlencoded",
+    });
+
+    const tokenData = {
+      accessToken: data.access_token,
+    };
+
+    return tokenData;
+  }
 
   /**
    * @description 토큰 발급하기
@@ -41,10 +77,27 @@ class GoogleAuth2 extends AxiosBase implements ISocailAuth2 {
 
     const tokenData = {
       accessToken: data.access_token,
-      refreshToken: data.refresh_token,
+      refreshToken: data.refresh_token || "",
     };
 
     return tokenData;
+  }
+
+  /**
+   * @description 연결 끊기
+   * @param token 리프레시 토큰
+   */
+  async unlink(token: string) {
+    const endpoint = GOOGLE_URL.AUTH2.PATH.UNLINK;
+    const params = {
+      token,
+    };
+
+    await this.post<IRequestUnlink, IResponseGoogleUnlink>(endpoint, params, {
+      "Content-Type": "application/x-www-form-urlencoded",
+    });
+
+    return true;
   }
 }
 

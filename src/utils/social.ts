@@ -130,6 +130,31 @@ class Social {
 
     return userInfo;
   }
+
+  /**
+   * @description 연결 끊기
+   * @param type 소셜 종류
+   * @param refreshToken 리프레시 토큰
+   * @returns 성공 유무
+   */
+  async unlink(type: TSocialType, refreshToken: string) {
+    let isSuccess = false;
+
+    if (type === constants.SOCIAL.KAKAO.NAME) {
+      const { accessToken } = await this.kakaoAuthClient.getRenewToken(refreshToken);
+      this.kakaoApiClient.setAccessTokenInHeader(accessToken);
+
+      isSuccess = await this.kakaoApiClient.unlink();
+    } else if (type === constants.SOCIAL.NAVER.NAME) {
+      const { accessToken } = await this.naverAuthClient.getRenewToken(refreshToken);
+      isSuccess = await this.naverAuthClient.unlink(accessToken);
+    } else if (type === constants.SOCIAL.GOOGLE.NAME) {
+      const { accessToken } = await this.googleAuth2Client.getRenewToken(refreshToken);
+      isSuccess = await this.googleAuth2Client.unlink(accessToken);
+    }
+
+    return isSuccess;
+  }
 }
 
 export const SocialCommuicator = new Social();

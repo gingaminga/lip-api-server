@@ -1,10 +1,30 @@
-import { IResponseNaverToken, ISocailAuth2, ISocialAuth } from "@/types/social";
+import {
+  IResponseNaverRenewToken,
+  IResponseNaverToken,
+  IResponseNaverUnlink,
+  ISocailAuth2,
+  ISocialAuth,
+} from "@/types/social";
 import constants from "@/utils/constants";
 import CError from "@/utils/error";
 import HTTP_STATUS_CODE from "@/utils/http-status-code";
 import { NAVER_URL } from "@/utils/lib/url";
 import logger from "@/utils/logger";
 import { AxiosBase } from "axios-classification";
+
+interface IRequestUnlink {
+  client_id: string;
+  client_secret: string;
+  access_token: string;
+  grant_type: string;
+}
+
+interface IRequestGetRenewToken {
+  client_id: string;
+  client_secret: string;
+  grant_type: string;
+  refresh_token: string;
+}
 
 interface IRequestGetToken {
   client_id: string;
@@ -22,6 +42,31 @@ class NaverAuth extends AxiosBase implements ISocialAuth, ISocailAuth2 {
   private readonly redirectUri = `${constants.SOCIAL.REDIRECT_URI}/callback/naver`;
 
   private readonly state = encodeURI(constants.PROJECT_NAME);
+
+  /**
+   * @description 소셜 액세스 토큰 재발급하기
+   * @param token refresh token
+   * @returns 토큰 정보
+   */
+  async getRenewToken(token: string) {
+    const endpoint = NAVER_URL.AUTH.PATH.TOKEN;
+    const params = {
+      client_id: this.key,
+      client_secret: this.secretKey,
+      grant_type: "refresh_token",
+      refresh_token: token,
+    };
+
+    const { data } = await this.post<IRequestGetRenewToken, IResponseNaverRenewToken>(endpoint, params, {
+      "Content-Type": "application/x-www-form-urlencoded",
+    });
+
+    const tokenData = {
+      accessToken: data.access_token,
+    };
+
+    return tokenData;
+  }
 
   /**
    * @description 소셜 URL 가져오기
@@ -57,6 +102,27 @@ class NaverAuth extends AxiosBase implements ISocialAuth, ISocailAuth2 {
     };
 
     return tokenData;
+  }
+
+  /**
+   * @description 연결 끊기
+   * @param token 액세스 토큰
+   */
+  async unlink(token: string) {
+    const endpoint = NAVER_URL.AUTH.PATH.UNLINK;
+    const params = {
+      access_token: token,
+      client_id: this.key,
+      client_secret: this.secretKey,
+      grant_type: "delete", // 고정 값
+      service_provider: "NAVER",
+    };
+
+    await this.post<IRequestUnlink, IResponseNaverUnlink>(endpoint, params, {
+      "Content-Type": "application/x-www-form-urlencoded",
+    });
+
+    return true;
   }
 }
 

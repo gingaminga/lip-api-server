@@ -11,7 +11,10 @@ export interface IRefreshTokenPayload extends JwtPayload {
   type: TSocialType;
 }
 
-export interface IToken {
+export interface IAccessToken {
   accessToken: string;
+}
+
+export interface IToken extends IAccessToken {
   refreshToken: string;
 }
