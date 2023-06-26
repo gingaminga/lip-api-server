@@ -68,7 +68,7 @@ export default class Routine {
 
   @Column({
     comment: "테마 색상",
-    length: 10,
+    length: 20,
     type: "varchar",
   })
   color!: string;
