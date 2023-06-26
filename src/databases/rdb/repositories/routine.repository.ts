@@ -10,24 +10,24 @@ const alias = "routine";
 export const RoutineRepository = dataSource.getRepository(Routine).extend({
   /**
    * @description 루틴 등록하기
-   * @param title 내용
+   * @param content 내용
    * @param days 요일
    * @param themeColor 테마 색상
    * @param user 유저 정보
    * @returns Routine
    */
-  async addRoutine(title: string, days: string, themeColor: string, alarm: Alarm, user: User) {
+  async addRoutine(content: string, days: string, themeColor: string, alarm: Alarm, user: User) {
     const { friday, monday, saturday, sunday, thursday, tuesday, wednesday } = getExistDay(days);
 
     const routine = new Routine();
     routine.alarm = alarm;
     routine.color = themeColor;
+    routine.content = content;
     routine.friday = friday;
     routine.monday = monday;
     routine.saturday = saturday;
     routine.sunday = sunday;
     routine.thursday = thursday;
-    routine.title = title;
     routine.tuesday = tuesday;
     routine.user = user;
     routine.wednesday = wednesday;
@@ -71,7 +71,7 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
     const routineTodos = await this.createQueryBuilder(alias)
       .select([
         `${alias}.id`,
-        `${alias}.title`,
+        `${alias}.content`,
         `${alias}.createdAt`,
         `${alias}.updatedAt`,
         `${routineToDoAlias}.id`,
@@ -162,14 +162,14 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
   /**
    * @description 루틴 수정하기
    * @param id 루틴 ID
-   * @param title 내용
+   * @param content 내용
    * @param days 요일
    * @param themeColor 테마 색상
    * @param alarmID 알람 ID
    * @param userID 유저 id
    * @returns true (수정) / false (수정 실패)
    */
-  async modifyRoutine(id: number, title: string, days: string, themeColor: string, alarmID: number, userID: number) {
+  async modifyRoutine(id: number, content: string, days: string, themeColor: string, alarmID: number, userID: number) {
     const { friday, monday, saturday, sunday, thursday, tuesday, wednesday } = getExistDay(days);
 
     const result = await this.update(
@@ -184,12 +184,12 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
           id: alarmID,
         },
         color: themeColor,
+        content,
         friday,
         monday,
         saturday,
         sunday,
         thursday,
-        title,
         tuesday,
         wednesday,
       },

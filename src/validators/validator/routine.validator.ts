@@ -19,11 +19,11 @@ export const addRoutineValidator: RequestDTOHandler<AddRoutineRequestParamDTO> =
     alarm_hour: alarmHour,
     alarm_minute: alarmMinute,
     color,
+    content,
     days,
-    title,
   } = await addRoutineSchema.validateAsync(req.body);
 
-  res.locals.requestDTO = new AddRoutineRequestParamDTO(title, days, alarmHour, alarmMinute, color);
+  res.locals.requestDTO = new AddRoutineRequestParamDTO(content, days, alarmHour, alarmMinute, color);
 
   next();
 };
@@ -49,12 +49,12 @@ export const modifyRoutineValidator: RequestDTOHandler<ModifyRoutineRequestParam
     alarm_hour: alarmHour,
     alarm_minute: alarmMinute,
     color,
+    content,
     days,
     id,
-    title,
   } = await modifyRoutineSchema.validateAsync(req.body);
 
-  res.locals.requestDTO = new ModifyRoutineRequestParamDTO(id, title, days, alarmHour, alarmMinute, color);
+  res.locals.requestDTO = new ModifyRoutineRequestParamDTO(id, content, days, alarmHour, alarmMinute, color);
 
   next();
 };

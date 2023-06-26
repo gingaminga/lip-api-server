@@ -5,16 +5,16 @@ export class AddRoutineRequestParamDTO {
 
   color: string;
 
+  content: string;
+
   days: string;
 
-  title: string;
-
-  constructor(title: string, days: string, hour: number, minute: number, color: string) {
+  constructor(content: string, days: string, hour: number, minute: number, color: string) {
     this.alarm_hour = hour;
     this.alarm_minute = minute;
     this.color = color;
+    this.content = content;
     this.days = days;
-    this.title = title;
   }
 }
 
@@ -48,15 +48,15 @@ export class ModifyRoutineRequestParamDTO {
 
   id: number;
 
-  title: string;
+  content: string;
 
-  constructor(id: number, title: string, days: string, hour: number, minute: number, color: string) {
+  constructor(id: number, content: string, days: string, hour: number, minute: number, color: string) {
     this.alarm_hour = hour;
     this.alarm_minute = minute;
     this.color = color;
+    this.content = content;
     this.days = days;
     this.id = id;
-    this.title = title;
   }
 }
 

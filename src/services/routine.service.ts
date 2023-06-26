@@ -13,7 +13,7 @@ export default class RoutineService {
 
   /**
    * @description 루틴 등록하기
-   * @param title 내용
+   * @param content 내용
    * @param days 요일
    * @param themeColor 테마 색상
    * @param alarmHour 알람 시
@@ -22,7 +22,7 @@ export default class RoutineService {
    * @returns Routine
    */
   async registerRoutine(
-    title: string,
+    content: string,
     days: string,
     themeColor: string,
     alarmHour: number,
@@ -40,7 +40,7 @@ export default class RoutineService {
         alarm = await alarmRepository.addAlarm(alarmHour, alarmMinute);
       }
 
-      const { user: userInfo, ...rest } = await routineRepository.addRoutine(title, days, themeColor, alarm, user);
+      const { user: userInfo, ...rest } = await routineRepository.addRoutine(content, days, themeColor, alarm, user);
 
       return rest;
     });
@@ -49,7 +49,7 @@ export default class RoutineService {
   /**
    * @description 루틴 수정하기
    * @param routineID 루틴 id
-   * @param title 내용
+   * @param content 내용
    * @param days 요일
    * @param themeColor 테마 색상
    * @param alarmHour 알람 시
@@ -59,7 +59,7 @@ export default class RoutineService {
    */
   async modifyRoutine(
     routineID: number,
-    title: string,
+    content: string,
     days: string,
     themeColor: string,
     alarmHour: number,
@@ -79,7 +79,7 @@ export default class RoutineService {
 
       const isSuccessModifyRoutine = await routineRepository.modifyRoutine(
         routineID,
-        title,
+        content,
         days,
         themeColor,
         alarm.id,

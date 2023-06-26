@@ -22,7 +22,7 @@ export default class Routine {
     length: 100,
     type: "varchar",
   })
-  title!: string;
+  content!: string;
 
   @Column({
     comment: "월요일",

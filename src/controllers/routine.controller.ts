@@ -14,10 +14,10 @@ import { RequestDTOHandler } from "@/types/express.custom";
  * @param res Response
  */
 export const addRoutineController: RequestDTOHandler<AddRoutineRequestParamDTO> = async (req, res) => {
-  const { alarm_hour: alarmHour, alarm_minute: alarmMinute, color, days, title } = res.locals.requestDTO;
+  const { alarm_hour: alarmHour, alarm_minute: alarmMinute, color, content, days } = res.locals.requestDTO;
   const { userInfo } = res.locals;
 
-  const result = await routineService.registerRoutine(title, days, color, alarmHour, alarmMinute, userInfo);
+  const result = await routineService.registerRoutine(content, days, color, alarmHour, alarmMinute, userInfo);
 
   res.result(result);
 };
@@ -56,10 +56,10 @@ export const getRoutineController: RequestDTOHandler<GetRoutineRequestParamDTO> 
  * @param res Response
  */
 export const modifyRoutineController: RequestDTOHandler<ModifyRoutineRequestParamDTO> = async (req, res) => {
-  const { alarm_hour: alarmHour, alarm_minute: alarmMinute, color, days, id, title } = res.locals.requestDTO;
+  const { alarm_hour: alarmHour, alarm_minute: alarmMinute, color, content, days, id } = res.locals.requestDTO;
   const { id: userID } = res.locals.userInfo;
 
-  const result = await routineService.modifyRoutine(id, title, days, color, alarmHour, alarmMinute, userID);
+  const result = await routineService.modifyRoutine(id, content, days, color, alarmHour, alarmMinute, userID);
 
   res.result(result);
 };
