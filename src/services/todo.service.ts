@@ -1,5 +1,7 @@
+import { dataSource } from "@/databases/rdb/client";
 import Routine from "@/databases/rdb/entities/routine.entity";
 import User from "@/databases/rdb/entities/user.entity";
+import { AlarmRepository } from "@/databases/rdb/repositories/alarm.repository";
 import { RoutineRepository } from "@/databases/rdb/repositories/routine.repository";
 import { TodoRepository } from "@/databases/rdb/repositories/todo.repository";
 import { getDayfromDate, getFirstAndLastDay } from "@/utils/date";
@@ -7,6 +9,8 @@ import { Service } from "typedi";
 
 @Service()
 export default class ToDoService {
+  private alarmRepository = AlarmRepository;
+
   private todoRepository = TodoRepository;
 
   private routineRepository = RoutineRepository;
@@ -131,5 +135,30 @@ export default class ToDoService {
     const isSuccess = await this.todoRepository.removeAllToDo(id);
 
     return isSuccess;
+  }
+
+  /**
+   * @description 알람 설정하기
+   * @param todoID 투두 id
+   * @param checked 할 일 완료 유무
+   * @param userID 유저 id
+   * @returns true (수정) / false (수정 실패)
+   */
+  async setAlarm(todoID: number, alarmHour: number, alarmMinute: number, userID: number) {
+    return dataSource.transaction(async (manager) => {
+      const alarmRepository = manager.withRepository(this.alarmRepository);
+      const todoRepository = manager.withRepository(this.todoRepository);
+
+      let alarm = await alarmRepository.findAlarm(alarmHour, alarmMinute);
+
+      if (!alarm) {
+        // 알람 정보가 없는 경우 추가
+        alarm = await alarmRepository.addAlarm(alarmHour, alarmMinute);
+      }
+
+      const isSuccessModifyAlarm = await todoRepository.modifyAlarm(alarm.id, todoID, userID);
+
+      return isSuccessModifyAlarm;
+    });
   }
 }

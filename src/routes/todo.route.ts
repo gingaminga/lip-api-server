@@ -5,6 +5,7 @@ import {
   modifyContentTodoController,
   removeAllTodoController,
   removeTodoController,
+  setAlarmInTodoController,
 } from "@/controllers/todo.controller";
 import { checkExpireAccessToken } from "@/middlewares/check-expire-token";
 import {
@@ -13,6 +14,7 @@ import {
   modifyCheckToDoValidator,
   modifyContentToDoValidator,
   removeToDoValidator,
+  setAlarmInToDoValidator,
 } from "@/validators/validator/todo.validator";
 import { Router } from "express";
 import asyncify from "express-asyncify";
@@ -25,5 +27,6 @@ router.delete("/", checkExpireAccessToken, removeToDoValidator, removeTodoContro
 router.delete("/all", checkExpireAccessToken, removeAllTodoController);
 router.patch("/", checkExpireAccessToken, modifyContentToDoValidator, modifyContentTodoController);
 router.patch("/yn", checkExpireAccessToken, modifyCheckToDoValidator, modifyCheckTodoController);
+router.patch("/alarm", checkExpireAccessToken, setAlarmInToDoValidator, setAlarmInTodoController);
 
 export default router;

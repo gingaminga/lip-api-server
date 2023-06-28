@@ -46,3 +46,17 @@ export class RemoveToDoRequestParamDTO {
     this.id = id;
   }
 }
+
+export class SetAlarmInToDoRequestParamDTO {
+  alarmHour: number;
+
+  alarmMinute: number;
+
+  id: number;
+
+  constructor(hour: number, minute: number, id: number) {
+    this.alarmHour = hour;
+    this.alarmMinute = minute;
+    this.id = id;
+  }
+}

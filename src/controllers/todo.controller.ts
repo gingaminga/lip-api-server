@@ -4,6 +4,7 @@ import {
   ModifyCheckToDoRequestParamDTO,
   ModifyContentToDoRequestParamDTO,
   RemoveToDoRequestParamDTO,
+  SetAlarmInToDoRequestParamDTO,
 } from "@/dto/todo.dto";
 import { todoService } from "@/loaders/service.loader";
 import { RequestDTOHandler } from "@/types/express.custom";
@@ -92,6 +93,20 @@ export const removeAllTodoController: RequestDTOHandler<RemoveToDoRequestParamDT
   const { id } = res.locals.userInfo;
 
   const result = await todoService.removeAllToDo(id);
+
+  res.result(result);
+};
+
+/**
+ * @description 할 일의 알람 설정 컨트롤러
+ * @param req Request
+ * @param res Response
+ */
+export const setAlarmInTodoController: RequestDTOHandler<SetAlarmInToDoRequestParamDTO> = async (req, res) => {
+  const { alarmHour, alarmMinute, id: todoID } = res.locals.requestDTO;
+  const { id: userID } = res.locals.userInfo;
+
+  const result = await todoService.setAlarm(todoID, alarmHour, alarmMinute, userID);
 
   res.result(result);
 };
