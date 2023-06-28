@@ -1,7 +1,7 @@
 export class AddRoutineRequestParamDTO {
-  alarm_hour: number;
+  alarmHour: number;
 
-  alarm_minute: number;
+  alarmMinute: number;
 
   color: string;
 
@@ -10,8 +10,8 @@ export class AddRoutineRequestParamDTO {
   days: string;
 
   constructor(content: string, days: string, hour: number, minute: number, color: string) {
-    this.alarm_hour = hour;
-    this.alarm_minute = minute;
+    this.alarmHour = hour;
+    this.alarmMinute = minute;
     this.color = color;
     this.content = content;
     this.days = days;
@@ -38,9 +38,9 @@ export class GetRoutineRequestParamDTO {
 }
 
 export class ModifyRoutineRequestParamDTO {
-  alarm_hour: number;
+  alarmHour: number;
 
-  alarm_minute: number;
+  alarmMinute: number;
 
   color: string;
 
@@ -51,8 +51,8 @@ export class ModifyRoutineRequestParamDTO {
   content: string;
 
   constructor(id: number, content: string, days: string, hour: number, minute: number, color: string) {
-    this.alarm_hour = hour;
-    this.alarm_minute = minute;
+    this.alarmHour = hour;
+    this.alarmMinute = minute;
     this.color = color;
     this.content = content;
     this.days = days;

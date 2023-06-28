@@ -15,13 +15,7 @@ import {
 } from "@/validators/schema/routine.schema";
 
 export const addRoutineValidator: RequestDTOHandler<AddRoutineRequestParamDTO> = async (req, res, next) => {
-  const {
-    alarm_hour: alarmHour,
-    alarm_minute: alarmMinute,
-    color,
-    content,
-    days,
-  } = await addRoutineSchema.validateAsync(req.body);
+  const { alarmHour, alarmMinute, color, content, days } = await addRoutineSchema.validateAsync(req.body);
 
   res.locals.requestDTO = new AddRoutineRequestParamDTO(content, days, alarmHour, alarmMinute, color);
 
@@ -45,14 +39,7 @@ export const getRoutineValidator: RequestDTOHandler<GetRoutineRequestParamDTO> =
 };
 
 export const modifyRoutineValidator: RequestDTOHandler<ModifyRoutineRequestParamDTO> = async (req, res, next) => {
-  const {
-    alarm_hour: alarmHour,
-    alarm_minute: alarmMinute,
-    color,
-    content,
-    days,
-    id,
-  } = await modifyRoutineSchema.validateAsync(req.body);
+  const { alarmHour, alarmMinute, color, content, days, id } = await modifyRoutineSchema.validateAsync(req.body);
 
   res.locals.requestDTO = new ModifyRoutineRequestParamDTO(id, content, days, alarmHour, alarmMinute, color);
 

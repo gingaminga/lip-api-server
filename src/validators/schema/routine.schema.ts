@@ -8,8 +8,8 @@ import {
 import joi from "joi";
 
 export const addRoutineSchema = joi.object<AddRoutineRequestParamDTO>().keys({
-  alarm_hour: joi.number().min(0).max(23).required(),
-  alarm_minute: joi.number().min(0).max(59).required(),
+  alarmHour: joi.number().min(0).max(23).required(),
+  alarmMinute: joi.number().min(0).max(59).required(),
   color: joi.string().required(),
   content: joi.string().required(),
   days: joi.string().max(7).required(),
@@ -25,8 +25,8 @@ export const getRoutineSchema = joi.object<GetRoutineRequestParamDTO>().keys({
 });
 
 export const modifyRoutineSchema = joi.object<ModifyRoutineRequestParamDTO>().keys({
-  alarm_hour: joi.number().min(0).max(23).required(),
-  alarm_minute: joi.number().min(0).max(59).required(),
+  alarmHour: joi.number().min(0).max(23).required(),
+  alarmMinute: joi.number().min(0).max(59).required(),
   color: joi.string().required(),
   content: joi.string().required(),
   days: joi.string().max(7).required(),
