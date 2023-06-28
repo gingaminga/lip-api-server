@@ -3,6 +3,7 @@ import {
   GetToDoRequestParamDTO,
   ModifyCheckToDoRequestParamDTO,
   ModifyContentToDoRequestParamDTO,
+  RemoveAlarmInToDoRequestParamDTO,
   RemoveToDoRequestParamDTO,
   SetAlarmInToDoRequestParamDTO,
 } from "@/dto/todo.dto";
@@ -12,6 +13,7 @@ import {
   getToDoSchema,
   modifyCheckToDoSchema,
   modifyContentToDoSchema,
+  removeAlarmInToDoSchema,
   removeToDoSchema,
   setAlarmInToDoSchema,
 } from "@/validators/schema/todo.schema";
@@ -48,6 +50,18 @@ export const modifyContentToDoValidator: RequestDTOHandler<ModifyContentToDoRequ
   const { content, id } = await modifyContentToDoSchema.validateAsync(req.body);
 
   res.locals.requestDTO = new ModifyContentToDoRequestParamDTO(id, content);
+
+  next();
+};
+
+export const removeAlarmInToDoValidator: RequestDTOHandler<RemoveAlarmInToDoRequestParamDTO> = async (
+  req,
+  res,
+  next,
+) => {
+  const { id } = await removeAlarmInToDoSchema.validateAsync(req.body);
+
+  res.locals.requestDTO = new RemoveAlarmInToDoRequestParamDTO(id);
 
   next();
 };

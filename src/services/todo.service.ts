@@ -115,6 +115,18 @@ export default class ToDoService {
   }
 
   /**
+   * @description 할 일의 알람 삭제하기
+   * @param todoID todo id
+   * @param userID user id
+   * @returns true (삭제) / false (삭제 실패)
+   */
+  async removeAlarm(todoID: number, userID: number) {
+    const isSuccess = await this.todoRepository.modifyAlarmReset(todoID, userID);
+
+    return isSuccess;
+  }
+
+  /**
    * @description 투두 삭제하기
    * @param todoID todo id
    * @param userID user id

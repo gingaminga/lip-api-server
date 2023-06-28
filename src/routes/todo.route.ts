@@ -3,6 +3,7 @@ import {
   getTodoController,
   modifyCheckTodoController,
   modifyContentTodoController,
+  removeAlarmInTodoController,
   removeAllTodoController,
   removeTodoController,
   setAlarmInTodoController,
@@ -13,6 +14,7 @@ import {
   getToDoValidator,
   modifyCheckToDoValidator,
   modifyContentToDoValidator,
+  removeAlarmInToDoValidator,
   removeToDoValidator,
   setAlarmInToDoValidator,
 } from "@/validators/validator/todo.validator";
@@ -28,5 +30,6 @@ router.delete("/all", checkExpireAccessToken, removeAllTodoController);
 router.patch("/", checkExpireAccessToken, modifyContentToDoValidator, modifyContentTodoController);
 router.patch("/yn", checkExpireAccessToken, modifyCheckToDoValidator, modifyCheckTodoController);
 router.patch("/alarm", checkExpireAccessToken, setAlarmInToDoValidator, setAlarmInTodoController);
+router.delete("/alarm", checkExpireAccessToken, removeAlarmInToDoValidator, removeAlarmInTodoController);
 
 export default router;

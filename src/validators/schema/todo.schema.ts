@@ -3,6 +3,7 @@ import {
   GetToDoRequestParamDTO,
   ModifyCheckToDoRequestParamDTO,
   ModifyContentToDoRequestParamDTO,
+  RemoveAlarmInToDoRequestParamDTO,
   RemoveToDoRequestParamDTO,
   SetAlarmInToDoRequestParamDTO,
 } from "@/dto/todo.dto";
@@ -50,6 +51,10 @@ export const modifyCheckToDoSchema = joi.object<ModifyCheckToDoRequestParamDTO>(
 
 export const modifyContentToDoSchema = joi.object<ModifyContentToDoRequestParamDTO>().keys({
   content: joi.string().required(),
+  id: joi.number().required(),
+});
+
+export const removeAlarmInToDoSchema = joi.object<RemoveAlarmInToDoRequestParamDTO>().keys({
   id: joi.number().required(),
 });
 
