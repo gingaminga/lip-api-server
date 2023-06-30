@@ -73,10 +73,11 @@ export default class ToDoService {
   }
 
   /**
-   * @description 루틴은 있지만 todo가 비어있는 경우 임시 값 넣어주기 (todos와 형식 맞춤 + routineID)
-   * @param routines 루틴 + 저장되어있는 루틴 할 일
+   * @description 루틴 할 일 만들기
+   * @param routines 루틴들
+   * @param routineToDos 루틴 할 일들
    * @param date 날짜
-   * @returns 루틴 + 가짜 루틴 할 일
+   * @returns 루틴 할 일 + 가짜 루틴 할 일
    */
   static makeFakeRoutineToDo(routines: Routine[], routineToDos: RoutineTodo[], date: string) {
     let i = 0;
