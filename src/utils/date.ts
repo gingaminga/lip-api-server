@@ -1,3 +1,4 @@
+import { TDayOfWeek } from "@/types/date";
 import dayjs, { Dayjs } from "dayjs";
 
 /**
@@ -58,7 +59,7 @@ export const getDayfromDate = (date: string) => dayjs(date).get("day");
 export const getDayInfo = (date: string) => {
   const numberOfDay = getDayfromDate(date);
 
-  let textOfDay = "sunday";
+  let textOfDay: TDayOfWeek = "sunday";
 
   if (numberOfDay === 1) {
     textOfDay = "monday";
