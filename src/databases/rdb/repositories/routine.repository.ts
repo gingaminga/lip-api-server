@@ -125,6 +125,24 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
     return routines;
   },
   /**
+   * @description 유저의 모든 루틴 가져오기
+   * @param userID 유저 ID
+   * @param relations relation 허용 객체
+   * @returns Routine[]
+   */
+  async findAllRoutineOfUser(userID: number, relations?: FindOptionsRelations<Routine>) {
+    const routine = await this.find({
+      relations,
+      where: {
+        user: {
+          id: userID,
+        },
+      },
+    });
+
+    return routine;
+  },
+  /**
    * @description 루틴 수정하기
    * @param id 루틴 ID
    * @param content 내용

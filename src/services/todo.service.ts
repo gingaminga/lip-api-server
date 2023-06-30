@@ -44,7 +44,16 @@ export default class ToDoService {
         alarm: true,
       });
 
-      return [todos];
+      const routines = await this.routineRepository.findAllRoutineOfUser(userID, {
+        alarm: true,
+      });
+      const routineToDos = await this.routineToDoRepository.findRoutineToDoByMonth(startDate, endDate, userID, {
+        routine: true,
+      });
+
+      const fakeRoutines = ToDoService.makeFakeRoutineToDoByMonth(routines, routineToDos, startDate, endDate);
+
+      return [todos, fakeRoutines];
     }
 
     const todos = await this.todoRepository.findToDosByDate(date, userID, {
@@ -103,6 +112,37 @@ export default class ToDoService {
     });
 
     return fakeRoutines;
+  }
+
+  /**
+   * @description 정해진 기간의 루틴 할 일 만들기
+   * @param routines 루틴들
+   * @param routineToDos 루틴 할 일들
+   * @param startDate 시작 날짜
+   * @param endDate 끝 날짜
+   * @returns 루틴 할 일 + 가짜 루틴 할 일
+   */
+  static makeFakeRoutineToDoByMonth(
+    routines: Routine[],
+    routineToDos: RoutineTodo[],
+    startDate: string,
+    endDate: string,
+  ) {
+    const fakeRoutineToDos = [];
+    let date = startDate;
+
+    const count = Number(endDate) - Number(startDate);
+
+    for (let i = 0; i <= count; i++) {
+      const { textOfDay } = getDayInfo(date);
+
+      const routinesOfDay = routines.filter((routine) => routine[textOfDay]);
+      fakeRoutineToDos.push(...ToDoService.makeFakeRoutineToDo(routinesOfDay, routineToDos, date));
+
+      date = String(Number(date) + 1);
+    }
+
+    return fakeRoutineToDos;
   }
 
   /**
