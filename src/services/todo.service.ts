@@ -73,7 +73,7 @@ export default class ToDoService {
     let i = 0;
 
     const fakeRoutines = routines.map((routine) => {
-      const [routineToDo] = routineToDos.filter((todo) => todo.routine.id === routine.id);
+      const [routineToDo] = routineToDos.filter((todo) => todo.routine.id === routine.id && todo.date === date);
 
       if (routineToDo) {
         return {
