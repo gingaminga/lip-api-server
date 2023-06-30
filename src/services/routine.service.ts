@@ -2,7 +2,9 @@ import { dataSource } from "@/databases/rdb/client";
 import Routine from "@/databases/rdb/entities/routine.entity";
 import User from "@/databases/rdb/entities/user.entity";
 import { AlarmRepository } from "@/databases/rdb/repositories/alarm.repository";
+import { RoutineToDoRepository } from "@/databases/rdb/repositories/routine-todo.repository";
 import { RoutineRepository } from "@/databases/rdb/repositories/routine.repository";
+import CError from "@/utils/error";
 import { Service } from "typedi";
 
 @Service()
@@ -10,6 +12,8 @@ export default class RoutineService {
   alarmRepository = AlarmRepository;
 
   routineRepository = RoutineRepository;
+
+  routineToDoRepository = RoutineToDoRepository;
 
   /**
    * @description 루틴 등록하기
@@ -44,6 +48,35 @@ export default class RoutineService {
 
       return rest;
     });
+  }
+
+  /**
+   * @description 루틴 할 일 완료 유무 선택하기
+   * @param routineID 루틴 id
+   * @param date 날짜
+   * @param checked 할 일 완료 유무
+   * @param user 유저
+   * @returns true (수정) / false (수정 실패)
+   */
+  async modifyCheckRoutineToDo(routineID: number, date: string, checked: boolean, user: User) {
+    const routineToDo = await this.routineToDoRepository.findRoutineToDoByRoutineIDAndDate(routineID, date, user.id);
+
+    if (!routineToDo) {
+      // 없으면 추가
+      const routine = await this.routineRepository.findRoutine(routineID, user.id);
+
+      if (!routine) {
+        throw new CError("Not exist routine.. :(");
+      }
+
+      await this.routineToDoRepository.addRoutineToDo(checked, date, routine, user);
+
+      return true;
+    }
+
+    const isSuccess = await this.routineToDoRepository.modifyCheckRoutineToDo(routineToDo.id, checked, user.id);
+
+    return isSuccess;
   }
 
   /**

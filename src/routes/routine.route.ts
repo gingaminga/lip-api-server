@@ -2,6 +2,7 @@ import {
   addRoutineController,
   getAllRoutineController,
   getRoutineController,
+  modifyCheckRoutineToDoController,
   modifyRoutineController,
   removeAllRoutineController,
   removeRoutineController,
@@ -11,6 +12,7 @@ import {
   addRoutineValidator,
   getAllRoutineValidator,
   getRoutineValidator,
+  modifyCheckRoutineToDoValidator,
   modifyRoutineValidator,
   removeRoutineValidator,
 } from "@/validators/validator/routine.validator";
@@ -25,5 +27,6 @@ router.post("/", checkExpireAccessToken, addRoutineValidator, addRoutineControll
 router.put("/", checkExpireAccessToken, modifyRoutineValidator, modifyRoutineController);
 router.delete("/", checkExpireAccessToken, removeRoutineValidator, removeRoutineController);
 router.delete("/all", checkExpireAccessToken, removeAllRoutineController);
+router.put("/yn", checkExpireAccessToken, modifyCheckRoutineToDoValidator, modifyCheckRoutineToDoController);
 
 export default router;

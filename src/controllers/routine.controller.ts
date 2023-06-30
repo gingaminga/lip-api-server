@@ -2,6 +2,7 @@ import {
   AddRoutineRequestParamDTO,
   GetAllRoutineRequestParamDTO,
   GetRoutineRequestParamDTO,
+  ModifyCheckRoutineToDoRequestParamDTO,
   ModifyRoutineRequestParamDTO,
   RemoveRoutineRequestParamDTO,
 } from "@/dto/routine.dto";
@@ -46,6 +47,23 @@ export const getRoutineController: RequestDTOHandler<GetRoutineRequestParamDTO> 
   const { id: userID } = res.locals.userInfo;
 
   const result = await routineService.getRoutine(id, userID);
+
+  res.result(result);
+};
+
+/**
+ * @description 루틴 할 일 수정하기 컨트롤러
+ * @param req Request
+ * @param res Response
+ */
+export const modifyCheckRoutineToDoController: RequestDTOHandler<ModifyCheckRoutineToDoRequestParamDTO> = async (
+  req,
+  res,
+) => {
+  const { checked, date, id: routineID } = res.locals.requestDTO;
+  const { userInfo } = res.locals;
+
+  const result = await routineService.modifyCheckRoutineToDo(routineID, date, checked, userInfo);
 
   res.result(result);
 };

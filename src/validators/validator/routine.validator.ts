@@ -2,6 +2,7 @@ import {
   AddRoutineRequestParamDTO,
   GetAllRoutineRequestParamDTO,
   GetRoutineRequestParamDTO,
+  ModifyCheckRoutineToDoRequestParamDTO,
   ModifyRoutineRequestParamDTO,
   RemoveRoutineRequestParamDTO,
 } from "@/dto/routine.dto";
@@ -10,6 +11,7 @@ import {
   addRoutineSchema,
   getAllRoutineSchema,
   getRoutineSchema,
+  modifyCheckRoutineToDoSchema,
   modifyRoutineSchema,
   removeRoutineSchema,
 } from "@/validators/schema/routine.schema";
@@ -34,6 +36,18 @@ export const getRoutineValidator: RequestDTOHandler<GetRoutineRequestParamDTO> =
   const { id } = await getRoutineSchema.validateAsync(req.query);
 
   res.locals.requestDTO = new GetRoutineRequestParamDTO(id);
+
+  next();
+};
+
+export const modifyCheckRoutineToDoValidator: RequestDTOHandler<ModifyCheckRoutineToDoRequestParamDTO> = async (
+  req,
+  res,
+  next,
+) => {
+  const { checked, date, id } = await modifyCheckRoutineToDoSchema.validateAsync(req.body);
+
+  res.locals.requestDTO = new ModifyCheckRoutineToDoRequestParamDTO(id, date, checked);
 
   next();
 };

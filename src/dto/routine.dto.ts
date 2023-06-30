@@ -37,6 +37,20 @@ export class GetRoutineRequestParamDTO {
   }
 }
 
+export class ModifyCheckRoutineToDoRequestParamDTO {
+  checked: boolean;
+
+  date: string;
+
+  id: number;
+
+  constructor(id: number, date: string, checked: boolean) {
+    this.checked = checked;
+    this.date = date;
+    this.id = id;
+  }
+}
+
 export class ModifyRoutineRequestParamDTO {
   alarmHour: number;
 
