@@ -1,8 +1,10 @@
+import RoutineTodo from "@/databases/rdb/entities/routine-todo.entity";
 import Routine from "@/databases/rdb/entities/routine.entity";
 import User from "@/databases/rdb/entities/user.entity";
+import { RoutineToDoRepository } from "@/databases/rdb/repositories/routine-todo.repository";
 import { RoutineRepository } from "@/databases/rdb/repositories/routine.repository";
 import { TodoRepository } from "@/databases/rdb/repositories/todo.repository";
-import { getDayfromDate, getFirstAndLastDay } from "@/utils/date";
+import { getDayInfo, getFirstAndLastDay } from "@/utils/date";
 import { Service } from "typedi";
 
 @Service()
@@ -10,6 +12,8 @@ export default class ToDoService {
   private todoRepository = TodoRepository;
 
   private routineRepository = RoutineRepository;
+
+  private routineToDoRepository = RoutineToDoRepository;
 
   /**
    * @description 투두 추가하기
@@ -47,38 +51,55 @@ export default class ToDoService {
       alarm: true,
     });
 
-    const day = String(getDayfromDate(date));
-    const routines = await this.routineRepository.findRoutineToDoByDate(date, day, userID);
-    const fakeRoutines = ToDoService.makeFakeRoutineToDo(routines, date);
+    const { textOfDay } = getDayInfo(date);
+    const routines = await this.routineRepository.findRoutineByDay(textOfDay, userID, {
+      alarm: true,
+    });
+    const routineToDos = await this.routineToDoRepository.findRoutineToDoByDate(date, userID, {
+      routine: true,
+    });
+    const fakeRoutines = ToDoService.makeFakeRoutineToDo(routines, routineToDos, date);
 
     return [todos, fakeRoutines];
   }
 
   /**
-   * @description 루틴은 있지만 todo가 비어있는 경우 임시 값 넣어주기
+   * @description 루틴은 있지만 todo가 비어있는 경우 임시 값 넣어주기 (todos와 형식 맞춤 + routineID)
    * @param routines 루틴 + 저장되어있는 루틴 할 일
    * @param date 날짜
    * @returns 루틴 + 가짜 루틴 할 일
    */
-  static makeFakeRoutineToDo(routines: Routine[], date: string) {
+  static makeFakeRoutineToDo(routines: Routine[], routineToDos: RoutineTodo[], date: string) {
     let i = 0;
 
     const fakeRoutines = routines.map((routine) => {
-      if (!routine.routineTodo) {
-        i -= 1;
+      const [routineToDo] = routineToDos.filter((todo) => todo.routine.id === routine.id);
+
+      if (routineToDo) {
         return {
-          ...routine,
-          routineTodo: {
-            checked: false,
-            createdAt: routine.createdAt,
-            date,
-            id: i,
-            updatedAt: routine.updatedAt,
-          },
+          id: routineToDo.id,
+          routineID: routine.id,
+          content: routine.content,
+          checked: routineToDo.checked,
+          date: routineToDo.date,
+          createdAt: routineToDo.createdAt,
+          updatedAt: routineToDo.updatedAt,
+          alarm: routine.alarm,
         };
       }
 
-      return routine;
+      i -= 1;
+
+      return {
+        id: i,
+        routineID: routine.id,
+        content: routine.content,
+        checked: false,
+        date,
+        createdAt: routine.createdAt,
+        updatedAt: routine.updatedAt,
+        alarm: routine.alarm,
+      };
     });
 
     return fakeRoutines;

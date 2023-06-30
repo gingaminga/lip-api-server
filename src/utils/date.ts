@@ -49,3 +49,33 @@ export const getExistDay = (days: string) => {
  * @returns
  */
 export const getDayfromDate = (date: string) => dayjs(date).get("day");
+
+/**
+ * @description 요일을 텍스트(영어)로 가져오기
+ * @param day 요일
+ * @returns 요일 존재 여부
+ */
+export const getDayInfo = (date: string) => {
+  const numberOfDay = getDayfromDate(date);
+
+  let textOfDay = "sunday";
+
+  if (numberOfDay === 1) {
+    textOfDay = "monday";
+  } else if (numberOfDay === 2) {
+    textOfDay = "tuesday";
+  } else if (numberOfDay === 3) {
+    textOfDay = "wednesday";
+  } else if (numberOfDay === 4) {
+    textOfDay = "thursday";
+  } else if (numberOfDay === 5) {
+    textOfDay = "friday";
+  } else if (numberOfDay === 6) {
+    textOfDay = "saturday";
+  }
+
+  return {
+    numberOfDay,
+    textOfDay,
+  };
+};

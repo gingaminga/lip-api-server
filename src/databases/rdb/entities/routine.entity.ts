@@ -5,9 +5,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
-  OneToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -84,6 +83,9 @@ export default class Routine {
   })
   updatedAt!: Date;
 
+  @OneToMany(() => RoutineTodo, (routineToDo) => routineToDo.routine)
+  routineTodos!: RoutineTodo[];
+
   @ManyToOne(() => User, (user) => user.routines, {
     onDelete: "CASCADE",
   })
@@ -91,10 +93,4 @@ export default class Routine {
 
   @ManyToOne(() => Alarm, (alarm) => alarm.routines)
   alarm!: Alarm;
-
-  @OneToOne(() => RoutineTodo, {
-    nullable: true,
-  })
-  @JoinColumn()
-  routineTodo!: RoutineTodo;
 }

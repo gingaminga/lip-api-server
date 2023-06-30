@@ -57,59 +57,24 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
     return routine;
   },
   /**
-   * @description 날짜별 루틴과 루틴 할 일을 조합하여 가져오기
-   * @param date 날짜
-   * @param days 요일
+   * @description 요일에 해당하는 루틴 가져오기
+   * @param day 요일(텍스트)
    * @param userID 유저 id
+   * @param relations relation 허용 객체
    * @returns Routine[]
    */
-  async findRoutineToDoByDate(date: string, days: string, userID: number) {
-    const { friday, monday, saturday, sunday, thursday, tuesday, wednesday } = getExistDay(days);
+  async findRoutineByDay(day: string, userID: number, relations?: FindOptionsRelations<Routine>) {
+    const routine = await this.find({
+      relations,
+      where: {
+        user: {
+          id: userID,
+        },
+        [day]: true,
+      },
+    });
 
-    const routineToDoAlias = "routine_todo";
-
-    const routineTodos = await this.createQueryBuilder(alias)
-      .select([
-        `${alias}.id`,
-        `${alias}.content`,
-        `${alias}.createdAt`,
-        `${alias}.updatedAt`,
-        `${routineToDoAlias}.id`,
-        `routine_todo.id`,
-      ])
-      .leftJoinAndSelect(`${alias}.routineTodo`, routineToDoAlias)
-      .where(`${alias}.user_id = :userID`, {
-        userID,
-      })
-      .andWhere(`(${routineToDoAlias}.date = :date`, {
-        date,
-      })
-      .orWhere(`${routineToDoAlias}.date IS NULL)`)
-      .andWhere(`(${alias}.sunday = :sunday`, {
-        sunday,
-      })
-      .orWhere(`${alias}.monday = :monday`, {
-        monday,
-      })
-      .orWhere(`${alias}.tuesday = :tuesday`, {
-        tuesday,
-      })
-      .orWhere(`${alias}.wednesday = :wednesday`, {
-        wednesday,
-      })
-      .orWhere(`${alias}.thursday = :thursday`, {
-        thursday,
-      })
-      .orWhere(`${alias}.friday = :friday`, {
-        friday,
-      })
-      .orWhere(`${alias}.saturday = :saturday)`, {
-        saturday,
-      })
-      .orderBy(`${alias}.created_at`, "DESC")
-      .getMany();
-
-    return routineTodos;
+    return routine;
   },
   /**
    * @description 마지막 루틴 가져오기

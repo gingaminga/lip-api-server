@@ -1,3 +1,4 @@
+import Routine from "@/databases/rdb/entities/routine.entity";
 import User from "@/databases/rdb/entities/user.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
@@ -30,8 +31,11 @@ export default class RoutineTodo {
   })
   updatedAt!: Date;
 
-  @ManyToOne(() => User, (user) => user.todos, {
+  @ManyToOne(() => User, (user) => user.routineTodos, {
     onDelete: "CASCADE",
   })
   user!: User;
+
+  @ManyToOne(() => Routine, (routine) => routine.routineTodos)
+  routine!: Routine;
 }
