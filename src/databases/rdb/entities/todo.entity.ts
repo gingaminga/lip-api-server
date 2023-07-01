@@ -54,5 +54,5 @@ export default class Todo {
 
   @OneToOne(() => Alarm)
   @JoinColumn()
-  alarm!: Alarm;
+  alarm!: Alarm | null;
 }

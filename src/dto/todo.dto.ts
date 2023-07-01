@@ -39,10 +39,32 @@ export class ModifyContentToDoRequestParamDTO {
   }
 }
 
+export class RemoveAlarmInToDoRequestParamDTO {
+  id: number;
+
+  constructor(id: number) {
+    this.id = id;
+  }
+}
+
 export class RemoveToDoRequestParamDTO {
   id: number;
 
   constructor(id: number) {
+    this.id = id;
+  }
+}
+
+export class SetAlarmInToDoRequestParamDTO {
+  alarmHour: number;
+
+  alarmMinute: number;
+
+  id: number;
+
+  constructor(hour: number, minute: number, id: number) {
+    this.alarmHour = hour;
+    this.alarmMinute = minute;
     this.id = id;
   }
 }

@@ -64,6 +64,59 @@ export const TodoRepository = dataSource.getRepository(Todo).extend({
     return todos;
   },
   /**
+   * @description 알람 설정하기
+   * @param alarmID 알람 id
+   * @param todoID 할 일 id
+   * @param userID 유저 id
+   * @returns true (수정) / false (수정 실패)
+   */
+  async modifyAlarm(alarmID: number, todoID: number, userID: number) {
+    const result = await this.update(
+      {
+        id: todoID,
+        user: {
+          id: userID,
+        },
+      },
+      {
+        alarm: {
+          id: alarmID,
+        },
+      },
+    );
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    return false;
+  },
+  /**
+   * @description 할 일의 알람 초기화(null)하기
+   * @param todoID 할 일 id
+   * @param userID 유저 id
+   * @returns true (삭제) / false (삭제 실패)
+   */
+  async modifyAlarmReset(todoID: number, userID: number) {
+    const result = await this.update(
+      {
+        id: todoID,
+        user: {
+          id: userID,
+        },
+      },
+      {
+        alarm: null,
+      },
+    );
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    return false;
+  },
+  /**
    * @description todo 완료 유무 선택하기
    * @param todoID 할 일 id
    * @param checked 할 일 완료 유무

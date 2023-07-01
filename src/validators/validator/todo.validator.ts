@@ -3,7 +3,9 @@ import {
   GetToDoRequestParamDTO,
   ModifyCheckToDoRequestParamDTO,
   ModifyContentToDoRequestParamDTO,
+  RemoveAlarmInToDoRequestParamDTO,
   RemoveToDoRequestParamDTO,
+  SetAlarmInToDoRequestParamDTO,
 } from "@/dto/todo.dto";
 import { RequestDTOHandler } from "@/types/express.custom";
 import {
@@ -11,7 +13,9 @@ import {
   getToDoSchema,
   modifyCheckToDoSchema,
   modifyContentToDoSchema,
+  removeAlarmInToDoSchema,
   removeToDoSchema,
+  setAlarmInToDoSchema,
 } from "@/validators/schema/todo.schema";
 
 export const addToDoValidator: RequestDTOHandler<AddToDoRequestParamDTO> = async (req, res, next) => {
@@ -50,10 +54,30 @@ export const modifyContentToDoValidator: RequestDTOHandler<ModifyContentToDoRequ
   next();
 };
 
+export const removeAlarmInToDoValidator: RequestDTOHandler<RemoveAlarmInToDoRequestParamDTO> = async (
+  req,
+  res,
+  next,
+) => {
+  const { id } = await removeAlarmInToDoSchema.validateAsync(req.body);
+
+  res.locals.requestDTO = new RemoveAlarmInToDoRequestParamDTO(id);
+
+  next();
+};
+
 export const removeToDoValidator: RequestDTOHandler<RemoveToDoRequestParamDTO> = async (req, res, next) => {
   const { id } = await removeToDoSchema.validateAsync(req.body);
 
   res.locals.requestDTO = new RemoveToDoRequestParamDTO(id);
+
+  next();
+};
+
+export const setAlarmInToDoValidator: RequestDTOHandler<SetAlarmInToDoRequestParamDTO> = async (req, res, next) => {
+  const { alarmHour, alarmMinute, id } = await setAlarmInToDoSchema.validateAsync(req.body);
+
+  res.locals.requestDTO = new SetAlarmInToDoRequestParamDTO(alarmHour, alarmMinute, id);
 
   next();
 };

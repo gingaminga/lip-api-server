@@ -3,7 +3,9 @@ import {
   GetToDoRequestParamDTO,
   ModifyCheckToDoRequestParamDTO,
   ModifyContentToDoRequestParamDTO,
+  RemoveAlarmInToDoRequestParamDTO,
   RemoveToDoRequestParamDTO,
+  SetAlarmInToDoRequestParamDTO,
 } from "@/dto/todo.dto";
 import CError, { ERROR_MESSAGE } from "@/utils/error";
 import HTTP_STATUS_CODE from "@/utils/http-status-code";
@@ -52,6 +54,16 @@ export const modifyContentToDoSchema = joi.object<ModifyContentToDoRequestParamD
   id: joi.number().required(),
 });
 
+export const removeAlarmInToDoSchema = joi.object<RemoveAlarmInToDoRequestParamDTO>().keys({
+  id: joi.number().required(),
+});
+
 export const removeToDoSchema = joi.object<RemoveToDoRequestParamDTO>().keys({
+  id: joi.number().required(),
+});
+
+export const setAlarmInToDoSchema = joi.object<SetAlarmInToDoRequestParamDTO>().keys({
+  alarmHour: joi.number().min(0).max(23).required(),
+  alarmMinute: joi.number().min(0).max(59).required(),
   id: joi.number().required(),
 });
