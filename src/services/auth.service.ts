@@ -124,11 +124,16 @@ export default class AuthService {
   async getFinalNickname(nickname: string) {
     let finalNickname = nickname;
 
-    while (true) {
-      const isDuplicated = await this.checkDuplicateNickname(finalNickname);
+    const regExp = /^[a-zA-Z0-9가-힣]{2,20}$/;
 
-      if (!isDuplicated) {
-        break;
+    while (true) {
+      if (regExp.test(finalNickname)) {
+        // 닉네임 규칙에 맞음
+        const isDuplicated = await this.checkDuplicateNickname(finalNickname);
+
+        if (!isDuplicated) {
+          break;
+        }
       }
 
       finalNickname = getRandomText();
@@ -191,7 +196,7 @@ export default class AuthService {
     return dataSource.transaction(async (manager) => {
       const userRepository = manager.withRepository(this.userRepository);
 
-      let userInfo = await this.getUserInfo(nickname, socialType);
+      let userInfo = await this.getUserInfo(nickname, socialType, socialKey);
 
       if (!checkExistUser(userInfo)) {
         if (socialKey) {
