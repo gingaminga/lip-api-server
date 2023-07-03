@@ -1,4 +1,5 @@
 import Routine from "@/databases/rdb/entities/routine.entity";
+import Todo from "@/databases/rdb/entities/todo.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
@@ -31,4 +32,7 @@ export default class Alarm {
 
   @OneToMany(() => Routine, (routine) => routine.alarm)
   routines!: Routine[];
+
+  @OneToMany(() => Todo, (todo) => todo.alarm)
+  todos!: Todo[];
 }
