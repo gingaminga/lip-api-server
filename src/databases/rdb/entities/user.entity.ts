@@ -1,3 +1,4 @@
+import FcmToken from "@/databases/rdb/entities/fcm-token.entity";
 import Routine from "@/databases/rdb/entities/routine.entity";
 import RoutineTodo from "@/databases/rdb/entities/routine-todo.entity";
 import Todo from "@/databases/rdb/entities/todo.entity";
@@ -58,4 +59,7 @@ export default class User {
 
   @OneToMany(() => RoutineTodo, (routineTodo) => routineTodo.user)
   routineTodos!: RoutineTodo[];
+
+  @OneToMany(() => FcmToken, (fcmToken) => fcmToken.user)
+  fcmToken!: FcmToken[];
 }

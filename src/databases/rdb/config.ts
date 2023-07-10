@@ -1,4 +1,5 @@
 import Alarm from "@/databases/rdb/entities/alarm.entity";
+import FcmToken from "@/databases/rdb/entities/fcm-token.entity";
 import Routine from "@/databases/rdb/entities/routine.entity";
 import RoutineToDo from "@/databases/rdb/entities/routine-todo.entity";
 import Todo from "@/databases/rdb/entities/todo.entity";
@@ -7,7 +8,7 @@ import constants from "@/utils/constants";
 import { DataSourceOptions } from "typeorm";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 
-const entities = [Alarm, Routine, RoutineToDo, Todo, User];
+const entities = [Alarm, FcmToken, Routine, RoutineToDo, Todo, User];
 
 const options: DataSourceOptions = {
   database: constants.DATABASE.SCHEMA,
