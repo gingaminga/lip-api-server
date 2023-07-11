@@ -1,7 +1,11 @@
 import { dataSource } from "@/databases/rdb/client";
+import FcmToken from "@/databases/rdb/entities/fcm-token.entity";
 import Todo from "@/databases/rdb/entities/todo.entity";
 import User from "@/databases/rdb/entities/user.entity";
+import { INotificationItem } from "@/types/notification";
 import { Between, FindOptionsRelations } from "typeorm";
+
+const alias = "todo";
 
 export const TodoRepository = dataSource.getRepository(Todo).extend({
   /**
@@ -62,6 +66,26 @@ export const TodoRepository = dataSource.getRepository(Todo).extend({
     });
 
     return todos;
+  },
+  /**
+   * @description content, token 정보 가져오기
+   * @param date 날짜
+   * @param alarmID 알람 id
+   * @returns INotificationItem[]
+   */
+  async findContentAndDeviceToKen(date: string, alarmID: number) {
+    const notifications = await this.createQueryBuilder(alias)
+      .leftJoinAndSelect(FcmToken, "fcmToken", `${alias}.user = fcmToken.user_id`)
+      .select([`${alias}.id as id`, `${alias}.content as content`, "fcmToken.device_token"])
+      .where(`${alias}.date = :date`, {
+        date,
+      })
+      .andWhere(`${alias}.alarm_id = :alarmID`, {
+        alarmID,
+      })
+      .getRawMany<INotificationItem>();
+
+    return notifications;
   },
   /**
    * @description 알람 설정하기

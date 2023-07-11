@@ -6,6 +6,11 @@ declare namespace NodeJS {
     DATABASE_SCHEMA: string;
     DATABASE_TYPE: "mysql";
     DATABASE_USER_NAME: string;
+    FIREBASE_CLIENT_EMAIL: string;
+    FIREBASE_CLIENT_ID: string;
+    FIREBASE_PRIVATE_KEY: string;
+    FIREBASE_PRIVATE_KEY_ID: string;
+    FIREBASE_PROJECT_ID: string;
     GOOGLE_KEY: string;
     GOOGLE_SECRET_KEY: string;
     HTTPS: "true" | "false";

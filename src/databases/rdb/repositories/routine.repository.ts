@@ -1,9 +1,11 @@
 import { dataSource } from "@/databases/rdb/client";
 import Alarm from "@/databases/rdb/entities/alarm.entity";
+import FcmToken from "@/databases/rdb/entities/fcm-token.entity";
 import Routine from "@/databases/rdb/entities/routine.entity";
 import User from "@/databases/rdb/entities/user.entity";
 import { getExistDay } from "@/utils/date";
 import { FindOptionsRelations, LessThan } from "typeorm";
+import { INotificationItem } from "@/types/notification";
 
 const alias = "routine";
 
@@ -141,6 +143,24 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
     });
 
     return routine;
+  },
+  /**
+   * @description content, token 정보 가져오기
+   * @param day 요일 text
+   * @param alarmID 알람 id
+   * @returns INotificationItem[]
+   */
+  async findContentAndDeviceToKen(day: string, alarmID: number) {
+    const notifications = await this.createQueryBuilder(alias)
+      .leftJoinAndSelect(FcmToken, "fcmToken", `${alias}.user = fcmToken.user_id`)
+      .select([`${alias}.id as id`, `${alias}.content as content`, "fcmToken.device_token"])
+      .where(`${alias}.${day} = true`)
+      .andWhere(`${alias}.alarm_id = :alarmID`, {
+        alarmID,
+      })
+      .getRawMany<INotificationItem>();
+
+    return notifications;
   },
   /**
    * @description 루틴 수정하기

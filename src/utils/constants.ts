@@ -7,6 +7,13 @@ export default {
     TYPE: process.env.DATABASE_TYPE || "mysql",
     USER_NAME: process.env.DATABASE_USER_NAME || "root",
   },
+  FIREBASE: {
+    CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL || "",
+    CLIENT_ID: process.env.FIREBASE_CLIENT_ID || "",
+    PRIVATE_KEY: process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n") : "",
+    PRIVATE_KEY_ID: process.env.FIREBASE_PRIVATE_KEY_ID || "",
+    PROJECT_ID: process.env.FIREBASE_PROJECT_ID || "",
+  },
   HTTPS: process.env.HTTPS === "true",
   JWT: {
     EXPRIED: {
