@@ -17,7 +17,7 @@ export default class FcmToken {
   })
   count!: number;
 
-  @ManyToOne(() => User, (user) => user.routineTodos, {
+  @ManyToOne(() => User, (user) => user.fcmToken, {
     onDelete: "CASCADE",
   })
   user!: User;
