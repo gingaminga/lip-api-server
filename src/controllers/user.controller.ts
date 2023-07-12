@@ -1,4 +1,9 @@
-import { ChangeNicknameRequestParamDTO, DuplicateNicknameRequestParamDTO, LoginRequestParamDTO } from "@/dto/user.dto";
+import {
+  ChangeNicknameRequestParamDTO,
+  DuplicateNicknameRequestParamDTO,
+  LoginRequestParamDTO,
+  LogoutRequestParamDTO,
+} from "@/dto/user.dto";
 import { authService } from "@/loaders/service.loader";
 import { RequestDTOHandler } from "@/types/express.custom";
 
@@ -8,10 +13,10 @@ import { RequestDTOHandler } from "@/types/express.custom";
  * @param res Response
  */
 export const changeNicknameController: RequestDTOHandler<ChangeNicknameRequestParamDTO> = async (req, res) => {
-  const { nickname } = res.locals.requestDTO;
+  const { deviceToken, nickname } = res.locals.requestDTO;
   const { id } = res.locals.userInfo;
 
-  const result = await authService.changeNickname(nickname, id);
+  const result = await authService.changeNickname(nickname, id, deviceToken);
 
   res.result(result);
 };
@@ -47,10 +52,11 @@ export const loginController: RequestDTOHandler<LoginRequestParamDTO> = async (r
  * @param req Request
  * @param res Response
  */
-export const logoutController: RequestDTOHandler = async (req, res) => {
+export const logoutController: RequestDTOHandler<LogoutRequestParamDTO> = async (req, res) => {
+  const { deviceToken } = res.locals.requestDTO;
   const { id } = res.locals.userInfo;
 
-  const result = await authService.logout(id);
+  const result = await authService.logout(id, deviceToken);
 
   res.result(result);
 };

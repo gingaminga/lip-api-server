@@ -1,5 +1,6 @@
 import { dataSource } from "@/databases/rdb/client";
 import User from "@/databases/rdb/entities/user.entity";
+import { FcmTokenRepository } from "@/databases/rdb/repositories/fcm-token.repository";
 import { UserRepository } from "@/databases/rdb/repositories/user.repository";
 import { redisClient } from "@/loaders/database.loader";
 import { TSocialType } from "@/types/social";
@@ -19,6 +20,8 @@ export default class AuthService {
 
   private readonly EXPRIED_REFRESH_TOKEN = constants.JWT.EXPRIED.REFRESH_TOKEN;
 
+  private fcmTokenRepository = FcmTokenRepository;
+
   private socialCommuicator = SocialCommuicator;
 
   private redisClient = redisClient;
@@ -29,20 +32,30 @@ export default class AuthService {
    * @description 닉네임 변경하기
    * @param nickname 닉네임
    * @param userID 유저 id
+   * @param deviceToken 디바이스 토큰
    * @returns 변경 성공 여부
    */
-  async changeNickname(nickname: string, userID: number) {
-    const isDuplicate = await this.checkDuplicateNickname(nickname);
+  async changeNickname(nickname: string, userID: number, deviceToken?: string) {
+    return dataSource.transaction(async (manager) => {
+      const fcmTokenRepository = manager.withRepository(this.fcmTokenRepository);
+      const userRepository = manager.withRepository(this.userRepository);
 
-    if (isDuplicate) {
-      throw new Error("Exist user.. :(");
-    }
+      const isDuplicate = await this.checkDuplicateNickname(nickname);
 
-    const isSuccess = await this.userRepository.changeNickname(nickname, userID);
+      if (isDuplicate) {
+        throw new Error("Exist user.. :(");
+      }
 
-    await this.logout(userID);
+      const isSuccess = await userRepository.changeNickname(nickname, userID);
 
-    return isSuccess;
+      if (deviceToken) {
+        await fcmTokenRepository.removeDeviceToken(deviceToken, userID);
+      }
+
+      await this.removeToken(userID);
+
+      return isSuccess;
+    });
   }
 
   /**
@@ -100,13 +113,19 @@ export default class AuthService {
 
   /**
    * @description 토큰 만들기
+   * @param userID 유저 id
    * @param nickname 닉네임
    * @param socialType 소셜 종류
    * @returns 토큰들
    */
-  generateToken(nickname: string, socialType: TSocialType) {
+  async generateToken(userID: number, nickname: string, socialType: TSocialType) {
     const accessToken = this.createAccessToken(nickname, socialType);
-    const refreshToken = this.createRefreshToken(nickname, socialType);
+
+    let refreshToken = await this.redisClient.hget(constants.PROJECT_NAME, String(userID));
+
+    if (!refreshToken) {
+      refreshToken = this.createRefreshToken(nickname, socialType);
+    }
 
     const result = {
       accessToken,
@@ -208,7 +227,7 @@ export default class AuthService {
         }
       }
 
-      const tokens = this.generateToken(userInfo.nickname, userInfo.socialType);
+      const tokens = await this.generateToken(userInfo.id, userInfo.nickname, userInfo.socialType);
       await this.saveRefreshToken(socialType, userInfo.id, tokens.refreshToken, socialKey, socialRefreshToken);
 
       const loginInfo = { userInfo, ...tokens };
@@ -220,9 +239,12 @@ export default class AuthService {
   /**
    * @description 로그아웃
    * @param userID user id
+   * @param deviceToken 디바이스 토큰
    */
-  async logout(userID: number) {
-    await this.removeToken(userID);
+  async logout(userID: number, deviceToken?: string) {
+    if (deviceToken) {
+      await this.fcmTokenRepository.removeDeviceToken(deviceToken, userID);
+    }
 
     return true;
   }

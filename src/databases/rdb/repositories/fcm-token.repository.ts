@@ -1,6 +1,6 @@
 import { dataSource } from "@/databases/rdb/client";
 import FcmToken from "@/databases/rdb/entities/fcm-token.entity";
-import User from "../entities/user.entity";
+import User from "@/databases/rdb/entities/user.entity";
 
 export const FcmTokenRepository = dataSource.getRepository(FcmToken).extend({
   /**
@@ -40,6 +40,26 @@ export const FcmTokenRepository = dataSource.getRepository(FcmToken).extend({
         count: newCount,
       },
     );
+
+    if (result.affected && result.affected > 0) {
+      return true;
+    }
+
+    return false;
+  },
+  /**
+   * @description 디바이스 토큰 삭제하기
+   * @param token 디바이스 토큰
+   * @param userID 유저 id
+   * @returns true / false
+   */
+  async removeDeviceToken(token: string, userID: number) {
+    const result = await this.delete({
+      deviceToken: token,
+      user: {
+        id: userID,
+      },
+    });
 
     if (result.affected && result.affected > 0) {
       return true;

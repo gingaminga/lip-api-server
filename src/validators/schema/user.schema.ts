@@ -1,8 +1,14 @@
-import { ChangeNicknameRequestParamDTO, DuplicateNicknameRequestParamDTO, LoginRequestParamDTO } from "@/dto/user.dto";
+import {
+  ChangeNicknameRequestParamDTO,
+  DuplicateNicknameRequestParamDTO,
+  LoginRequestParamDTO,
+  LogoutRequestParamDTO,
+} from "@/dto/user.dto";
 import constants from "@/utils/constants";
 import joi from "joi";
 
 export const changeNicknameSchema = joi.object<ChangeNicknameRequestParamDTO>().keys({
+  deviceToken: joi.string().optional(),
   nickname: joi
     .string()
     .min(2)
@@ -26,4 +32,8 @@ export const loginSchema = joi.object<LoginRequestParamDTO>().keys({
     .string()
     .valid(constants.SOCIAL.KAKAO.NAME, constants.SOCIAL.NAVER.NAME, constants.SOCIAL.GOOGLE.NAME)
     .required(),
+});
+
+export const logoutSchema = joi.object<LogoutRequestParamDTO>().keys({
+  deviceToken: joi.string().optional(),
 });
