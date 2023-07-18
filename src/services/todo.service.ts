@@ -86,35 +86,39 @@ export default class ToDoService {
   static makeFakeRoutineToDo(routines: Routine[], routineToDos: RoutineTodo[], date: string) {
     let i = 0;
 
-    const fakeRoutines = routines.map((routine) => {
-      const [routineToDo] = routineToDos.filter((todo) => todo.routine.id === routine.id && todo.date === date);
+    const fakeRoutines = routines
+      .map((routine) => {
+        const [routineToDo] = routineToDos.filter((todo) => todo.routine.id === routine.id && todo.date === date);
 
-      if (routineToDo) {
+        if (routineToDo) {
+          return {
+            id: routineToDo.id,
+            routineID: routine.id,
+            content: routine.content,
+            checked: routineToDo.checked,
+            date: routineToDo.date,
+            createdAt: routineToDo.createdAt,
+            updatedAt: routineToDo.updatedAt,
+            deletedAt: undefined,
+            alarm: routine.alarm,
+          };
+        }
+
+        i -= 1;
+
         return {
-          id: routineToDo.id,
+          id: i,
           routineID: routine.id,
           content: routine.content,
-          checked: routineToDo.checked,
-          date: routineToDo.date,
-          createdAt: routineToDo.createdAt,
-          updatedAt: routineToDo.updatedAt,
+          checked: false,
+          date,
+          createdAt: routine.createdAt,
+          updatedAt: routine.updatedAt,
+          deletedAt: routine.deletedAt,
           alarm: routine.alarm,
         };
-      }
-
-      i -= 1;
-
-      return {
-        id: i,
-        routineID: routine.id,
-        content: routine.content,
-        checked: false,
-        date,
-        createdAt: routine.createdAt,
-        updatedAt: routine.updatedAt,
-        alarm: routine.alarm,
-      };
-    });
+      })
+      .filter((fakeRoutineToDo) => !fakeRoutineToDo.deletedAt);
 
     return fakeRoutines;
   }

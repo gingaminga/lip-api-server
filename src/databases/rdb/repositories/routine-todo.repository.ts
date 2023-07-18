@@ -49,6 +49,7 @@ export const RoutineToDoRepository = dataSource.getRepository(RoutineTodo).exten
           id: userID,
         },
       },
+      withDeleted: true,
     });
 
     return routineToDo;
@@ -69,6 +70,7 @@ export const RoutineToDoRepository = dataSource.getRepository(RoutineTodo).exten
           id: userID,
         },
       },
+      withDeleted: true,
     });
 
     return routine;
@@ -95,6 +97,7 @@ export const RoutineToDoRepository = dataSource.getRepository(RoutineTodo).exten
           id: userID,
         },
       },
+      withDeleted: true,
     });
 
     return routine;

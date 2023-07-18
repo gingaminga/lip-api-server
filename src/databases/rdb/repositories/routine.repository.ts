@@ -74,6 +74,7 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
         },
         [day]: true,
       },
+      withDeleted: true,
     });
 
     return routine;
@@ -140,6 +141,7 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
           id: userID,
         },
       },
+      withDeleted: true,
     });
 
     return routine;
@@ -210,7 +212,7 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
    * @returns true (삭제) / false (삭제 실패)
    */
   async removeAllRoutine(id: number) {
-    const result = await this.delete({
+    const result = await this.softDelete({
       user: {
         id,
       },
@@ -229,7 +231,7 @@ export const RoutineRepository = dataSource.getRepository(Routine).extend({
    * @returns true (삭제) / false (삭제 실패)
    */
   async removeRoutine(routineID: number, userID: number) {
-    const result = await this.delete({
+    const result = await this.softDelete({
       id: routineID,
       user: {
         id: userID,

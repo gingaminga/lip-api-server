@@ -4,6 +4,7 @@ import User from "@/databases/rdb/entities/user.entity";
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -82,6 +83,12 @@ export default class Routine {
     type: "timestamp",
   })
   updatedAt!: Date;
+
+  @DeleteDateColumn({
+    default: null,
+    type: "timestamp",
+  })
+  deletedAt!: Date;
 
   @OneToMany(() => RoutineTodo, (routineToDo) => routineToDo.routine)
   routineTodos!: RoutineTodo[];
