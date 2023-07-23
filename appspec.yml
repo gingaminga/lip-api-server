@@ -5,7 +5,7 @@ files:
     destination: /home/ubuntu/lip-api-server
 
 permissions:
-  - object: /home/ubuntu
+  - object: /home/ubuntu/lip-api-server
     pattern: "**"
     owner: ubuntu
     group: ubuntu
