@@ -91,7 +91,7 @@ jobs:
         run: npm run build --if-present
 
       - name: Compress project files
-        run: tar -zcf lip-api-server.tar.gz dist .env appspec.yml scripts/deploy.sh ecosystem.config.js node_modules
+        run: tar -zcf lip-api-server.tar.gz dist .env appspec.yml scripts/after-production-deploy.sh ecosystem.config.js node_modules
 
       - name: AWS configure credentials
         uses: aws-actions/configure-aws-credentials@v1
