@@ -1,7 +1,7 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: lip-api-server CI/CD
+name: lip-api-server production CI/CD
 
 on:
   push:
@@ -11,6 +11,7 @@ on:
 
 jobs:
   build:
+    environment: production
     runs-on: ubuntu-latest
 
     strategy:
@@ -91,7 +92,7 @@ jobs:
         run: npm run build --if-present
 
       - name: Compress project files
-        run: tar -zcf lip-api-server.tar.gz dist .env appspec.yml scripts/after-production-deploy.sh ecosystem.config.js node_modules
+        run: tar -zcf lip-api-server-production.tar.gz dist .env appspec.yml scripts/after-production-deploy.sh ecosystem.production.config.js node_modules
 
       - name: AWS configure credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -101,11 +102,11 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 lip-api-server.tar.gz s3://lifeisplan-bucket/deploy/
+        run: aws s3 cp --region ap-northeast-2 lip-api-server-production.tar.gz s3://lifeisplan-bucket/deploy/
 
       - name: Deploy CodeDeploy
         run: aws deploy create-deployment
           --application-name lifeisplan
           --deployment-config-name CodeDeployDefault.OneAtATime
-          --deployment-group-name lifeisplan-group
-          --s3-location bucket=lifeisplan-bucket,bundleType=tgz,key=deploy/lip-api-server.tar.gz
+          --deployment-group-name lifeisplan-production
+          --s3-location bucket=lifeisplan-bucket,bundleType=tgz,key=deploy/lip-api-server-production.tar.gz
