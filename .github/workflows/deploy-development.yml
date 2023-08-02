@@ -1,0 +1,112 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: lip-api-server development CI/CD
+
+on:
+  push:
+    branches: ["develop"]
+  pull_request:
+    branches: ["develop"]
+
+jobs:
+  build:
+    environment: development
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.15.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create environment file
+        env:
+          DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+          DATABASE_SCHEMA: ${{ secrets.DATABASE_SCHEMA }}
+          DATABASE_TYPE: ${{ secrets.DATABASE_TYPE }}
+          DATABASE_USER_NAME: ${{ secrets.DATABASE_USER_NAME }}
+          FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+          FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          GOOGLE_KEY: ${{ secrets.GOOGLE_KEY }}
+          GOOGLE_SECRET_KEY: ${{ secrets.GOOGLE_SECRET_KEY }}
+          JWT_KEY: ${{ secrets.JWT_KEY }}
+          KAKAO_KEY: ${{ secrets.KAKAO_KEY }}
+          KAKAO_SECRET_KEY: ${{ secrets.KAKAO_SECRET_KEY }}
+          LOG_MAX_FILES: ${{ secrets.LOG_MAX_FILES }}
+          LOG_MAX_SIZE: ${{ secrets.LOG_MAX_SIZE }}
+          LOG_PATH: ${{ secrets.LOG_PATH }}
+          NAVER_KEY: ${{ secrets.NAVER_KEY }}
+          NAVER_SECRET_KEY: ${{ secrets.NAVER_SECRET_KEY }}
+          PORT: ${{ secrets.PORT }}
+          REDIRECT_URI: ${{ secrets.REDIRECT_URI }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_PASS: ${{ secrets.REDIS_PASS }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
+        run: |
+          touch .env
+          echo DATABASE_HOST="$DATABASE_HOST" >> .env
+          echo DATABASE_PASSWORD="$DATABASE_PASSWORD" >> .env
+          echo DATABASE_PORT="$DATABASE_PORT" >> .env
+          echo DATABASE_SCHEMA="$DATABASE_SCHEMA" >> .env
+          echo DATABASE_TYPE="$DATABASE_TYPE" >> .env
+          echo DATABASE_USER_NAME="$DATABASE_USER_NAME" >> .env
+          echo FIREBASE_CLIENT_EMAIL="$FIREBASE_CLIENT_EMAIL" >> .env
+          echo FIREBASE_PRIVATE_KEY="$FIREBASE_PRIVATE_KEY" >> .env
+          echo FIREBASE_PROJECT_ID="$FIREBASE_PROJECT_ID" >> .env
+          echo GOOGLE_KEY="$GOOGLE_KEY" >> .env
+          echo GOOGLE_SECRET_KEY="$GOOGLE_SECRET_KEY" >> .env
+          echo JWT_KEY="$JWT_KEY" >> .env
+          echo KAKAO_KEY="$KAKAO_KEY" >> .env
+          echo KAKAO_SECRET_KEY="$KAKAO_SECRET_KEY" >> .env
+          echo LOG_MAX_FILES="$LOG_MAX_FILES" >> .env
+          echo LOG_MAX_SIZE="$LOG_MAX_SIZE" >> .env
+          echo LOG_PATH="$LOG_PATH" >> .env
+          echo NAVER_KEY="$NAVER_KEY" >> .env
+          echo NAVER_SECRET_KEY="$NAVER_SECRET_KEY" >> .env
+          echo PORT="$PORT" >> .env
+          echo REDIRECT_URI="$REDIRECT_URI" >> .env
+          echo REDIS_HOST="$REDIS_HOST" >> .env
+          echo REDIS_PASS="$REDIS_PASS" >> .env
+          echo REDIS_PORT="$REDIS_PORT" >> .env
+          cat .env | head -n 1
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Confirm lint
+        run: npm run eslint
+
+      - name: Build project files
+        run: npm run build --if-present
+
+      - name: Compress project files
+        run: tar -zcf lip-api-server-development.tar.gz dist .env appspec.yml scripts/after-development-deploy.sh ecosystem.development.config.js node_modules
+
+      - name: AWS configure credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Upload to S3
+        run: aws s3 cp --region ap-northeast-2 lip-api-server-development.tar.gz s3://lifeisplan-bucket/deploy/
+
+      - name: Deploy CodeDeploy
+        run: aws deploy create-deployment
+          --application-name lifeisplan
+          --deployment-config-name CodeDeployDefault.OneAtATime
+          --deployment-group-name lifeisplan-development
+          --s3-location bucket=lifeisplan-bucket,bundleType=tgz,key=deploy/lip-api-server-development.tar.gz

@@ -2,16 +2,16 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ubuntu/lip-api-server
+    destination: /home/ubuntu/lip-api-server/development
 
 permissions:
-  - object: /home/ubuntu/lip-api-server
+  - object: /home/ubuntu/lip-api-server/development
     pattern: "**"
     owner: ubuntu
     group: ubuntu
 
 hooks:
   AfterInstall:
-    - location: scripts/after-production-deploy.sh
+    - location: scripts/after-development-deploy.sh
       timeout: 300
       runas: ubuntu
