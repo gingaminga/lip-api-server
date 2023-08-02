@@ -1,6 +1,6 @@
 #!/bin/bash
 ROOT_REPOSITORY=/home/ubuntu
-BASE_REPOSITORY=/lip-api-server/development
+BASE_REPOSITORY=/development/lip-api-server
 
 # move directory
 cd $ROOT_REPOSITORY$BASE_REPOSITORY
