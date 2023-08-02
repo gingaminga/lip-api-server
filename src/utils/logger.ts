@@ -55,19 +55,14 @@ const logFormat = printf((info) => {
   return `#[${colors.bgRedBright(info.label)}] ${colors.whiteBright(info.timestamp)} [${level}]: ${message}`;
 });
 
-export default winston.createLogger({
-  format: combine(
-    timestamp({
-      format: "YYYY-MM-DD HH:mm:ss.SSS",
-    }),
-    label({ label: constants.PROJECT_NAME }),
-    splat(),
-    logFormat,
-  ),
-  transports: [
-    new winston.transports.Console({
-      level: constants.NODE_ENV === "production" ? Level.INFO : Level.DEBUG,
-    }),
+const transports: winston.transport[] = [
+  new winston.transports.Console({
+    level: constants.NODE_ENV === "production" ? Level.INFO : Level.DEBUG,
+  }),
+];
+
+if (constants.LOG.IS_WRITE) {
+  transports.push(
     new WinstonDailyLog({
       datePattern: "YYYYMMDD",
       dirname: path.resolve(__dirname, logDir),
@@ -77,5 +72,17 @@ export default winston.createLogger({
       maxSize: constants.LOG.MAX_SIZE,
       zippedArchive: constants.NODE_ENV !== "development",
     }),
-  ],
+  );
+}
+
+export default winston.createLogger({
+  format: combine(
+    timestamp({
+      format: "YYYY-MM-DD HH:mm:ss.SSS",
+    }),
+    label({ label: constants.PROJECT_NAME }),
+    splat(),
+    logFormat,
+  ),
+  transports,
 });

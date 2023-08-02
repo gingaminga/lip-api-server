@@ -12,6 +12,7 @@ declare namespace NodeJS {
     GOOGLE_KEY: string;
     GOOGLE_SECRET_KEY: string;
     HTTPS: "true" | "false";
+    IS_WRITE_LOG: "true" | "false";
     JWT_KEY: string;
     KAKAO_KEY: string;
     KAKAO_SECRET_KEY: string;

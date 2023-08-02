@@ -21,6 +21,7 @@ export default {
     KEY: process.env.JWT_KEY || "",
   },
   LOG: {
+    IS_WRITE: process.env.IS_WRITE_LOG === "true",
     MAX_FILES: Number(process.env.LOG_MAX_FILES || 3),
     MAX_SIZE: Number(process.env.LOG_MAX_SIZE || "10m"),
     PATH: process.env.LOG_PATH,
