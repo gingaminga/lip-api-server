@@ -8,7 +8,7 @@ import constants from "@/utils/constants";
 import joi from "joi";
 
 export const changeNicknameSchema = joi.object<ChangeNicknameRequestParamDTO>().keys({
-  deviceToken: joi.string().optional(),
+  deviceToken: joi.string().allow("").optional(),
   nickname: joi
     .string()
     .min(2)
@@ -35,5 +35,5 @@ export const loginSchema = joi.object<LoginRequestParamDTO>().keys({
 });
 
 export const logoutSchema = joi.object<LogoutRequestParamDTO>().keys({
-  deviceToken: joi.string().optional(),
+  deviceToken: joi.string().allow("").optional(),
 });
