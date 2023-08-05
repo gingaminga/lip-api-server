@@ -36,6 +36,8 @@ export default class RoutineTodo {
   })
   user!: User;
 
-  @ManyToOne(() => Routine, (routine) => routine.routineTodos)
+  @ManyToOne(() => Routine, (routine) => routine.routineTodos, {
+    onDelete: "CASCADE",
+  })
   routine!: Routine;
 }
