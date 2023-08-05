@@ -74,6 +74,23 @@ export default class AuthService {
   }
 
   /**
+   * @description 리프레시 토큰 유효성 확인하기
+   * @param key 레디스 field 값
+   * @param compareToken 비교 대상 토큰
+   */
+  async checkRefreshToken(key: number, compareToken: string) {
+    const originRefreshToken = await this.redisClient.hget(constants.PROJECT_NAME, String(key));
+
+    const isSameToken = compareToken === originRefreshToken;
+
+    if (!isSameToken) {
+      throw new CError("Token is not same.. :(");
+    }
+
+    return true;
+  }
+
+  /**
    * @description 액세스토큰 만들기
    * @param nickname 닉네임
    * @param socialType 소셜 종류
@@ -167,13 +184,31 @@ export default class AuthService {
    * @returns User | null
    */
   async getUserInfoByAccessToken(token: string) {
-    const { nickname } = AuthService.validateAccessToken(token);
+    const { nickname } = verifyJWTToken<IAccessTokenPayload>(token);
 
     const userInfo = await this.getUserInfo(nickname);
 
     if (!userInfo) {
       throw new CError("Not exist user.. :(");
     }
+
+    return userInfo;
+  }
+
+  /**
+   * @description refresh token으로 유저 정보 가져오기
+   * @param token refresh token
+   */
+  async getUserInfoByRefreshToken(token: string) {
+    const { nickname } = verifyJWTToken<IRefreshTokenPayload>(token);
+
+    const userInfo = await this.getUserInfo(nickname);
+
+    if (!userInfo) {
+      throw new CError("Not exist user.. :(");
+    }
+
+    await this.checkRefreshToken(userInfo.id, token);
 
     return userInfo;
   }
@@ -325,40 +360,6 @@ export default class AuthService {
     }
 
     return true;
-  }
-
-  /**
-   * @description 액세스 토큰이 유효한지 확인하기
-   * @param token jwt 토큰
-   */
-  static validateAccessToken(token: string) {
-    const payload = verifyJWTToken<IAccessTokenPayload>(token);
-
-    return payload;
-  }
-
-  /**
-   * @description 리프레시 토큰이 유효한지 확인하기
-   * @param token jwt 토큰
-   */
-  async validateRefreshToken(token: string) {
-    const payload = verifyJWTToken<IRefreshTokenPayload>(token);
-
-    const userInfo = await this.getUserInfo(payload.nickname);
-
-    if (!userInfo) {
-      throw new CError("Not exist user.. :(");
-    }
-
-    const originRefreshToken = await this.redisClient.hget(constants.PROJECT_NAME, String(userInfo.id));
-
-    const isSameToken = token === originRefreshToken;
-
-    if (!isSameToken) {
-      throw new CError("Token is not same.. :(");
-    }
-
-    return payload;
   }
 
   /**

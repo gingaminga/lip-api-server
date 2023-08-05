@@ -1,4 +1,4 @@
-import { ReissueTokenDTO, ReissueTokenRequestParamDTO } from "@/dto/auth.dto";
+import { ReissueTokenRequestParamDTO } from "@/dto/auth.dto";
 import { authService } from "@/loaders/service.loader";
 import { RequestDTOHandler } from "@/types/express.custom";
 import CError, { ERROR_MESSAGE } from "@/utils/error";
@@ -28,9 +28,9 @@ export const checkExpireRefreshToken: RequestDTOHandler<ReissueTokenRequestParam
   try {
     const { refreshToken } = res.locals.requestDTO;
 
-    const payload = await authService.validateRefreshToken(refreshToken);
+    const userInfo = await authService.getUserInfoByRefreshToken(refreshToken);
 
-    res.locals.requestDTO = new ReissueTokenDTO(refreshToken, payload.nickname, payload.type);
+    res.locals.userInfo = userInfo;
 
     next();
   } catch (error) {
