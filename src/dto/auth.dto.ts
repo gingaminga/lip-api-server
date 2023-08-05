@@ -8,19 +8,6 @@ export class ReissueTokenRequestParamDTO {
   }
 }
 
-export class ReissueTokenDTO extends ReissueTokenRequestParamDTO {
-  nickname: string;
-
-  type: TSocialType;
-
-  constructor(token: string, nickname: string, type: TSocialType) {
-    super(token);
-
-    this.nickname = nickname;
-    this.type = type;
-  }
-}
-
 export class GetSocialURLRequestParamDTO {
   type: TSocialType;
 
