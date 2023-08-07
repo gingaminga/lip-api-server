@@ -1,33 +1,23 @@
 # Life Is Plan Server
 
-> 계획적으로 삶을 살 수 있게 도와주는 것이 이 앱의 취지입니다. :)<br/>
+> 계획적으로 삶을 살 수 있게 도와주는 것이 이 앱의 취지입니다. :)
 
-Website : https://lifeisplan.me<br/>
+Website : https://lifeisplan.me <br/>
 Frontend Repository : [lip-web](https://github.com/gingaminga/lip-web#readme)
 
 ## 👨‍💻 기술 스택
 
 ###### Language & Environment
 
-<img src="https://shields.io/badge/typescript-3178C6?logo=typescript&logoColor=FFF&style=for-the-badge"/>
-<img src="https://shields.io/badge/node.js-339933?logo=nodedotjs&logoColor=FFF&style=for-the-badge"/>
+<img src="https://shields.io/badge/typescript-3178C6?logo=typescript&logoColor=FFF&style=for-the-badge"/> <img src="https://shields.io/badge/node.js-339933?logo=nodedotjs&logoColor=FFF&style=for-the-badge"/>
 
 ###### Library & Framework
 
-<img src="https://img.shields.io/badge/express.js-000000?style=for-the-badge&logo=express&logoColor=white"/>
-<img src="https://img.shields.io/badge/nodemon-76D04B?style=for-the-badge&logo=nodemon&logoColor=white"/>
-<img src="https://img.shields.io/badge/ts_node-3178C6?style=for-the-badge&logo=tsnode&logoColor=white"/>
-<img src="https://img.shields.io/badge/typeorm-06B6D4?style=for-the-badge"/>
-<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/>
-<img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/>
-<img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white"/>
+<img src="https://img.shields.io/badge/express.js-000000?style=for-the-badge&logo=express&logoColor=white"/> <img src="https://img.shields.io/badge/nodemon-76D04B?style=for-the-badge&logo=nodemon&logoColor=white"/> <img src="https://img.shields.io/badge/ts_node-3178C6?style=for-the-badge&logo=tsnode&logoColor=white"/> <img src="https://img.shields.io/badge/typeorm-06B6D4?style=for-the-badge"/> <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/> <img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/> <img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white"/>
 
 ###### Production
 
-<img src="https://img.shields.io/badge/amazon_ec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"/>
-<img src="https://img.shields.io/badge/amazon_s3-569A31?style=for-the-badge&logo=amazons3&logoColor=white"/>
-<img src="https://img.shields.io/badge/amazon_rds-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white"/>
-<img src="https://img.shields.io/badge/amazone_code_deploy-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white"/>
+<img src="https://img.shields.io/badge/amazon_ec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"/> <img src="https://img.shields.io/badge/amazon_s3-569A31?style=for-the-badge&logo=amazons3&logoColor=white"/> <img src="https://img.shields.io/badge/amazon_rds-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white"/> <img src="https://img.shields.io/badge/amazone_code_deploy-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white"/>
 
 ## 🎬 기능
 
